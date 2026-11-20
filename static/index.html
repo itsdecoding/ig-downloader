@@ -3,15 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InstaFetch • Free High-Speed Instagram Reels & Video Downloader</title>
-  <meta name="description" content="Download Instagram Reels, Videos, and Carousel albums in original Full HD 1080p without watermark. 100% free, fast, and works on all devices." />
-  <meta name="keywords" content="instagram video downloader, download instagram reels, ig reel download, download ig video, instagram carousel downloader, save instagram video" />
+  <title>InstaFetch • Download Instagram Reels & Videos</title>
+  <meta name="description" content="Download Instagram Reels, Videos, and Carousel albums in original Full HD 1080p without watermark. Fast, free, and works on all devices." />
+  <meta name="keywords" content="instagram video downloader, download instagram reels, ig reel download, download ig video, instagram carousel downloader" />
   
   <!-- OpenGraph Social Tags -->
   <meta property="og:title" content="InstaFetch • Instagram Video & Reels Downloader" />
   <meta property="og:description" content="Download Instagram Reels, Videos, and Carousels in Full HD with zero watermarks. Fast, free, and secure." />
   <meta property="og:type" content="website" />
   
+  <!-- Inter & Plus Jakarta Sans Fonts for Luxury Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -21,13 +26,15 @@
       darkMode: 'class',
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
           colors: {
             brand: {
-              orange: '#f09433',
-              red: '#e6683c',
-              pink: '#dc2743',
-              purple: '#cc2366',
-              violet: '#bc1888'
+              orange: '#FF6B4A',
+              pink: '#FF3366',
+              purple: '#E6007A',
+              dark: '#070709'
             }
           }
         }
@@ -35,154 +42,158 @@
     }
   </script>
   <style>
-    .ig-gradient {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    body {
+      background-color: #070709;
+      background-image: radial-gradient(circle at 50% 0%, rgba(30, 20, 25, 0.5) 0%, rgba(7, 7, 9, 0.95) 75%), url('/static/bg_liquid.jpg');
+      background-repeat: no-repeat;
+      background-position: top center;
+      background-size: cover;
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
-    .ig-text-gradient {
-      background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    
+    .glass-nav {
+      background: rgba(18, 18, 22, 0.55);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
     }
+
+    .glass-capsule {
+      background: rgba(18, 18, 24, 0.65);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: 
+        0 25px 60px -10px rgba(0, 0, 0, 0.85),
+        0 0 25px rgba(255, 107, 74, 0.08),
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
     .glass-card {
-      background: rgba(24, 24, 27, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(18, 18, 24, 0.70);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.1);
     }
-    /* Ad placeholder styling */
-    .ad-container {
-      background: rgba(39, 39, 42, 0.4);
-      border: 1px dashed rgba(255, 255, 255, 0.15);
-      min-height: 90px;
+
+    .ig-btn-gradient {
+      background: linear-gradient(135deg, #FF6B4A 0%, #FF3366 50%, #E6007A 100%);
+      box-shadow: 0 6px 25px -4px rgba(255, 51, 102, 0.5);
+    }
+    .ig-btn-gradient:hover {
+      opacity: 0.96;
+      box-shadow: 0 8px 30px -2px rgba(255, 51, 102, 0.65);
     }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-pink-500 selection:text-white">
+<body class="text-zinc-100 min-h-screen flex flex-col antialiased selection:bg-pink-500 selection:text-white">
 
-  <!-- Background decorative glows -->
-  <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-pink-600/15 rounded-full blur-3xl"></div>
-    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl"></div>
-  </div>
-
-  <!-- Header -->
-  <header class="border-b border-zinc-800/80 backdrop-blur-md bg-zinc-950/60 sticky top-0 z-50">
-    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+  <!-- Floating Luxury Top Navigation Bar -->
+  <header class="w-full max-w-4xl mx-auto pt-6 px-4 z-50">
+    <div class="glass-nav px-6 py-3 rounded-full flex items-center justify-between transition-all">
       <a href="/" class="flex items-center space-x-3 group">
-        <div class="w-10 h-10 rounded-xl ig-gradient flex items-center justify-center shadow-lg shadow-pink-500/20 group-hover:scale-105 transition-transform">
-          <i data-lucide="instagram" class="w-5 h-5 text-white"></i>
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-zinc-700 via-zinc-900 to-black p-1 border border-white/20 shadow-md flex items-center justify-center group-hover:scale-105 transition-transform">
+          <i data-lucide="instagram" class="w-4 h-4 text-white"></i>
         </div>
-        <div class="leading-tight">
-          <span class="font-bold text-lg tracking-tight">InstaFetch</span>
-          <span class="text-xs text-zinc-400 block font-medium">Fast Reels & Video Downloader</span>
-        </div>
+        <span class="font-bold text-lg tracking-tight text-white">InstaFetch</span>
       </a>
       
       <!-- Nav Links -->
-      <nav class="hidden md:flex items-center space-x-6 text-xs font-medium text-zinc-400">
-        <a href="#how-it-works" class="hover:text-zinc-200 transition">How to Use</a>
-        <a href="#features" class="hover:text-zinc-200 transition">Features</a>
-        <a href="#faq" class="hover:text-zinc-200 transition">FAQ</a>
+      <nav class="flex items-center space-x-7 text-xs font-medium text-zinc-300">
+        <a href="#how-it-works" class="hover:text-white transition">How to Use</a>
+        <a href="#features" class="hover:text-white transition">Features</a>
+        <a href="#faq" class="hover:text-white transition">FAQ</a>
       </nav>
-
-      <div class="flex items-center space-x-2 text-xs px-3 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400">
-        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-        <span class="hidden sm:inline">High Speed Engine</span>
-        <span>Active</span>
-      </div>
     </div>
   </header>
 
-  <!-- Main App Section -->
-  <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-10 flex flex-col items-center">
+  <!-- Hero Section -->
+  <main class="flex-1 max-w-5xl w-full mx-auto px-4 pt-16 sm:pt-20 pb-12 flex flex-col items-center">
     
-    <!-- Hero Title -->
-    <div class="text-center max-w-2xl mb-8 space-y-3">
-      <div class="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-semibold px-3.5 py-1 rounded-full bg-zinc-900/80 border border-zinc-800 text-pink-400 mb-1">
-        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
-        <span>Original 1080p Quality • No Watermark</span>
+    <!-- Original Badge -->
+    <div class="text-center mb-4">
+      <div class="inline-flex items-center space-x-2 text-[11px] uppercase tracking-widest font-semibold px-4 py-1.5 rounded-full bg-zinc-800/60 backdrop-blur-md border border-white/10 text-zinc-300 shadow-lg">
+        <span>ORIGINAL 1080P • NO WATERMARK</span>
       </div>
-      <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">
-        Download <span class="ig-text-gradient">Instagram Reels</span> & Videos
+    </div>
+
+    <!-- Massive Clean Headline -->
+    <div class="text-center max-w-3xl mb-8 space-y-2">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+        Download Instagram<br />
+        Reels & Videos
       </h1>
-      <p class="text-zinc-400 text-sm sm:text-base max-w-xl mx-auto">
-        Save any public Instagram Reel, Video, or Carousel album directly to your iPhone, Android, or PC in highest resolution.
+      <p class="text-zinc-400 text-xs sm:text-sm max-w-md mx-auto pt-2">
+        Paste any link to save original high-definition video directly to your device.
       </p>
     </div>
 
-    <!-- Input Form Card -->
-    <div class="w-full max-w-3xl glass-card rounded-2xl p-4 sm:p-5 shadow-2xl mb-6">
-      <form id="fetchForm" class="flex flex-col sm:flex-row gap-3">
-        <div class="relative flex-1">
-          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
-            <i data-lucide="link" class="w-4 h-4"></i>
-          </div>
-          <input
-            type="url"
-            id="urlInput"
-            placeholder="Paste Instagram link here (e.g. instagram.com/reel/...)"
-            required
-            autocomplete="off"
-            class="w-full pl-10 pr-24 py-3.5 bg-zinc-900/90 border border-zinc-700/70 rounded-xl text-sm placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:border-pink-500 transition-all text-zinc-100"
-          />
-          <button
-            type="button"
-            id="pasteBtn"
-            class="absolute inset-y-1.5 right-1.5 px-3 flex items-center space-x-1 text-xs font-medium text-zinc-300 hover:text-white bg-zinc-800 hover:bg-zinc-700 rounded-lg transition"
-          >
-            <i data-lucide="clipboard" class="w-3.5 h-3.5"></i>
-            <span>Paste</span>
-          </button>
-        </div>
+    <!-- Floating Glass Input Capsule (Figma Concept 1:1) -->
+    <div class="w-full max-w-2xl mx-auto mb-8">
+      <form id="fetchForm" class="relative glass-capsule rounded-full p-2 flex items-center gap-2">
+        <input
+          type="url"
+          id="urlInput"
+          placeholder="Paste Instagram link here..."
+          required
+          autocomplete="off"
+          class="w-full pl-6 pr-3 py-2.5 bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none flex-1 font-normal tracking-wide"
+        />
+        <button
+          type="button"
+          id="pasteBtn"
+          class="px-5 py-2.5 rounded-full bg-zinc-800/90 hover:bg-zinc-700/90 text-xs font-semibold text-zinc-200 border border-white/10 transition-all active:scale-95 flex items-center space-x-1"
+        >
+          <span>Paste</span>
+        </button>
         <button
           type="submit"
           id="submitBtn"
-          class="ig-gradient text-white font-semibold text-sm px-8 py-3.5 rounded-xl hover:opacity-95 active:scale-[0.98] transition shadow-lg shadow-pink-600/25 flex items-center justify-center space-x-2"
+          class="ig-btn-gradient px-7 py-2.5 rounded-full text-xs font-bold text-white transition-all active:scale-95 flex items-center justify-center space-x-1.5 flex-shrink-0"
         >
           <span id="btnText">Download</span>
-          <i data-lucide="arrow-right" class="w-4 h-4" id="btnIcon"></i>
         </button>
       </form>
 
       <!-- Quick Tips -->
-      <div class="mt-3 flex items-center justify-between text-xs text-zinc-500 px-1">
-        <span>Supports Reels, Posts, IGTV, and Multi-clip Carousels</span>
+      <div class="mt-3 flex items-center justify-between text-[11px] text-zinc-500 px-4">
+        <span>Supports Reels, Video Posts, and Carousel Albums</span>
         <button id="clearBtn" class="hover:text-zinc-300 transition hidden">Clear</button>
       </div>
     </div>
 
-    <!-- AD SLOT 1 (Reserved for future banner) -->
-    <div id="ad-slot-top" class="w-full max-w-3xl mb-4 hidden"></div>
-
     <!-- Error Banner -->
-    <div id="errorBox" class="w-full max-w-3xl hidden mb-6 rounded-xl bg-red-950/40 border border-red-500/30 p-4 text-red-200 text-sm flex items-start space-x-3">
+    <div id="errorBox" class="w-full max-w-2xl hidden mb-8 rounded-2xl bg-red-950/40 border border-red-500/30 p-4 text-red-200 text-sm flex items-start space-x-3 backdrop-blur-md">
       <i data-lucide="alert-circle" class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5"></i>
       <div class="space-y-1">
-        <p class="font-semibold" id="errorTitle">Unable to fetch video</p>
+        <p class="font-semibold text-xs" id="errorTitle">Unable to fetch video</p>
         <p class="text-xs text-red-300/90" id="errorMessage"></p>
       </div>
     </div>
 
     <!-- Loading State -->
-    <div id="loadingBox" class="w-full max-w-3xl hidden flex-col items-center justify-center py-10 space-y-4">
+    <div id="loadingBox" class="w-full max-w-2xl hidden flex-col items-center justify-center py-10 space-y-4">
       <div class="relative w-14 h-14">
-        <div class="absolute inset-0 rounded-full border-4 border-zinc-800"></div>
+        <div class="absolute inset-0 rounded-full border-4 border-zinc-800/80"></div>
         <div class="absolute inset-0 rounded-full border-4 border-t-pink-500 animate-spin"></div>
       </div>
       <div class="text-center">
-        <p class="font-medium text-zinc-200 text-sm">Fetching high-resolution video...</p>
-        <p class="text-xs text-zinc-500 mt-1">Resolving clean direct stream</p>
+        <p class="font-medium text-zinc-200 text-sm">Extracting high-resolution stream...</p>
+        <p class="text-xs text-zinc-500 mt-1">Direct from Meta CDN</p>
       </div>
     </div>
 
     <!-- Result Card -->
-    <div id="resultCard" class="w-full max-w-3xl hidden glass-card rounded-2xl overflow-hidden shadow-2xl border border-zinc-800/90 mb-6">
+    <div id="resultCard" class="w-full max-w-2xl hidden glass-card rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-10">
       
       <div class="grid grid-cols-1 md:grid-cols-12 gap-0 md:gap-6 p-5 sm:p-6">
         
         <!-- Left: Video Player -->
         <div class="md:col-span-5 flex flex-col items-center justify-center">
-          <div class="relative w-full max-w-[260px] aspect-[9/16] bg-black rounded-xl overflow-hidden shadow-xl border border-zinc-800">
+          <div class="relative w-full max-w-[240px] aspect-[9/16] bg-black rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
             <video
               id="videoPlayer"
               controls
@@ -200,28 +211,28 @@
             <!-- Author & Badges -->
             <div class="flex items-center justify-between flex-wrap gap-2">
               <div class="flex items-center space-x-2">
-                <div class="w-7 h-7 rounded-full ig-gradient flex items-center justify-center text-white text-xs font-bold">
+                <div class="w-6 h-6 rounded-full ig-btn-gradient flex items-center justify-center text-white text-[10px] font-bold">
                   @
                 </div>
-                <span id="authorHandle" class="font-semibold text-sm text-zinc-200"></span>
+                <span id="authorHandle" class="font-semibold text-xs text-zinc-200"></span>
               </div>
               <div class="flex items-center space-x-2">
-                <span id="qualityBadge" class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">1080p HD</span>
-                <span id="durationBadge" class="text-xs font-medium px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300">0:00</span>
+                <span id="qualityBadge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">1080p HD</span>
+                <span id="durationBadge" class="text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300">0:00</span>
               </div>
             </div>
 
             <!-- Title & Caption -->
             <div>
-              <h2 id="videoTitle" class="font-bold text-lg text-zinc-100 line-clamp-2"></h2>
+              <h2 id="videoTitle" class="font-bold text-base text-zinc-100 line-clamp-2"></h2>
               <p id="videoCaption" class="text-xs text-zinc-400 mt-2 line-clamp-3 leading-relaxed"></p>
             </div>
           </div>
 
           <!-- Carousel Indicator if present -->
-          <div id="carouselBox" class="hidden p-3 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
+          <div id="carouselBox" class="hidden p-3 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-2">
             <div class="flex items-center justify-between text-xs text-zinc-400">
-              <span class="font-medium text-pink-400">Multi-clip Album Detected</span>
+              <span class="font-medium text-pink-400">Multi-clip Album</span>
               <span id="carouselCount">Multiple items</span>
             </div>
             <div id="carouselItems" class="flex gap-2 overflow-x-auto pb-1"></div>
@@ -229,11 +240,11 @@
 
           <!-- Download Action Buttons -->
           <div class="space-y-2.5 pt-2 border-t border-zinc-800/80">
-            <!-- Main Direct Download (Attachment mode) -->
+            <!-- Main Direct Download -->
             <a
               id="downloadBtn"
               href="#"
-              class="w-full py-3.5 px-5 rounded-xl ig-gradient text-white font-semibold text-sm flex items-center justify-center space-x-2 shadow-lg shadow-pink-600/20 hover:opacity-95 transition"
+              class="w-full py-3 px-5 rounded-full ig-btn-gradient text-white font-semibold text-xs flex items-center justify-center space-x-2 transition-all active:scale-98"
             >
               <i data-lucide="download" class="w-4 h-4"></i>
               <span>Download MP4 Video</span>
@@ -246,18 +257,18 @@
                 target="_blank"
                 rel="noopener noreferrer"
                 href="#"
-                class="py-2.5 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs text-zinc-300 font-medium flex items-center justify-center space-x-1.5 transition"
+                class="py-2 px-3 rounded-full bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-medium flex items-center justify-center space-x-1.5 transition"
               >
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                <span>Direct Stream Link</span>
+                <i data-lucide="external-link" class="w-3 h-3"></i>
+                <span>Direct Stream</span>
               </a>
               <button
                 id="copyBtn"
                 type="button"
-                class="py-2.5 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs text-zinc-300 font-medium flex items-center justify-center space-x-1.5 transition"
+                class="py-2 px-3 rounded-full bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-medium flex items-center justify-center space-x-1.5 transition"
               >
-                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                <span id="copyText">Copy Video URL</span>
+                <i data-lucide="copy" class="w-3 h-3"></i>
+                <span id="copyText">Copy URL</span>
               </button>
             </div>
           </div>
@@ -266,8 +277,10 @@
       </div>
     </div>
 
-    <!-- ADSTERRA NATIVE BANNER (DEV-SHIELD PROTECTED) -->
-    <div class="w-full max-w-3xl mb-14" id="ad-banner-section">
+    <!-- ============================================ -->
+    <!-- ADSTERRA NATIVE BANNER (DEV-SHIELD PROTECTED)-->
+    <!-- ============================================ -->
+    <div class="w-full max-w-3xl mb-16" id="ad-banner-section">
       <div class="text-center mb-1.5">
         <span class="text-[10px] uppercase tracking-wider text-zinc-500 font-medium">Sponsored Content</span>
       </div>
@@ -282,45 +295,45 @@
     </div>
 
     <!-- ============================================== -->
-    <!-- SEO & USER CONTENT SECTION (CRITICAL FOR GOOGLE)-->
+    <!-- SEO & CONTENT SECTION (CRITICAL FOR GOOGLE)   -->
     <!-- ============================================== -->
 
     <!-- Features Section -->
     <section id="features" class="w-full max-w-4xl mb-16">
       <div class="text-center mb-10">
-        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Why Choose <span class="ig-text-gradient">InstaFetch</span>?</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Why Choose InstaFetch?</h2>
         <p class="text-zinc-400 text-xs sm:text-sm mt-2">The fastest, cleanest, and most reliable Instagram downloader online.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         
-        <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+        <div class="p-5 rounded-2xl glass-card space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
             <i data-lucide="zap" class="w-5 h-5"></i>
           </div>
-          <h3 class="font-semibold text-base text-zinc-100">Blazing Fast & Unlimited</h3>
+          <h3 class="font-semibold text-sm text-zinc-100">Blazing Fast & Unlimited</h3>
           <p class="text-xs text-zinc-400 leading-relaxed">
             Download as many Reels and Videos as you want without daily caps, sign-up requirements, or throttling.
           </p>
         </div>
 
-        <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+        <div class="p-5 rounded-2xl glass-card space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
             <i data-lucide="shield-check" class="w-5 h-5"></i>
           </div>
-          <h3 class="font-semibold text-base text-zinc-100">Zero Watermark & Full HD</h3>
+          <h3 class="font-semibold text-sm text-zinc-100">Zero Watermark & Full HD</h3>
           <p class="text-xs text-zinc-400 leading-relaxed">
             Extracts original progressive MP4 streams directly from Meta CDN up to 1080p and 1920p without loss of quality.
           </p>
         </div>
 
-        <div class="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
+        <div class="p-5 rounded-2xl glass-card space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
             <i data-lucide="smartphone" class="w-5 h-5"></i>
           </div>
-          <h3 class="font-semibold text-base text-zinc-100">All Devices Supported</h3>
+          <h3 class="font-semibold text-sm text-zinc-100">All Devices Supported</h3>
           <p class="text-xs text-zinc-400 leading-relaxed">
-            Works smoothly in any browser across iOS (iPhone/iPad Safari), Android Chrome, macOS, and Windows without installing apps.
+            Works smoothly in any browser across iOS (iPhone/iPad Safari), Android Chrome, macOS, and Windows.
           </p>
         </div>
 
@@ -330,14 +343,14 @@
     <!-- How It Works Section -->
     <section id="how-it-works" class="w-full max-w-4xl mb-16">
       <div class="text-center mb-10">
-        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">How to Download Instagram Reels in 3 Steps</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">How to Download Instagram Reels in 3 Steps</h2>
         <p class="text-zinc-400 text-xs sm:text-sm mt-2">Simple, clean, and instant download process.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex flex-col items-center text-center space-y-3">
-          <div class="w-12 h-12 rounded-full ig-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-pink-500/20">
+        <div class="p-6 rounded-2xl glass-card flex flex-col items-center text-center space-y-3">
+          <div class="w-10 h-10 rounded-full ig-btn-gradient flex items-center justify-center font-bold text-white text-xs shadow-lg shadow-pink-500/20">
             1
           </div>
           <h3 class="font-semibold text-sm text-zinc-200">Copy Reel Link</h3>
@@ -346,18 +359,18 @@
           </p>
         </div>
 
-        <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex flex-col items-center text-center space-y-3">
-          <div class="w-12 h-12 rounded-full ig-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-pink-500/20">
+        <div class="p-6 rounded-2xl glass-card flex flex-col items-center text-center space-y-3">
+          <div class="w-10 h-10 rounded-full ig-btn-gradient flex items-center justify-center font-bold text-white text-xs shadow-lg shadow-pink-500/20">
             2
           </div>
           <h3 class="font-semibold text-sm text-zinc-200">Paste in InstaFetch</h3>
           <p class="text-xs text-zinc-400 leading-relaxed">
-            Paste the copied URL into the box above and click the <strong>"Download"</strong> button.
+            Paste the copied URL into the capsule above and click the <strong>"Download"</strong> button.
           </p>
         </div>
 
-        <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 flex flex-col items-center text-center space-y-3">
-          <div class="w-12 h-12 rounded-full ig-gradient flex items-center justify-center font-bold text-white shadow-lg shadow-pink-500/20">
+        <div class="p-6 rounded-2xl glass-card flex flex-col items-center text-center space-y-3">
+          <div class="w-10 h-10 rounded-full ig-btn-gradient flex items-center justify-center font-bold text-white text-xs shadow-lg shadow-pink-500/20">
             3
           </div>
           <h3 class="font-semibold text-sm text-zinc-200">Save to Device</h3>
@@ -372,13 +385,13 @@
     <!-- SEO FAQ Section -->
     <section id="faq" class="w-full max-w-3xl mb-16 space-y-4">
       <div class="text-center mb-8">
-        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight">Frequently Asked Questions</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Frequently Asked Questions</h2>
         <p class="text-zinc-400 text-xs sm:text-sm mt-1">Everything you need to know about downloading Instagram videos.</p>
       </div>
 
       <div class="space-y-3">
         
-        <details class="group rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-4 open:bg-zinc-900 transition">
+        <details class="group rounded-2xl glass-card p-4 open:bg-zinc-900/90 transition">
           <summary class="flex items-center justify-between font-medium text-sm text-zinc-200 cursor-pointer list-none">
             <span>Is InstaFetch completely free to use?</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
@@ -388,17 +401,17 @@
           </p>
         </details>
 
-        <details class="group rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-4 open:bg-zinc-900 transition">
+        <details class="group rounded-2xl glass-card p-4 open:bg-zinc-900/90 transition">
           <summary class="flex items-center justify-between font-medium text-sm text-zinc-200 cursor-pointer list-none">
             <span>Do I need to sign in with my Instagram account?</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
           </summary>
           <p class="mt-3 text-xs text-zinc-400 leading-relaxed">
-            No. We never ask for your Instagram password, username, or login credentials. The entire process is anonymous and requires zero personal information.
+            No. We never ask for your Instagram password, username, or login credentials. The entire process is anonymous and safe.
           </p>
         </details>
 
-        <details class="group rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-4 open:bg-zinc-900 transition">
+        <details class="group rounded-2xl glass-card p-4 open:bg-zinc-900/90 transition">
           <summary class="flex items-center justify-between font-medium text-sm text-zinc-200 cursor-pointer list-none">
             <span>Where do the downloaded videos get saved?</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
@@ -408,17 +421,7 @@
           </p>
         </details>
 
-        <details class="group rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-4 open:bg-zinc-900 transition">
-          <summary class="flex items-center justify-between font-medium text-sm text-zinc-200 cursor-pointer list-none">
-            <span>Can I download multi-slide carousel videos?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
-          </summary>
-          <p class="mt-3 text-xs text-zinc-400 leading-relaxed">
-            Yes! If an Instagram post contains multiple video slides (album), InstaFetch detects each clip and lets you preview and download each one individually.
-          </p>
-        </details>
-
-        <details class="group rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-4 open:bg-zinc-900 transition">
+        <details class="group rounded-2xl glass-card p-4 open:bg-zinc-900/90 transition">
           <summary class="flex items-center justify-between font-medium text-sm text-zinc-200 cursor-pointer list-none">
             <span>Does InstaFetch store copies of the downloaded videos?</span>
             <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
@@ -433,8 +436,36 @@
 
   </main>
 
+  <!-- ============================================== -->
+  <!-- RETENTION ENGINE / PWA "TRAP" BOTTOM SHEET    -->
+  <!-- ============================================== -->
+  <div id="retentionSheet" class="fixed bottom-6 inset-x-4 max-w-md mx-auto z-50 transform translate-y-36 opacity-0 transition-all duration-500 pointer-events-none">
+    <div class="glass-card rounded-2xl p-4 border border-pink-500/30 shadow-[0_20px_50px_rgba(220,39,67,0.3)] bg-zinc-950/95 backdrop-blur-2xl">
+      <div class="flex items-start justify-between gap-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl ig-btn-gradient flex items-center justify-center text-white shadow-lg shadow-pink-500/30 flex-shrink-0">
+            <i data-lucide="bookmark" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="font-bold text-sm text-white">Save InstaFetch to Phone</h4>
+            <p class="text-xs text-zinc-400 mt-0.5">Instagram might hide this link. Bookmark or add to home screen!</p>
+          </div>
+        </div>
+        <button onclick="dismissRetention()" class="text-zinc-500 hover:text-white p-1"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <div class="mt-3 flex gap-2">
+        <button onclick="bookmarkApp()" class="flex-1 py-2 px-3 rounded-xl ig-btn-gradient text-white font-semibold text-xs shadow-md">
+          ⭐ Bookmark Tool
+        </button>
+        <button onclick="copyCurrentLink()" id="retentionCopyBtn" class="py-2 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs border border-white/10">
+          Copy Link
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Legal Compliance Footer -->
-  <footer class="border-t border-zinc-800/80 bg-zinc-950/80 py-10 text-xs text-zinc-500">
+  <footer class="border-t border-zinc-800/80 bg-zinc-950/90 py-10 text-xs text-zinc-500">
     <div class="max-w-5xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6">
       
       <div class="space-y-1 text-center md:text-left">
@@ -444,7 +475,6 @@
         </p>
       </div>
 
-      <!-- Legal Links (Required for AdSense & Adsterra approval) -->
       <div class="flex items-center space-x-6 text-xs text-zinc-400">
         <button onclick="openModal('privacyModal')" class="hover:text-zinc-200 transition">Privacy Policy</button>
         <button onclick="openModal('termsModal')" class="hover:text-zinc-200 transition">Terms of Service</button>
@@ -454,51 +484,42 @@
     </div>
   </footer>
 
-  <!-- ============================================== -->
-  <!-- LEGAL MODALS (MANDATORY FOR AD NETWORKS)      -->
-  <!-- ============================================== -->
-
-  <!-- Privacy Policy Modal -->
+  <!-- Modals -->
   <div id="privacyModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
         <h3 class="font-bold text-base text-zinc-100">Privacy Policy</h3>
         <button onclick="closeModal('privacyModal')" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="text-xs text-zinc-300 space-y-3 leading-relaxed">
-        <p><strong>1. Information Collection:</strong> InstaFetch does not collect personal identifiers, passwords, or account information. We do not require account registration.</p>
-        <p><strong>2. Server Logs:</strong> Standard anonymous server request logs (IP address, browser user-agent) may be temporarily processed for rate-limiting and security purposes only.</p>
-        <p><strong>3. Cookies & Advertising:</strong> Third-party advertising partners (such as Google AdSense or Adsterra) may use cookies or web beacons to serve relevant ads based on non-personally identifiable visit data.</p>
-        <p><strong>4. Media Storage:</strong> We do not store, archive, or host any user-downloaded media on our servers. Files stream directly from source CDNs.</p>
+        <p><strong>1. Information Collection:</strong> InstaFetch does not collect personal identifiers, passwords, or account information.</p>
+        <p><strong>2. Server Logs:</strong> Standard anonymous server request logs may be temporarily processed for security and rate-limiting.</p>
+        <p><strong>3. Third-Party Ads:</strong> Advertising partners may use anonymous cookies to serve relevant contextual ads.</p>
       </div>
     </div>
   </div>
 
-  <!-- Terms of Service Modal -->
   <div id="termsModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
         <h3 class="font-bold text-base text-zinc-100">Terms of Service</h3>
         <button onclick="closeModal('termsModal')" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="text-xs text-zinc-300 space-y-3 leading-relaxed">
-        <p><strong>1. Acceptance of Terms:</strong> By using InstaFetch, you agree to comply with all applicable local, national, and international laws.</p>
-        <p><strong>2. Personal Use:</strong> This service is intended strictly for personal, non-commercial, and fair-use archiving of publicly available content.</p>
-        <p><strong>3. Intellectual Property:</strong> Users are solely responsible for respecting the copyright and intellectual property rights of content creators. Do not redistribute, sell, or broadcast media without the explicit permission of the copyright owner.</p>
+        <p><strong>1. Personal Use:</strong> This service is intended strictly for personal, non-commercial archiving of public content.</p>
+        <p><strong>2. Copyright:</strong> Users are solely responsible for respecting intellectual property rights of content owners.</p>
       </div>
     </div>
   </div>
 
-  <!-- DMCA Modal -->
   <div id="dmcaModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-xl w-full p-6 space-y-4 max-h-[85vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
-        <h3 class="font-bold text-base text-zinc-100">DMCA & Copyright Disclaimer</h3>
+        <h3 class="font-bold text-base text-zinc-100">DMCA Disclaimer</h3>
         <button onclick="closeModal('dmcaModal')" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <div class="text-xs text-zinc-300 space-y-3 leading-relaxed">
-        <p>InstaFetch respects the intellectual property rights of others. InstaFetch does not host, upload, or index any copyrighted content. We simply provide a conduit for users to access public streams.</p>
-        <p>If you believe content accessible via this tool infringes your copyright, please contact the originating platform hosting the media (Instagram / Meta Platforms, Inc.) directly.</p>
+        <p>InstaFetch respects intellectual property rights. We do not host, store, or archive any content on our servers.</p>
       </div>
     </div>
   </div>
@@ -513,7 +534,6 @@
     const clearBtn = document.getElementById('clearBtn');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
-    const btnIcon = document.getElementById('btnIcon');
     const loadingBox = document.getElementById('loadingBox');
     const errorBox = document.getElementById('errorBox');
     const errorTitle = document.getElementById('errorTitle');
@@ -535,12 +555,43 @@
     const carouselItems = document.getElementById('carouselItems');
     const carouselCount = document.getElementById('carouselCount');
 
-    // Modal helpers
-    function openModal(id) {
-      document.getElementById(id).classList.remove('hidden');
+    // Retention Sheet
+    const retentionSheet = document.getElementById('retentionSheet');
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Trigger retention trap after 10 seconds or after download
+    setTimeout(() => {
+      showRetention();
+    }, 12000);
+
+    function showRetention() {
+      if (sessionStorage.getItem('retentionDismissed')) return;
+      retentionSheet.classList.remove('translate-y-36', 'opacity-0', 'pointer-events-none');
+      retentionSheet.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
     }
-    function closeModal(id) {
-      document.getElementById(id).classList.add('hidden');
+
+    function dismissRetention() {
+      retentionSheet.classList.add('translate-y-36', 'opacity-0', 'pointer-events-none');
+      sessionStorage.setItem('retentionDismissed', 'true');
+    }
+
+    function bookmarkApp() {
+      if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+        alert('To Bookmark on iPhone: Tap the Share button below, then tap "Add to Home Screen" or "Add Bookmark" ⭐');
+      } else if (navigator.userAgent.match(/Android/i)) {
+        alert('To Bookmark on Android: Tap the three dots (⋮) in the top-right corner, then tap "Add to Home screen" ⭐');
+      } else {
+        alert('Press Ctrl + D (or Cmd + D on Mac) to bookmark this page!');
+      }
+    }
+
+    function copyCurrentLink() {
+      navigator.clipboard.writeText(window.location.href);
+      const btn = document.getElementById('retentionCopyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
     }
 
     // Handle Paste Button
@@ -595,6 +646,8 @@
         }
 
         renderResult(data);
+        // Show retention trap right after successful extraction!
+        setTimeout(showRetention, 3000);
       } catch (err) {
         showError('Download Error', err.message);
       } finally {
@@ -609,13 +662,11 @@
       videoTitle.textContent = data.title || 'Instagram Video';
       videoCaption.textContent = data.caption || '';
 
-      // Video Source & Poster
       videoPlayer.src = data.video_url;
       if (data.thumbnail) {
         videoPlayer.poster = data.thumbnail;
       }
 
-      // Download links
       const cleanFilename = (data.title || 'instagram_video').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 35);
       downloadBtn.href = `/api/download?url=${encodeURIComponent(data.video_url)}&filename=${encodeURIComponent(cleanFilename)}`;
       directCdnBtn.href = data.video_url;
@@ -623,10 +674,9 @@
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(data.video_url);
         copyText.textContent = 'Copied!';
-        setTimeout(() => { copyText.textContent = 'Copy Video URL'; }, 2000);
+        setTimeout(() => { copyText.textContent = 'Copy URL'; }, 2000);
       };
 
-      // Carousel Support
       if (data.is_carousel && data.items && data.items.length > 1) {
         carouselBox.classList.remove('hidden');
         carouselCount.textContent = `${data.items.length} clips`;
@@ -694,7 +744,7 @@
         return;
       }
 
-      // Live Production: Dynamically inject Adsterra script only on live domain
+      // Live Production: Dynamically inject Adsterra script
       try {
         const adScript = document.createElement('script');
         adScript.async = true;
