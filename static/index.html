@@ -570,7 +570,7 @@
       </div>
       <div class="smoked-card rounded-2xl p-3 min-h-[100px] flex items-center justify-center">
         <!-- Live container where Adsterra injects cards on production -->
-        <div id="container-257902c12e9e7e205132d89ed0fa4b51" class="w-full"></div>
+        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="w-full"></div>
         <!-- Dev Shield Badge (Visible only on localhost) -->
         <div id="devShieldNotice" class="hidden text-xs text-amber-400 font-mono py-4 text-center">
           🛡️ Dev Shield Active: Ads paused on localhost to protect your Adsterra account.
@@ -1579,7 +1579,7 @@
       (function initAdsterraDevShield() {
         const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
         const devNotice = document.getElementById('devShieldNotice');
-        const adContainer = document.getElementById('container-257902c12e9e7e205132d89ed0fa4b51');
+        const adContainer = document.getElementById('container-18527c484b75598c40e3c7284aae8ee4');
 
         if (isLocal) {
           console.log('%c[🛡️ Dev Shield] Localhost detected: Adsterra ads safely paused to protect your account.', 'color: #f59e0b; font-weight: bold;');
@@ -1593,7 +1593,7 @@
           const adScript = document.createElement('script');
           adScript.async = true;
           adScript.setAttribute('data-cfasync', 'false');
-          adScript.src = 'https://bellnewyork.org/21/257902c12e9e7e205132d89ed0fa4b51';
+          adScript.src = 'https://bellnewyork.org/21/18527c484b75598c40e3c7284aae8ee4';
           document.body.appendChild(adScript);
         } catch (err) {
           console.error('Ad load error:', err);
