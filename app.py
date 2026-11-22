@@ -394,9 +394,19 @@ async def health():
         "proxy_active": bool(PROXY_URL)
     }
 
+# Uptime monitors often probe with HEAD. FastAPI doesn't derive HEAD from GET,
+# so without these a healthy service reports 405 and monitors mark it down.
+@app.head("/api/health", include_in_schema=False)
+async def health_head():
+    return Response(status_code=200, headers={"Cache-Control": "no-store"})
+
 @app.get("/health", include_in_schema=False)
 async def health_alias():
     return await health()
+
+@app.head("/health", include_in_schema=False)
+async def health_alias_head():
+    return Response(status_code=200, headers={"Cache-Control": "no-store"})
 
 @app.get("/robots.txt", include_in_schema=False)
 async def robots_txt():
