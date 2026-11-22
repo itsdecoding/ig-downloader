@@ -4,13 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>InstaFetch — Download Instagram Reels & Videos</title>
-  <meta name="description" content="Download Instagram Reels, Videos, and Carousel albums in original Full HD 1080p without watermark. Fast, free, and works on all devices." />
+  <meta name="description" content="Download Instagram Reels, Videos, and Carousel albums in original HD without a watermark. Fast, free, and works on all devices." />
   <meta name="keywords" content="instagram video downloader, download instagram reels, ig reel download, download ig video, instagram carousel downloader" />
+  <link rel="canonical" href="https://droplabs.site/" />
+  <meta name="theme-color" content="#08070b" />
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/static/favicon-32.png" type="image/png" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
 
   <!-- OpenGraph Social Tags -->
   <meta property="og:title" content="InstaFetch — Download Instagram Reels & Videos" />
-  <meta property="og:description" content="Download Instagram Reels, Videos, and Carousels in original 1080p without watermark. Free & instant." />
+  <meta property="og:description" content="Download Instagram Reels, Videos, and Carousels in original HD without a watermark. Free & instant." />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://droplabs.site/" />
+  <meta property="og:site_name" content="InstaFetch" />
+  <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="InstaFetch — Download Instagram Reels & Videos" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="InstaFetch — Download Instagram Reels & Videos" />
+  <meta name="twitter:description" content="Download Instagram Reels, Videos, and Carousels in original HD without a watermark. Free & instant." />
+  <meta name="twitter:image" content="https://droplabs.site/static/og-image.jpg" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "InstaFetch",
+          "url": "https://droplabs.site/",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "description": "Download Instagram Reels, Videos, and Carousels in original HD without a watermark.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Do I need to sign in to my Instagram account?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. InstaFetch works completely anonymously for public Reels, Videos, and Carousel posts. You never need to log in or share account credentials." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does it keep the original quality and audio?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Downloads pull the best progressive stream Instagram publicly serves, in standard MP4 with the original audio intact. Most Reels come through in 720p, and up to 1080p when Instagram provides it." }
+            },
+            {
+              "@type": "Question",
+              "name": "Where do downloaded Reels get saved on iPhone and Android?",
+              "acceptedAnswer": { "@type": "Answer", "text": "On iPhone (Safari), files save to the Downloads folder in the Files app where you can move them to Photos. On Android and desktop, they save directly to your Downloads folder." }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -273,6 +327,12 @@
       }
     }
 
+    /* Hero support line: scrim keeps it legible over bright 3D ribbons */
+    .hero-support {
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+
     /* Custom Toast */
     .toast-glass {
       background: linear-gradient(180deg, rgba(32, 29, 38, 0.92) 0%, rgba(16, 15, 20, 0.94) 100%);
@@ -359,7 +419,7 @@
     <main class="relative z-20 flex-1 w-full max-w-[920px] px-4 sm:px-6 flex flex-col items-center justify-center pt-8 pb-12 sm:pt-12 sm:pb-20 text-center">
       <!-- Quality Badge -->
       <div class="quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-6 sm:mb-7">
-        ORIGINAL 1080P • NO WATERMARK
+        ORIGINAL QUALITY • NO WATERMARK
       </div>
 
       <!-- Headline -->
@@ -426,16 +486,18 @@
         </div>
 
         <!-- Subtle Supported Formats Line + Demo Link Trigger -->
-        <div class="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[12px] sm:text-[13px] text-white/45">
-          <span>Supports Reels, Posts, IGTV &amp; Carousels</span>
-          <span class="text-white/20">•</span>
-          <button
-            id="trySampleBtn"
-            type="button"
-            class="text-white/70 hover:text-white underline underline-offset-4 decoration-white/25 hover:decoration-white/60 transition-colors cursor-pointer"
-          >
-            Try a sample link
-          </button>
+        <div class="mt-5 flex justify-center">
+          <div class="hero-support inline-flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-3 gap-y-0.5 rounded-2xl sm:rounded-full border border-white/[0.08] bg-black/40 px-4 py-1.5 text-[12px] sm:text-[13px] text-white/75 backdrop-blur-[3px]">
+            <span>Supports Reels, Posts, IGTV &amp; Carousels</span>
+            <span class="hidden sm:inline text-white/25">•</span>
+            <button
+              id="trySampleBtn"
+              type="button"
+              class="text-white/75 hover:text-white underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-colors cursor-pointer"
+            >
+              Try a sample link
+            </button>
+          </div>
         </div>
       </form>
 
@@ -444,7 +506,7 @@
         <!-- Loading State -->
         <div id="loadingState" class="hidden smoked-card rounded-2xl p-5">
           <div class="flex items-center justify-between mb-3">
-            <span class="text-sm font-medium text-white/90">Extracting original 1080p stream...</span>
+            <span class="text-sm font-medium text-white/90">Extracting original stream...</span>
             <span class="text-xs text-white/50 font-mono">MP4 • H.264</span>
           </div>
           <div class="relative h-2 w-full rounded-full bg-white/10 overflow-hidden shimmer-bar">
@@ -529,10 +591,10 @@
               </div>
 
               <!-- Quality & Format Buttons -->
-              <div class="flex flex-wrap gap-2 mt-3.5" role="radiogroup" aria-label="Select download format">
-                <button type="button" id="quality1080Btn" class="quality-choice px-3 py-1.5 rounded-full text-xs font-medium bg-white/15 border border-white/30 text-white transition-all cursor-pointer">
-                  1080p HD (Original)
-                </button>
+              <div class="flex flex-wrap gap-2 mt-3.5">
+                <span id="quality1080Btn" class="px-3 py-1.5 rounded-full text-xs font-medium bg-white/15 border border-white/30 text-white">
+                  Best Quality (HD)
+                </span>
                 <button type="button" id="directStreamBtn" class="quality-choice px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.05] border border-white/10 text-white/65 hover:text-white transition-all cursor-pointer">
                   Direct Stream ↗
                 </button>
@@ -553,7 +615,7 @@
                     <polyline points="7 10 12 15 17 10" />
                     <line x1="12" y1="15" x2="12" y2="3" />
                   </svg>
-                  <span id="saveBtnLabel">Save 1080p HD Video</span>
+                  <span id="saveBtnLabel">Save HD Video</span>
                 </a>
                 <span id="selectedMeta" class="text-[11px] text-white/45">MP4 • Direct attachment</span>
               </div>
@@ -626,8 +688,8 @@
           </span>
           <span class="text-xs font-mono text-white/30">03</span>
         </div>
-        <h3 class="text-[17px] font-semibold text-white mb-2">Save in 1080p</h3>
-        <p class="text-sm text-white/55 leading-relaxed">Pick original 1080p HD or direct stream and save directly to your camera roll or desktop.</p>
+        <h3 class="text-[17px] font-semibold text-white mb-2">Save in HD</h3>
+        <p class="text-sm text-white/55 leading-relaxed">Pick the best original quality available and save directly to your camera roll or desktop.</p>
       </div>
     </div>
   </section>
@@ -698,13 +760,13 @@
 
       <div class="smoked-card rounded-2xl overflow-hidden">
         <button type="button" class="faq-toggle w-full px-6 py-4 flex items-center justify-between text-left gap-4 cursor-pointer" aria-expanded="false">
-          <span class="text-[15px] font-medium text-white">Does it keep the original 1080p quality and audio?</span>
+          <span class="text-[15px] font-medium text-white">Does it keep the original quality and audio?</span>
           <svg class="faq-chevron w-4 h-4 text-white/60 transition-transform duration-200 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </button>
         <div class="faq-body hidden px-6 pb-5 text-sm text-white/55 leading-relaxed">
-          Yes. Downloads pull the highest resolution progressive stream available from the public post in standard MP4 format with full original audio intact.
+          Yes. Downloads pull the best progressive stream Instagram publicly serves, in standard MP4 with the original audio intact. Most Reels come through in 720p, and up to 1080p when Instagram provides it.
         </div>
       </div>
 
@@ -1269,6 +1331,47 @@
       let currentMediaData = null;
       let activeDownloadUrl = '';
       let activeFilename = 'instagram_video';
+      let retentionTimer = null;
+      let metadataHandler = null;
+
+      function formatDuration(seconds) {
+        if (!isFinite(seconds) || seconds <= 0) return '';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.round(seconds % 60);
+        return `${mins}:${String(secs).padStart(2, '0')}`;
+      }
+
+      // The browser is the source of truth for the real stream resolution and
+      // duration, so labels always match the file the user actually gets.
+      function applyStreamMetadata() {
+        if (metadataHandler) {
+          previewVideo.removeEventListener('loadedmetadata', metadataHandler);
+          metadataHandler = null;
+        }
+
+        const update = () => {
+          const w = previewVideo.videoWidth || 0;
+          const h = previewVideo.videoHeight || 0;
+          const shortSide = Math.min(w, h);
+
+          if (shortSide >= 480) {
+            const resLabel = `${shortSide}p`;
+            quality1080Btn.textContent = `Best Quality (${resLabel})`;
+            saveBtnLabel.textContent = `Save ${resLabel} Video`;
+            selectedMeta.textContent = `MP4 • ${resLabel} • Original audio`;
+          } else {
+            quality1080Btn.textContent = 'Best Quality (HD)';
+            saveBtnLabel.textContent = 'Save HD Video';
+            selectedMeta.textContent = 'MP4 • Original audio';
+          }
+
+          previewDuration.textContent = formatDuration(previewVideo.duration) || 'HD';
+        };
+
+        metadataHandler = update;
+        previewVideo.addEventListener('loadedmetadata', metadataHandler);
+        if (previewVideo.readyState >= 1) update();
+      }
 
       function showToast(message) {
         toastText.textContent = message;
@@ -1389,8 +1492,9 @@
           currentMediaData = data;
           renderVideoResult(data, rawUrl);
           pulseBoost = 1.0;
-          showToast('Stream resolved in 1080p Full HD!');
-          setTimeout(showRetention, 4000);
+          showToast('Stream resolved • ready to save');
+          if (retentionTimer) clearTimeout(retentionTimer);
+          retentionTimer = setTimeout(() => { window.showRetention(); }, 12000);
         } catch (err) {
           errorTitle.textContent = 'Extraction Failed';
           errorMessage.textContent = err.message || 'Could not fetch this media. Ensure the post is public.';
@@ -1408,6 +1512,16 @@
         previewUrl.textContent = inputUrl;
         previewDuration.textContent = data.duration_str && data.duration_str !== '0:00' ? data.duration_str : 'HD';
 
+        // Reset labels; video metadata will refine them to the real resolution.
+        quality1080Btn.textContent = 'Best Quality (HD)';
+        saveBtnLabel.textContent = 'Save HD Video';
+        selectedMeta.textContent = 'MP4 • Original audio';
+        if (data.quality && /^\d{3,4}p$/.test(data.quality)) {
+          quality1080Btn.textContent = `Best Quality (${data.quality})`;
+          saveBtnLabel.textContent = `Save ${data.quality} Video`;
+          selectedMeta.textContent = `MP4 • ${data.quality} • Original audio`;
+        }
+
         // Setup preview thumbnail & video player
         activeDownloadUrl = data.video_url;
         activeFilename = (data.title || 'instagram_video').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 35);
@@ -1423,6 +1537,7 @@
         previewVideo.src = data.video_url;
         previewVideo.classList.add('hidden');
         playPreviewBtn.classList.remove('hidden');
+        applyStreamMetadata();
 
         playPreviewBtn.onclick = () => {
           previewThumbnail.classList.add('hidden');
@@ -1463,6 +1578,7 @@
               previewThumbnail.classList.remove('hidden');
               playPreviewBtn.classList.remove('hidden');
               previewVideo.classList.add('hidden');
+              applyStreamMetadata();
             };
             carouselButtons.appendChild(btn);
           });
@@ -1532,14 +1648,17 @@
       // ================================================================
       // 3. RETENTION POPUP & USER RETENTION TRAP
       // ================================================================
-      setTimeout(() => {
-        showRetention();
+      // Show at most once per session, and never right on top of a fresh result.
+      retentionTimer = setTimeout(() => {
+        window.showRetention();
       }, 15000);
 
       window.showRetention = function () {
         if (sessionStorage.getItem('retentionDismissed')) return;
+        if (sessionStorage.getItem('retentionShown')) return;
         retentionSheet.classList.remove('translate-y-36', 'opacity-0', 'pointer-events-none');
         retentionSheet.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        sessionStorage.setItem('retentionShown', 'true');
       };
 
       window.dismissRetention = function () {
@@ -1549,11 +1668,11 @@
 
       window.bookmarkApp = function () {
         if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-          alert('To Bookmark on iPhone: Tap Share at the bottom of Safari, then tap "Add to Home Screen" ⭐');
+          showToast('Tap Share in Safari, then "Add to Home Screen"');
         } else if (navigator.userAgent.match(/Android/i)) {
-          alert('To Bookmark on Android: Tap the 3 dots (⋮) in Chrome, then tap "Add to Home screen" ⭐');
+          showToast('Tap ⋮ in Chrome, then "Add to Home screen"');
         } else {
-          alert('Press Ctrl + D (or Cmd + D on Mac) to bookmark this page!');
+          showToast('Press Ctrl + D (or Cmd + D) to bookmark');
         }
       };
 
