@@ -432,6 +432,27 @@ async def sitemap_xml():
 async def favicon_ico():
     return FileResponse(str(STATIC_DIR / "favicon-32.png"), media_type="image/png")
 
+# Web app manifest + service worker live at the root so their scope covers "/".
+# A service worker served from /static/ could not control the page itself.
+@app.get("/manifest.json", include_in_schema=False)
+async def web_manifest():
+    return FileResponse(
+        str(STATIC_DIR / "manifest.json"),
+        media_type="application/manifest+json",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+@app.get("/sw.js", include_in_schema=False)
+async def service_worker():
+    return FileResponse(
+        str(STATIC_DIR / "sw.js"),
+        media_type="application/javascript",
+        headers={
+            "Service-Worker-Allowed": "/",
+            "Cache-Control": "no-cache",
+        },
+    )
+
 # Mount static web UI
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 

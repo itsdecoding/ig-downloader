@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InstaFetch — Download Instagram Reels & Videos</title>
-  <meta name="description" content="Download Instagram Reels, Videos, and Carousel albums in original HD without a watermark. Fast, free, and works on all devices." />
+  <title>InstaFetch by Droplabs — Download Instagram Reels & Videos</title>
+  <meta name="description" content="InstaFetch by Droplabs downloads Instagram Reels, Videos, and Carousel albums in original HD without a watermark. Fast, free, and works on all devices." />
   <meta name="keywords" content="instagram video downloader, download instagram reels, ig reel download, download ig video, instagram carousel downloader" />
   <link rel="canonical" href="https://droplabs.site/" />
   <meta name="theme-color" content="#08070b" />
@@ -12,12 +12,19 @@
   <link rel="alternate icon" href="/static/favicon-32.png" type="image/png" sizes="32x32" />
   <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
 
+  <!-- Installable app (Add to Home Screen) -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="InstaFetch" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
   <!-- OpenGraph Social Tags -->
-  <meta property="og:title" content="InstaFetch — Download Instagram Reels & Videos" />
+  <meta property="og:title" content="InstaFetch by Droplabs — Download Instagram Reels & Videos" />
   <meta property="og:description" content="Download Instagram Reels, Videos, and Carousels in original HD without a watermark. Free & instant." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://droplabs.site/" />
-  <meta property="og:site_name" content="InstaFetch" />
+  <meta property="og:site_name" content="InstaFetch by Droplabs" />
   <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -25,7 +32,7 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="InstaFetch — Download Instagram Reels & Videos" />
+  <meta name="twitter:title" content="InstaFetch by Droplabs — Download Instagram Reels & Videos" />
   <meta name="twitter:description" content="Download Instagram Reels, Videos, and Carousels in original HD without a watermark. Free & instant." />
   <meta name="twitter:image" content="https://droplabs.site/static/og-image.jpg" />
 
@@ -35,11 +42,11 @@
       "@graph": [
         {
           "@type": "WebApplication",
-          "name": "InstaFetch",
+          "name": "InstaFetch by Droplabs",
           "url": "https://droplabs.site/",
           "applicationCategory": "MultimediaApplication",
           "operatingSystem": "Any",
-          "description": "Download Instagram Reels, Videos, and Carousels in original HD without a watermark.",
+          "description": "Download Instagram Reels, Videos, and Carousels in original HD without a watermark. A free tool by Droplabs.",
           "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         },
         {
@@ -70,7 +77,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 
   <style>
     :root {
@@ -387,6 +394,20 @@
         padding-left: 1rem;
         padding-right: 1rem;
       }
+      /* The brand lockup needs this space more than a decorative status pill */
+      #navActivePill {
+        display: none;
+      }
+    }
+
+    /* Phones: deepen the scrim behind the headline so floating 3D droplets
+       never sit on top of the letterforms. */
+    @media (max-width: 639px) {
+      .hero-vignette {
+        background:
+          radial-gradient(ellipse 88% 32% at 50% 45%, rgba(8, 7, 11, 0.82) 0%, rgba(8, 7, 11, 0.42) 60%, rgba(8, 7, 11, 0.18) 100%),
+          linear-gradient(180deg, rgba(8, 7, 11, 0.52) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
+      }
     }
 
     /* Custom Toast */
@@ -396,6 +417,136 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       box-shadow: 0 18px 44px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+
+    /* Toast visibility is driven by one static class so the first message
+       doesn't wait for Tailwind's runtime stylesheet rebuild. */
+    #toast {
+      opacity: 0;
+      transform: translate(-50%, 0.75rem);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    #toast.is-visible {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    /* ---------------------------------------------------------------
+       Retention / install sheet
+       State lives in ONE class (.is-open) defined here in static CSS.
+       Previously it used Tailwind utilities that the CDN generates at
+       runtime, so the sheet stayed 144px below the screen for ~1s and
+       the close button was untappable.
+       --------------------------------------------------------------- */
+    #retentionSheet {
+      position: fixed;
+      left: 12px;
+      right: 12px;
+      bottom: calc(12px + env(safe-area-inset-bottom));
+      z-index: 45;
+      width: auto;
+      max-width: none;
+      /* Fully opaque: it's an overlay, and translucency let page text bleed through */
+      background: linear-gradient(180deg, #1c1a21 0%, #0e0d12 100%);
+      transform: translateY(calc(100% + 40px));
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease, visibility 0s linear 0.28s;
+      will-change: transform, opacity;
+    }
+
+    #retentionSheet.is-open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    @media (min-width: 640px) {
+      #retentionSheet {
+        left: auto;
+        right: 20px;
+        bottom: 20px;
+        width: 368px;
+      }
+    }
+
+    /* Steps revealed inline when the browser can't install the app itself */
+    #retentionSteps[hidden] {
+      display: none;
+    }
+
+    /* ---------------------------------------------------------------
+       Phone performance pass
+       The hero runs a live WebGL canvas. Blurring glass on top of it
+       forces the compositor to re-blur the full screen every frame,
+       which is the main source of scroll/drag jank on phones. Swap to
+       near-opaque gradients below 640px: visually almost identical,
+       dramatically cheaper.
+       --------------------------------------------------------------- */
+    @media (max-width: 639px) {
+      .glass-nav,
+      .quality-pill,
+      .glass-dock-outer,
+      .smoked-card,
+      .toast-glass {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      .glass-nav {
+        background: linear-gradient(180deg, rgba(27, 25, 32, 0.95) 0%, rgba(14, 13, 18, 0.97) 100%);
+      }
+      .glass-dock-outer {
+        background:
+          radial-gradient(120% 140% at var(--mx, 50%) var(--my, 0%), rgba(255, 198, 172, 0.1) 0%, rgba(255, 255, 255, 0.02) 45%, rgba(14, 12, 16, 0.72) 100%),
+          linear-gradient(180deg, rgba(40, 35, 41, 0.95) 0%, rgba(17, 15, 19, 0.97) 100%);
+      }
+      .smoked-card {
+        background: linear-gradient(180deg, rgba(26, 24, 31, 0.97) 0%, rgba(13, 12, 17, 0.98) 100%);
+      }
+      .toast-glass {
+        background: linear-gradient(180deg, rgba(30, 27, 36, 0.98) 0%, rgba(14, 13, 18, 0.99) 100%);
+      }
+      .quality-pill {
+        background: rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    /* Hover lift is meaningless on touch and causes repaints mid-scroll */
+    @media (hover: none) {
+      .smoked-card:hover {
+        transform: none;
+        border-color: rgba(255, 255, 255, 0.11);
+        box-shadow:
+          0 18px 44px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.12);
+      }
+      .btn-paste:hover,
+      .btn-download:hover {
+        transform: none;
+        filter: none;
+      }
+    }
+
+    /* Respect the OS "reduce motion" setting */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+      .active-dot {
+        animation: none;
+      }
     }
   </style>
 </head>
@@ -427,7 +578,10 @@
               <circle cx="17.2" cy="6.8" r="1.1" fill="#ffffff" fill-opacity="0.88" />
             </svg>
           </span>
-          <span class="text-[18px] sm:text-[19px] font-bold tracking-[-0.025em] text-white">InstaFetch</span>
+          <span class="flex flex-col justify-center leading-none">
+            <span class="text-[18px] sm:text-[19px] font-bold tracking-[-0.025em] text-white">InstaFetch</span>
+            <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40 mt-1">by Droplabs</span>
+          </span>
         </a>
 
         <!-- Desktop Links -->
@@ -439,7 +593,7 @@
 
         <!-- Mobile Right Controls: Active Pill + Menu Button -->
         <div class="flex sm:hidden items-center gap-2.5">
-          <span class="active-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium text-emerald-300">
+          <span id="navActivePill" class="active-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium text-emerald-300">
             <span class="active-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
             Active
           </span>
@@ -648,17 +802,11 @@
                 <div id="carouselButtons" class="flex gap-1.5 overflow-x-auto pb-1"></div>
               </div>
 
-              <!-- Quality & Format Buttons -->
+              <!-- Quality chip -->
               <div class="chip-row flex flex-nowrap sm:flex-wrap gap-2 mt-3.5 overflow-x-auto sm:overflow-visible pb-1 -mb-1">
                 <span id="quality1080Btn" class="shrink-0 inline-flex items-center min-h-10 sm:min-h-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/15 border border-white/30 text-white">
                   Best Quality (HD)
                 </span>
-                <button type="button" id="directStreamBtn" class="quality-choice shrink-0 inline-flex items-center min-h-10 sm:min-h-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.05] border border-white/10 text-white/65 hover:text-white transition-all cursor-pointer">
-                  Direct Stream ↗
-                </button>
-                <button type="button" id="copyUrlBtn" class="quality-choice shrink-0 inline-flex items-center min-h-10 sm:min-h-0 px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.05] border border-white/10 text-white/65 hover:text-white transition-all cursor-pointer">
-                  Copy Stream Link
-                </button>
               </div>
 
               <!-- Download Button Row -->
@@ -845,9 +993,11 @@
   <!-- FOOTER -->
   <footer class="relative z-20 border-t border-white/[0.08] py-8 px-4 sm:px-6">
     <div class="max-w-[1040px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
-      <div class="flex items-center gap-2.5">
+      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-1">
         <span class="font-semibold text-white/75">InstaFetch</span>
-        <span>•</span>
+        <span class="text-white/25">•</span>
+        <span class="text-white/55">a Droplabs tool</span>
+        <span class="text-white/25">•</span>
         <span>Fast Reels &amp; Video Downloader</span>
       </div>
       <div class="flex items-center gap-4 text-xs">
@@ -893,36 +1043,57 @@
     </div>
   </div>
 
-  <!-- RETENTION / BOOKMARK SHEET -->
+  <!-- RETENTION / INSTALL SHEET -->
   <div
     id="retentionSheet"
-    class="fixed bottom-4 right-4 z-40 max-w-sm w-full p-4 rounded-2xl smoked-card border-white/20 shadow-2xl translate-y-36 opacity-0 pointer-events-none transition-all duration-300"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="retentionTitle"
+    aria-hidden="true"
+    class="rounded-2xl smoked-card border-white/20 shadow-2xl p-4"
   >
-    <div class="flex items-start justify-between gap-2 mb-2">
-      <div class="flex items-center gap-2">
-        <span class="text-base">⭐</span>
-        <h4 class="text-xs font-semibold text-white">Never lose this downloader</h4>
+    <div class="flex items-start gap-3">
+      <span class="w-10 h-10 rounded-xl bg-white/[0.07] border border-white/10 flex items-center justify-center shrink-0">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" class="text-white/80" aria-hidden="true">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+        </svg>
+      </span>
+      <div class="min-w-0 flex-1">
+        <h4 id="retentionTitle" class="text-[13.5px] font-semibold text-white leading-snug">Keep InstaFetch one tap away</h4>
+        <p id="retentionBody" class="text-[11.5px] text-white/60 mt-1 leading-relaxed">
+          Add it to your home screen so your next Reel takes one tap instead of a search.
+        </p>
       </div>
-      <button onclick="dismissRetention()" type="button" class="w-10 h-10 -mt-2 -mr-2 flex items-center justify-center rounded-lg text-white/40 hover:text-white text-xs">✕</button>
-    </div>
-    <p class="text-[11px] text-white/60 mb-3 leading-relaxed">
-      Instagram downloaders often disappear. Bookmark InstaFetch (Ctrl+D / Add to Home Screen) to save videos anytime!
-    </p>
-    <div class="flex items-center gap-2">
       <button
-        onclick="bookmarkApp()"
+        id="retentionCloseBtn"
         type="button"
-        class="flex-1 h-10 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-medium border border-white/15 transition-all text-center cursor-pointer"
+        aria-label="Close"
+        class="w-11 h-11 -mt-2 -mr-2 flex items-center justify-center rounded-xl text-white/45 hover:text-white hover:bg-white/[0.07] transition-colors shrink-0 cursor-pointer"
       >
-        Bookmark (Ctrl+D)
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div id="retentionSteps" class="hidden mt-3 rounded-xl bg-white/[0.05] border border-white/10 px-3 py-2.5 text-[11px] text-white/65 leading-relaxed"></div>
+
+    <div class="mt-3 flex items-center gap-2">
+      <button
+        id="retentionActionBtn"
+        type="button"
+        class="flex-1 h-11 rounded-xl text-white text-[12.5px] font-semibold border border-white/15 transition-all active:scale-[0.99] cursor-pointer"
+        style="background: linear-gradient(135deg, #ff7b47 0%, #dc1e8e 100%)"
+      >
+        Add to Home Screen
       </button>
       <button
-        id="retentionCopyBtn"
-        onclick="copyCurrentLink()"
+        id="retentionLaterBtn"
         type="button"
-        class="h-10 px-3 rounded-xl bg-white/[0.06] hover:bg-white/10 text-white/70 hover:text-white text-xs font-medium border border-white/10 transition-all cursor-pointer"
+        class="h-11 px-3.5 rounded-xl bg-white/[0.06] border border-white/10 text-white/65 hover:text-white text-[12px] font-medium transition-colors cursor-pointer"
       >
-        Copy Link
+        Not now
       </button>
     </div>
   </div>
@@ -973,7 +1144,7 @@
     id="toast"
     role="status"
     aria-live="polite"
-    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 toast-glass px-4 py-2.5 rounded-full text-xs sm:text-sm font-medium text-white/95 flex items-center gap-2 opacity-0 pointer-events-none translate-y-3 transition-all duration-200"
+    class="fixed bottom-5 left-1/2 z-[70] toast-glass px-4 py-2.5 rounded-full text-xs sm:text-sm font-medium text-white/95 flex items-center gap-2"
   >
     <span class="w-2 h-2 rounded-full bg-gradient-to-r from-[#ff7b47] to-[#dc1e8e]"></span>
     <span id="toastText">Link pasted</span>
@@ -991,11 +1162,18 @@
         const canvas = document.getElementById('bg3dCanvas');
         if (!canvas || typeof THREE === 'undefined') return;
 
+        const isPhone = window.matchMedia('(max-width: 639px)').matches;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        // Phones get a lighter render target and no MSAA: the ribbons are soft
+        // and moving, so the visual difference is negligible, the cost is not.
+        const dprCap = isPhone ? 1.35 : 1.75;
+        const ribbonScale = isPhone ? 0.6 : 1;
+
         let renderer;
         try {
           renderer = new THREE.WebGLRenderer({
             canvas: canvas,
-            antialias: true,
+            antialias: !isPhone,
             alpha: true,
             powerPreference: 'high-performance'
           });
@@ -1003,7 +1181,7 @@
           return;
         }
 
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, dprCap));
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1.28;
         renderer.outputEncoding = THREE.sRGBEncoding;
@@ -1195,7 +1373,7 @@
             new THREE.Vector3(5.2, 1.4, -0.2),
             new THREE.Vector3(8.8, 4.6, -1.4)
           ],
-          84, 18, 0.74,
+          Math.round(84 * ribbonScale), Math.round(18 * ribbonScale), 0.74,
           (t) => 0.35 + Math.sin(t * Math.PI) * 0.95 + Math.sin(t * Math.PI * 3.0) * 0.14,
           chromeMat
         );
@@ -1211,7 +1389,7 @@
             new THREE.Vector3(6.4, 2.3, 0.5),
             new THREE.Vector3(9.6, 5.1, -0.8)
           ],
-          78, 16, 0.68,
+          Math.round(78 * ribbonScale), Math.round(16 * ribbonScale), 0.68,
           (t) => 0.3 + Math.sin(t * Math.PI) * 0.88 + Math.cos(t * Math.PI * 4.0) * 0.12,
           smokedAmberGlassMat
         );
@@ -1226,7 +1404,7 @@
             new THREE.Vector3(4.9, 0.45, -1.1),
             new THREE.Vector3(9.4, 0.35, -1.8)
           ],
-          64, 14, 0.52,
+          Math.round(64 * ribbonScale), Math.round(14 * ribbonScale), 0.52,
           (t) => 0.25 + Math.sin(t * Math.PI) * 0.78,
           roseGlassMat
         );
@@ -1241,7 +1419,7 @@
             new THREE.Vector3(3.2, 1.35, 1.25),
             new THREE.Vector3(5.6, 3.6, 0.2)
           ],
-          56, 12, 0.26,
+          Math.round(56 * ribbonScale), Math.round(12 * ribbonScale), 0.26,
           (t) => Math.sin(t * Math.PI) * 0.92,
           chromeMat
         );
@@ -1307,14 +1485,33 @@
         }
 
         resize();
-        window.addEventListener('resize', resize);
 
+        // iOS fires resize every time the address bar collapses. Debounce so we
+        // don't reallocate the render target mid-scroll.
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+          if (resizeTimer) clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(resize, 150);
+        });
+
+        // ---- Render loop -------------------------------------------------
+        // Capped to ~32fps on phones, and fully paused whenever the hero is
+        // off-screen or the tab is hidden. Scrolling through results should
+        // never compete with a full-screen WebGL scene for the GPU.
         let rafId = null;
-        const clock = new THREE.Clock();
+        let running = false;
+        let lastFrameAt = 0;
+        let elapsed = 0;
+        const frameInterval = isPhone ? 1000 / 32 : 0;
 
-        function animate() {
+        function animate(now) {
           rafId = requestAnimationFrame(animate);
-          const t = clock.getElapsedTime();
+          if (frameInterval && now - lastFrameAt < frameInterval - 1) return;
+
+          const dt = lastFrameAt ? Math.min((now - lastFrameAt) / 1000, 0.1) : 1 / 60;
+          lastFrameAt = now;
+          elapsed += dt;
+          const t = elapsed;
 
           pointer.x += (pointer.tx - pointer.x) * 0.055;
           pointer.y += (pointer.ty - pointer.y) * 0.055;
@@ -1362,8 +1559,41 @@
           renderer.render(scene, camera);
         }
 
-        if (rafId) cancelAnimationFrame(rafId);
-        animate();
+        function startLoop() {
+          if (running || reduceMotion) return;
+          running = true;
+          lastFrameAt = 0;
+          rafId = requestAnimationFrame(animate);
+        }
+
+        function stopLoop() {
+          if (!running) return;
+          running = false;
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
+        let heroVisible = true;
+        const heroSection = document.getElementById('top');
+        if (heroSection && 'IntersectionObserver' in window) {
+          new IntersectionObserver((entries) => {
+            heroVisible = entries[0].isIntersecting;
+            if (heroVisible && !document.hidden) startLoop();
+            else stopLoop();
+          }, { threshold: 0.01 }).observe(heroSection);
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) stopLoop();
+          else if (heroVisible) startLoop();
+        });
+
+        if (reduceMotion) {
+          // Static, fully rendered hero for users who ask for less motion.
+          renderer.render(scene, camera);
+        } else {
+          startLoop();
+        }
       }
 
       window.addEventListener('load', initThreeBackground);
@@ -1409,8 +1639,6 @@
       const carouselButtons = document.getElementById('carouselButtons');
 
       const quality1080Btn = document.getElementById('quality1080Btn');
-      const directStreamBtn = document.getElementById('directStreamBtn');
-      const copyUrlBtn = document.getElementById('copyUrlBtn');
       const saveFileBtn = document.getElementById('saveFileBtn');
       const saveBtnLabel = document.getElementById('saveBtnLabel');
       const selectedMeta = document.getElementById('selectedMeta');
@@ -1471,12 +1699,10 @@
 
       function showToast(message) {
         toastText.textContent = message;
-        toast.classList.remove('opacity-0', 'translate-y-3', 'pointer-events-none');
-        toast.classList.add('opacity-100', 'translate-y-0');
+        toast.classList.add('is-visible');
         if (toastTimer) clearTimeout(toastTimer);
         toastTimer = setTimeout(() => {
-          toast.classList.add('opacity-0', 'translate-y-3', 'pointer-events-none');
-          toast.classList.remove('opacity-100', 'translate-y-0');
+          toast.classList.remove('is-visible');
         }, 2800);
       }
 
@@ -1497,19 +1723,32 @@
         urlInputDesktop.value = e.target.value;
       });
 
-      // Mouse/touch interaction drives both 3D camera orbit and glass dock specular highlight
-      window.addEventListener('pointermove', (e) => {
-        pointer.tx = (e.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2;
-        pointer.ty = (e.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2;
+      // Pointer tracking only matters when there is a real cursor. Skipping it on
+      // touch removes a getBoundingClientRect() + style write from every drag.
+      const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+      if (finePointer.matches) {
+        let pointerRaf = 0;
+        let lastPointerEvent = null;
+        window.addEventListener('pointermove', (e) => {
+          lastPointerEvent = e;
+          if (pointerRaf) return;
+          pointerRaf = requestAnimationFrame(() => {
+            pointerRaf = 0;
+            const ev = lastPointerEvent;
+            if (!ev) return;
+            pointer.tx = (ev.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2;
+            pointer.ty = (ev.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2;
 
-        if (glassDock) {
-          const rect = glassDock.getBoundingClientRect();
-          const mx = ((e.clientX - rect.left) / Math.max(rect.width, 1)) * 100;
-          const my = ((e.clientY - rect.top) / Math.max(rect.height, 1)) * 100;
-          glassDock.style.setProperty('--mx', `${Math.max(0, Math.min(100, mx)).toFixed(1)}%`);
-          glassDock.style.setProperty('--my', `${Math.max(0, Math.min(100, my)).toFixed(1)}%`);
-        }
-      });
+            if (glassDock) {
+              const rect = glassDock.getBoundingClientRect();
+              const mx = ((ev.clientX - rect.left) / Math.max(rect.width, 1)) * 100;
+              const my = ((ev.clientY - rect.top) / Math.max(rect.height, 1)) * 100;
+              glassDock.style.setProperty('--mx', `${Math.max(0, Math.min(100, mx)).toFixed(1)}%`);
+              glassDock.style.setProperty('--my', `${Math.max(0, Math.min(100, my)).toFixed(1)}%`);
+            }
+          });
+        }, { passive: true });
+      }
 
       async function handlePaste() {
         try {
@@ -1566,7 +1805,7 @@
 
       function refreshStickyBar() {
         // A result must be on screen, and the retention sheet takes priority.
-        const retentionOpen = !retentionSheet.classList.contains('opacity-0');
+        const retentionOpen = retentionSheet.classList.contains('is-open');
         if (stickyAllowed && !retentionOpen) showStickyBar();
         else hideStickyBar();
       }
@@ -1671,8 +1910,7 @@
           showToast('Stream resolved • ready to save');
           stickyAllowed = !dockInView && !!data;
           refreshStickyBar();
-          if (retentionTimer) clearTimeout(retentionTimer);
-          retentionTimer = setTimeout(() => { window.showRetention(); }, 12000);
+          cancelRetention();
         } catch (err) {
           errorTitle.textContent = 'Extraction Failed';
           errorMessage.textContent = err.message || 'Could not fetch this media. Ensure the post is public.';
@@ -1771,15 +2009,6 @@
       function updateDownloadLinks(videoUrl, filename) {
         saveFileBtn.href = `/api/download?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(filename)}`;
         saveFileBtn.download = `${filename}.mp4`;
-
-        directStreamBtn.onclick = () => {
-          window.open(videoUrl, '_blank', 'noopener,noreferrer');
-        };
-
-        copyUrlBtn.onclick = () => {
-          navigator.clipboard.writeText(videoUrl);
-          showToast('Direct stream URL copied!');
-        };
       }
 
       clearPreviewBtn.addEventListener('click', () => {
@@ -1827,44 +2056,113 @@
       });
 
       // ================================================================
-      // 3. RETENTION POPUP & USER RETENTION TRAP
+      // 3. RETENTION / INSTALL SHEET
       // ================================================================
-      // Show at most once per session, and never right on top of a fresh result.
-      retentionTimer = setTimeout(() => {
-        window.showRetention();
-      }, 15000);
+      const retentionActionBtn = document.getElementById('retentionActionBtn');
+      const retentionLaterBtn = document.getElementById('retentionLaterBtn');
+      const retentionCloseBtn = document.getElementById('retentionCloseBtn');
+      const retentionSteps = document.getElementById('retentionSteps');
+
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      let installPrompt = null;
+
+      // Chrome/Edge/Android fire this when the site qualifies as installable.
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        installPrompt = event;
+        retentionActionBtn.textContent = 'Add to Home Screen';
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installPrompt = null;
+        window.dismissRetention();
+        showToast('InstaFetch added to your home screen');
+      });
+
+      function retentionActionLabel() {
+        if (installPrompt) return 'Add to Home Screen';
+        if (isIOS) return 'Show me how';
+        return 'Bookmark this page';
+      }
 
       window.showRetention = function () {
+        if (isStandalone) return;
         if (sessionStorage.getItem('retentionDismissed')) return;
         if (sessionStorage.getItem('retentionShown')) return;
-        retentionSheet.classList.remove('translate-y-36', 'opacity-0', 'pointer-events-none');
-        retentionSheet.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        retentionSheet.classList.add('is-open');
+        retentionSheet.setAttribute('aria-hidden', 'false');
+        retentionActionBtn.textContent = retentionActionLabel();
+        retentionSteps.classList.add('hidden');
         sessionStorage.setItem('retentionShown', 'true');
         hideStickyBar();
       };
 
       window.dismissRetention = function () {
-        retentionSheet.classList.add('translate-y-36', 'opacity-0', 'pointer-events-none');
+        retentionSheet.classList.remove('is-open');
+        retentionSheet.setAttribute('aria-hidden', 'true');
         sessionStorage.setItem('retentionDismissed', 'true');
         refreshStickyBar();
       };
 
-      window.bookmarkApp = function () {
-        if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
-          showToast('Tap Share in Safari, then "Add to Home Screen"');
-        } else if (navigator.userAgent.match(/Android/i)) {
-          showToast('Tap ⋮ in Chrome, then "Add to Home screen"');
-        } else {
-          showToast('Press Ctrl + D (or Cmd + D) to bookmark');
-        }
-      };
+      function showRetentionSteps(html) {
+        retentionSteps.innerHTML = html;
+        retentionSteps.classList.remove('hidden');
+        retentionActionBtn.textContent = 'Got it';
+      }
 
-      window.copyCurrentLink = function () {
-        navigator.clipboard.writeText(window.location.origin);
-        const btn = document.getElementById('retentionCopyBtn');
-        btn.textContent = 'Copied!';
-        setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
-      };
+      async function handleRetentionAction() {
+        // Real install prompt where the browser supports it (Android Chrome, desktop Chrome/Edge).
+        if (installPrompt) {
+          installPrompt.prompt();
+          const choice = await installPrompt.userChoice;
+          installPrompt = null;
+          if (choice && choice.outcome === 'accepted') {
+            window.dismissRetention();
+            showToast('InstaFetch added to your home screen');
+          } else {
+            retentionActionBtn.textContent = isIOS ? 'Show me how' : 'Bookmark this page';
+          }
+          return;
+        }
+
+        if (retentionActionBtn.textContent === 'Got it') {
+          window.dismissRetention();
+          return;
+        }
+
+        // iOS Safari and browsers without an install prompt need the manual route.
+        if (isIOS) {
+          showRetentionSteps('Tap the <strong class="text-white">Share</strong> button in Safari, then choose <strong class="text-white">Add to Home Screen</strong>.');
+        } else if (/Android/i.test(navigator.userAgent)) {
+          showRetentionSteps('Open the <strong class="text-white">&#8942; menu</strong> in Chrome, then tap <strong class="text-white">Add to Home screen</strong>.');
+        } else {
+          showRetentionSteps('Press <strong class="text-white">Ctrl + D</strong> (or <strong class="text-white">&#8984; + D</strong> on Mac) to bookmark this page.');
+        }
+      }
+
+      retentionActionBtn.addEventListener('click', handleRetentionAction);
+      retentionCloseBtn.addEventListener('click', () => window.dismissRetention());
+      retentionLaterBtn.addEventListener('click', () => window.dismissRetention());
+
+      // Ask at the best moment: shortly after their first successful save.
+      // A long idle timer covers visitors who never get that far, but it is
+      // cancelled the moment they extract a video so it never covers a result.
+      function armRetention(delay) {
+        if (retentionTimer) clearTimeout(retentionTimer);
+        retentionTimer = setTimeout(() => {
+          retentionTimer = null;
+          window.showRetention();
+        }, delay);
+      }
+      function cancelRetention() {
+        if (retentionTimer) {
+          clearTimeout(retentionTimer);
+          retentionTimer = null;
+        }
+      }
+      armRetention(20000);
+      saveFileBtn.addEventListener('click', () => armRetention(2500));
 
       // Legal Modals
       window.openLegalModal = function (id) {
@@ -1873,6 +2171,15 @@
       window.closeLegalModal = function (id) {
         document.getElementById(id).classList.add('hidden');
       };
+
+      // ================================================================
+      // 4. INSTALLABLE APP (service worker enables Add to Home Screen)
+      // ================================================================
+      if ('serviceWorker' in navigator && window.isSecureContext) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(() => {});
+        });
+      }
 
       // ================================================================
       // 4. 🛡️ ADSTERRA DEV SHIELD (TEMPORARILY COMMENTED OUT)
