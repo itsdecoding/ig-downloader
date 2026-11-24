@@ -381,6 +381,136 @@
       }
     }
 
+    /* ---------------------------------------------------------------
+       Ad deck
+       One Adsterra native unit = several static creatives stacked. We
+       keep the unit untouched and slide it inside a fixed window, so the
+       page carries one card instead of one to two screens of ads. Height
+       lives in static CSS: a late creative can never shift the layout.
+       --------------------------------------------------------------- */
+    .ad-deck-section {
+      position: relative;
+      z-index: 20;
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 28px 16px 8px;
+    }
+
+    .ad-deck-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      min-height: 10px;
+    }
+
+    .ad-label {
+      font-size: 10px;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.32);
+    }
+
+    .ad-bars {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ad-bar {
+      width: 14px;
+      height: 3px;
+      padding: 0;
+      border: 0;
+      border-radius: 99px;
+      background: rgba(255, 255, 255, 0.16);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .ad-bar::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      transform: scaleX(0);
+      transform-origin: left center;
+    }
+
+    .ad-bar.is-done::after {
+      transform: scaleX(1);
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .ad-bar.is-active::after {
+      animation: adBarFill 6s linear forwards;
+    }
+
+    .ad-deck.is-paused .ad-bar.is-active::after {
+      animation-play-state: paused;
+    }
+
+    @keyframes adBarFill {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+
+    .ad-deck {
+      position: relative;
+      width: 100%;
+      max-width: 336px;
+      height: 250px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #0e0d12;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .ad-deck-inner {
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Hides the seam if two creatives are not exactly the same height.
+       Decorative only: clicks still reach the creative underneath. */
+    .ad-deck::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 14px;
+      background: linear-gradient(180deg, rgba(14, 13, 18, 0) 0%, #0e0d12 100%);
+      pointer-events: none;
+    }
+
+    .ad-unit {
+      width: 100%;
+    }
+
+    .ad-deck-section.is-empty {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .ad-deck {
+        max-width: 400px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ad-deck-inner {
+        transition: none;
+      }
+      .ad-bar.is-active::after {
+        animation: none;
+        transform: scaleX(1);
+      }
+    }
+
     /* Very narrow phones: give the result text room to breathe */
     @media (max-width: 359px) {
       .preview-thumb {
@@ -830,20 +960,28 @@
         </div>
       </div>
     </main>
+  </section>
 
-    <!-- ADSTERRA NATIVE BANNER (TEMPORARILY COMMENTED OUT)
-    <div class="w-full max-w-[920px] px-4 sm:px-6 mx-auto mt-2 mb-10 z-20 relative" id="ad-banner-section">
-      <div class="text-center mb-2">
-        <span class="text-[10px] uppercase tracking-wider text-white/40 font-medium">SPONSORED CONTENT</span>
-      </div>
-      <div class="smoked-card rounded-2xl p-3 min-h-[100px] flex items-center justify-center">
-        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="w-full"></div>
-        <div id="devShieldNotice" class="hidden text-xs text-amber-400 font-mono py-4 text-center">
-          🛡️ Dev Shield Active: Ads paused on localhost to protect your Adsterra account.
-        </div>
+  <!-- AD DECK
+       Adsterra's native unit returns several static creatives stacked in a
+       single element. We keep the unit exactly as served and slide it inside
+       a fixed-height window, so four creatives cost one card of page instead
+       of one to two screens. No creative is altered, cropped or re-rendered. -->
+  <section id="ad-banner-section" class="ad-deck-section" aria-label="Advertisement">
+    <div class="ad-deck-head">
+      <span class="ad-label">Advertisement</span>
+      <div class="ad-bars" id="adBars" hidden></div>
+    </div>
+
+    <div class="ad-deck" id="adDeck">
+      <div class="ad-deck-inner" id="adDeckInner">
+        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="ad-unit"></div>
       </div>
     </div>
-    -->
+
+    <div id="devShieldNotice" class="hidden text-xs text-amber-400 font-mono py-2 text-center">
+      🛡️ Dev Shield Active: Ads paused on localhost to protect your Adsterra account.
+    </div>
   </section>
 
   <!-- HOW TO USE SECTION -->
@@ -2182,33 +2320,211 @@
       }
 
       // ================================================================
-      // 4. 🛡️ ADSTERRA DEV SHIELD (TEMPORARILY COMMENTED OUT)
+      // 4. 🛡️ ADSTERRA DEV SHIELD + AD DECK
       // ================================================================
-      /*
-      (function initAdsterraDevShield() {
+      (function initAdDeck() {
         const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+        const section = document.getElementById('ad-banner-section');
+        const deck = document.getElementById('adDeck');
+        const inner = document.getElementById('adDeckInner');
+        const unit = document.getElementById('container-18527c484b75598c40e3c7284aae8ee4');
+        const barsHost = document.getElementById('adBars');
         const devNotice = document.getElementById('devShieldNotice');
-        const adContainer = document.getElementById('container-18527c484b75598c40e3c7284aae8ee4');
+        if (!section || !deck || !inner || !unit) return;
 
         if (isLocal) {
           console.log('%c[🛡️ Dev Shield] Localhost detected: Adsterra ads safely paused to protect your account.', 'color: #f59e0b; font-weight: bold;');
           if (devNotice) devNotice.classList.remove('hidden');
-          if (adContainer) adContainer.classList.add('hidden');
           return;
         }
 
-        // Live Production (Render): dynamically load Adsterra script
-        try {
-          const adScript = document.createElement('script');
-          adScript.async = true;
-          adScript.setAttribute('data-cfasync', 'false');
-          adScript.src = 'https://bellnewyork.org/21/18527c484b75598c40e3c7284aae8ee4';
-          document.body.appendChild(adScript);
-        } catch (err) {
-          console.error('Ad load error:', err);
+        const DWELL = 6000;
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const hoverDevice = window.matchMedia('(hover: hover)').matches;
+
+        let pages = 0;
+        let step = 0;
+        let index = 0;
+        let bars = [];
+        let autoTimer = null;
+        let scrollIdleTimer = null;
+        let userScrolling = false;
+        let pointerDown = false;
+        let hovering = false;
+        let fullyVisible = false;
+
+        // ---- Load the unit once, shortly after first paint --------------
+        // Not on scroll: the impressions are billed when the creatives are
+        // served, and most visitors never scroll past the hero.
+        function requestAd() {
+          try {
+            const s = document.createElement('script');
+            s.async = true;
+            s.setAttribute('data-cfasync', 'false');
+            s.src = 'https://bellnewyork.org/21/18527c484b75598c40e3c7284aae8ee4';
+            document.body.appendChild(s);
+          } catch (err) {
+            console.error('Ad load error:', err);
+          }
         }
+        if (document.readyState === 'complete') setTimeout(requestAd, 1200);
+        else window.addEventListener('load', () => setTimeout(requestAd, 1200), { once: true });
+
+        // ---- Paging ----------------------------------------------------
+        function buildBars(count) {
+          if (count <= 1) {
+            barsHost.hidden = true;
+            return;
+          }
+          barsHost.innerHTML = '';
+          bars = [];
+          for (let i = 0; i < count; i++) {
+            const bar = document.createElement('button');
+            bar.type = 'button';
+            bar.className = 'ad-bar';
+            bar.setAttribute('aria-label', 'Advertisement ' + (i + 1) + ' of ' + count);
+            bar.addEventListener('click', (event) => {
+              event.stopPropagation();
+              goTo(i);
+            });
+            barsHost.appendChild(bar);
+            bars.push(bar);
+          }
+          barsHost.hidden = false;
+        }
+
+        function paintBars() {
+          bars.forEach((bar, i) => {
+            bar.classList.toggle('is-done', i < index);
+            bar.classList.remove('is-active');
+          });
+          const active = bars[index];
+          if (!active) return;
+          active.classList.remove('is-done');
+          // Force a reflow so the fill animation restarts from zero.
+          void active.offsetWidth;
+          active.classList.add('is-active');
+        }
+
+        function goTo(next) {
+          if (!pages) return;
+          index = ((next % pages) + pages) % pages;
+          inner.style.transform = 'translate3d(0,' + (-index * step) + 'px,0)';
+          paintBars();
+          schedule();
+        }
+
+        // ---- Auto-advance rules ---------------------------------------
+        // Advances only when the whole card is on screen, the tab is
+        // visible, and the user is not touching or scrolling.
+        function canAdvance() {
+          return pages > 1 && !reduceMotion && !document.hidden && fullyVisible
+            && !userScrolling && !pointerDown && !hovering;
+        }
+
+        function schedule() {
+          clearTimeout(autoTimer);
+          if (pages <= 1 || reduceMotion) return;
+          autoTimer = setTimeout(() => {
+            if (canAdvance()) goTo(index + 1);
+            else schedule();
+          }, DWELL);
+        }
+
+        function setPausedUI(paused) {
+          deck.classList.toggle('is-paused', paused);
+        }
+
+        // ---- Measure the unit and size the window ----------------------
+        function measure() {
+          const total = Math.max(
+            inner.scrollHeight,
+            unit.scrollHeight,
+            unit.firstElementChild ? unit.firstElementChild.scrollHeight : 0
+          );
+          const windowH = deck.clientHeight;
+          if (!total || total < windowH + 40) return false;
+
+          const count = Math.max(1, Math.round(total / windowH));
+          const newStep = total / count;
+          if (count === pages && Math.abs(newStep - step) < 1) return true;
+
+          pages = count;
+          step = newStep;
+          buildBars(count);
+          goTo(Math.min(index, pages - 1));
+          return true;
+        }
+
+        // The unit injects asynchronously; check a few times, then settle.
+        let tries = 0;
+        const poll = setInterval(() => {
+          tries += 1;
+          if (measure() || tries >= 12) {
+            clearInterval(poll);
+            if (!pages) section.classList.add('is-empty');
+          }
+        }, 600);
+
+        // ---- Pause sources --------------------------------------------
+        window.addEventListener('scroll', () => {
+          userScrolling = true;
+          setPausedUI(true);
+          clearTimeout(scrollIdleTimer);
+          scrollIdleTimer = setTimeout(() => {
+            userScrolling = false;
+            setPausedUI(pointerDown || hovering);
+          }, 1400);
+        }, { passive: true });
+
+        deck.addEventListener('pointerdown', () => {
+          pointerDown = true;
+          setPausedUI(true);
+        });
+        window.addEventListener('pointerup', () => {
+          if (!pointerDown) return;
+          pointerDown = false;
+          setTimeout(() => setPausedUI(userScrolling || hovering), 2500);
+        });
+
+        if (hoverDevice) {
+          deck.addEventListener('mouseenter', () => {
+            hovering = true;
+            setPausedUI(true);
+          });
+          deck.addEventListener('mouseleave', () => {
+            hovering = false;
+            setPausedUI(userScrolling || pointerDown);
+          });
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          setPausedUI(document.hidden);
+        });
+
+        if ('IntersectionObserver' in window) {
+          new IntersectionObserver((entries) => {
+            const entry = entries[0];
+            fullyVisible = entry.intersectionRatio >= 0.9;
+            setPausedUI(!fullyVisible);
+          }, { threshold: [0, 0.5, 0.9, 1] }).observe(deck);
+        } else {
+          fullyVisible = true;
+        }
+
+        // A resize can change the unit's rendered width (and its height).
+        let resizeTimer = null;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            pages = 0;
+            step = 0;
+            measure();
+          }, 200);
+        });
+
+        schedule();
       })();
-      */
     })();
   </script>
 </body>
