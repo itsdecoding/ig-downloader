@@ -449,7 +449,10 @@
       animation: adBarFill 6s linear forwards;
     }
 
-    .ad-deck.is-paused .ad-bar.is-active::after {
+    /* The bars live in the header, not inside the window, so the pause
+       state has to be carried by the section or the fill would keep
+       running while the timer is stopped. */
+    .ad-deck-section.is-paused .ad-bar.is-active::after {
       animation-play-state: paused;
     }
 
@@ -2348,10 +2351,14 @@
         let bars = [];
         let autoTimer = null;
         let scrollIdleTimer = null;
+        let settleTimer = null;
         let userScrolling = false;
         let pointerDown = false;
         let hovering = false;
         let fullyVisible = false;
+        let remaining = DWELL; // ms left on the active creative
+        let startedAt = 0;     // when the current run began, 0 while paused
+        let settle = false;    // short rest after a tap
 
         // ---- Load the unit once, shortly after first paint --------------
         // Not on scroll: the impressions are billed when the creatives are
@@ -2411,28 +2418,58 @@
           index = ((next % pages) + pages) % pages;
           inner.style.transform = 'translate3d(0,' + (-index * step) + 'px,0)';
           paintBars();
-          schedule();
+          remaining = DWELL;
+          startedAt = 0;
+          syncPause();
         }
 
         // ---- Auto-advance rules ---------------------------------------
-        // Advances only when the whole card is on screen, the tab is
-        // visible, and the user is not touching or scrolling.
-        function canAdvance() {
-          return pages > 1 && !reduceMotion && !document.hidden && fullyVisible
-            && !userScrolling && !pointerDown && !hovering;
+        // Advances only while the whole card is on screen, the tab is
+        // visible, and nobody is touching or scrolling.
+        //
+        // The dwell timer is pause-aware: it keeps the milliseconds it had
+        // left instead of restarting, so the bar fill and the slide can
+        // never drift apart. A card that scrolls into view therefore always
+        // gets its full 6s on screen, even if it was animated off-screen.
+        function blocked() {
+          return reduceMotion || document.hidden || !fullyVisible
+            || userScrolling || pointerDown || hovering || settle;
         }
 
-        function schedule() {
+        function pauseTimer() {
+          if (!startedAt) return;
+          remaining = Math.max(0, remaining - (Date.now() - startedAt));
+          startedAt = 0;
           clearTimeout(autoTimer);
-          if (pages <= 1 || reduceMotion) return;
-          autoTimer = setTimeout(() => {
-            if (canAdvance()) goTo(index + 1);
-            else schedule();
-          }, DWELL);
+          autoTimer = null;
         }
 
-        function setPausedUI(paused) {
+        function resumeTimer() {
+          if (startedAt || pages <= 1 || blocked()) return;
+          startedAt = Date.now();
+          clearTimeout(autoTimer);
+          autoTimer = setTimeout(advance, remaining);
+        }
+
+        function advance() {
+          if (pages <= 1 || blocked()) {
+            // Paused late: keep the leftovers, resume where we stopped.
+            syncPause();
+            return;
+          }
+          goTo(index + 1);
+        }
+
+        // Every pause source resolves through this one function, so no
+        // handler can release the pause while another reason still holds.
+        // The CSS bar fill rides along: it is paused and resumed together
+        // with the timer, which keeps the bar honest.
+        function syncPause() {
+          const paused = blocked();
+          section.classList.toggle('is-paused', paused);
           deck.classList.toggle('is-paused', paused);
+          if (paused) pauseTimer();
+          else resumeTimer();
         }
 
         // ---- Measure the unit and size the window ----------------------
@@ -2469,44 +2506,49 @@
         // ---- Pause sources --------------------------------------------
         window.addEventListener('scroll', () => {
           userScrolling = true;
-          setPausedUI(true);
+          syncPause();
           clearTimeout(scrollIdleTimer);
           scrollIdleTimer = setTimeout(() => {
             userScrolling = false;
-            setPausedUI(pointerDown || hovering);
+            syncPause();
           }, 1400);
         }, { passive: true });
 
         deck.addEventListener('pointerdown', () => {
           pointerDown = true;
-          setPausedUI(true);
+          syncPause();
         });
         window.addEventListener('pointerup', () => {
           if (!pointerDown) return;
           pointerDown = false;
-          setTimeout(() => setPausedUI(userScrolling || hovering), 2500);
+          // Give the tap a moment to settle so the next slide does not
+          // start moving underneath the finger.
+          settle = true;
+          syncPause();
+          clearTimeout(settleTimer);
+          settleTimer = setTimeout(() => {
+            settle = false;
+            syncPause();
+          }, 2500);
         });
 
         if (hoverDevice) {
           deck.addEventListener('mouseenter', () => {
             hovering = true;
-            setPausedUI(true);
+            syncPause();
           });
           deck.addEventListener('mouseleave', () => {
             hovering = false;
-            setPausedUI(userScrolling || pointerDown);
+            syncPause();
           });
         }
 
-        document.addEventListener('visibilitychange', () => {
-          setPausedUI(document.hidden);
-        });
+        document.addEventListener('visibilitychange', syncPause);
 
         if ('IntersectionObserver' in window) {
           new IntersectionObserver((entries) => {
-            const entry = entries[0];
-            fullyVisible = entry.intersectionRatio >= 0.9;
-            setPausedUI(!fullyVisible);
+            fullyVisible = entries[0].intersectionRatio >= 0.9;
+            syncPause();
           }, { threshold: [0, 0.5, 0.9, 1] }).observe(deck);
         } else {
           fullyVisible = true;
@@ -2523,7 +2565,7 @@
           }, 200);
         });
 
-        schedule();
+        syncPause();
       })();
     })();
   </script>
