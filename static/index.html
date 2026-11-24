@@ -446,7 +446,7 @@
     }
 
     .ad-bar.is-active::after {
-      animation: adBarFill 6s linear forwards;
+      animation: adBarFill 4s linear forwards;
     }
 
     /* The bars live in the header, not inside the window, so the pause
@@ -471,6 +471,8 @@
       border-radius: 10px;
       background: #0e0d12;
       border: 1px solid rgba(255, 255, 255, 0.07);
+      /* Vertical page scroll stays native; horizontal drags come to us. */
+      touch-action: pan-y;
     }
 
     .ad-deck-inner {
@@ -2328,7 +2330,7 @@
           return;
         }
 
-        const DWELL = 6000;
+        const DWELL = 4000;
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const hoverDevice = window.matchMedia('(hover: hover)').matches;
 
@@ -2419,7 +2421,7 @@
         // The dwell timer is pause-aware: it keeps the milliseconds it had
         // left instead of restarting, so the bar fill and the slide can
         // never drift apart. A card that scrolls into view therefore always
-        // gets its full 6s on screen, even if it was animated off-screen.
+        // gets its full dwell on screen, even if it was animated off-screen.
         function blocked() {
           return reduceMotion || document.hidden || !fullyVisible
             || userScrolling || pointerDown || hovering || settle;
@@ -2587,6 +2589,61 @@
             syncPause();
           });
         }
+
+        // ---- Swipe -----------------------------------------------------
+        // The creative is itself a link, so a gesture only takes over once
+        // the movement is clearly horizontal. A tap still reaches the ad,
+        // and a vertical drag that started on the card still scrolls the
+        // page. This is the difference between a carousel and accidental
+        // clicks on an ad, which networks treat as fraud.
+        let dragStartX = null;
+        let dragStartY = 0;
+        let dragging = false;
+        const SWIPE_MIN = 40;
+
+        deck.addEventListener('touchstart', (event) => {
+          if (pages <= 1 || event.touches.length !== 1) return;
+          dragStartX = event.touches[0].clientX;
+          dragStartY = event.touches[0].clientY;
+          dragging = false;
+        }, { passive: true });
+
+        deck.addEventListener('touchmove', (event) => {
+          if (dragStartX === null || event.touches.length !== 1) return;
+          const dx = event.touches[0].clientX - dragStartX;
+          const dy = event.touches[0].clientY - dragStartY;
+          if (!dragging) {
+            if (Math.abs(dx) < 12) return;
+            // Vertical intention wins: hand the gesture back to the page.
+            if (Math.abs(dx) < Math.abs(dy) * 1.2) {
+              dragStartX = null;
+              return;
+            }
+            dragging = true;
+          }
+          // Stops the browser from turning this drag into a click on the ad.
+          event.preventDefault();
+        }, { passive: false });
+
+        function endSwipe(event) {
+          if (dragStartX === null) return;
+          const dx = event.changedTouches[0].clientX - dragStartX;
+          const moved = dragging;
+          dragStartX = null;
+          dragging = false;
+          if (!moved || Math.abs(dx) < SWIPE_MIN) return;
+          // Finger is off the screen, so the new creative can start its own
+          // clock immediately instead of waiting out the tap-settle delay.
+          settle = false;
+          clearTimeout(settleTimer);
+          goTo(index + (dx < 0 ? 1 : -1));
+        }
+
+        deck.addEventListener('touchend', endSwipe);
+        deck.addEventListener('touchcancel', () => {
+          dragStartX = null;
+          dragging = false;
+        });
 
         document.addEventListener('visibilitychange', syncPause);
 
