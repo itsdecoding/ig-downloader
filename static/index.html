@@ -477,19 +477,6 @@
       transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    /* Hides the seam if two creatives are not exactly the same height.
-       Decorative only: clicks still reach the creative underneath. */
-    .ad-deck::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 14px;
-      background: linear-gradient(180deg, rgba(14, 13, 18, 0) 0%, #0e0d12 100%);
-      pointer-events: none;
-    }
-
     .ad-unit {
       width: 100%;
     }
@@ -2347,6 +2334,7 @@
 
         let pages = 0;
         let step = 0;
+        let offsets = [];
         let index = 0;
         let bars = [];
         let autoTimer = null;
@@ -2416,7 +2404,8 @@
         function goTo(next) {
           if (!pages) return;
           index = ((next % pages) + pages) % pages;
-          inner.style.transform = 'translate3d(0,' + (-index * step) + 'px,0)';
+          const offset = offsets[index] || 0;
+          inner.style.transform = 'translate3d(0,' + -offset + 'px,0)';
           paintBars();
           remaining = DWELL;
           startedAt = 0;
@@ -2473,7 +2462,62 @@
         }
 
         // ---- Measure the unit and size the window ----------------------
+        // Adsterra native injects its creatives into our container as plain
+        // DOM, one block per creative (image + headline). Those blocks are
+        // rarely exactly window-height, so slicing the unit every 250px cuts
+        // them in half. Find the real blocks, size the card to one whole
+        // creative, and page by their own boundaries instead.
+        function creativeBlocks() {
+          const usable = (el) => {
+            const r = el.getBoundingClientRect();
+            return r.height >= 60 && r.width >= 80;
+          };
+          const kids = Array.from(unit.children).filter(usable);
+          if (kids.length >= 2) return kids;
+          if (kids.length === 1) {
+            const nested = Array.from(kids[0].children).filter(usable);
+            if (nested.length >= 2) return nested;
+          }
+          return [];
+        }
+
         function measure() {
+          const blocks = creativeBlocks();
+
+          if (blocks.length >= 2) {
+            const base = unit.getBoundingClientRect().top;
+            const tops = blocks.map((el) =>
+              Math.round(el.getBoundingClientRect().top - base)
+            );
+            const tallest = Math.max.apply(null, blocks.map((el) =>
+              Math.round(el.getBoundingClientRect().height)
+            ));
+
+            // One card = one complete creative. The card is border-box, so
+            // its 1px frame is subtracted from the height: correct for it so
+            // the next creative cannot peek through the bottom edge.
+            if (Math.abs(deck.clientHeight - tallest) > 1) {
+              deck.style.height = tallest + 'px';
+              const fitted = deck.clientHeight;
+              if (fitted !== tallest) {
+                deck.style.height = (tallest + (tallest - fitted)) + 'px';
+              }
+            }
+
+            const unchanged = blocks.length === pages
+              && tops.join(',') === offsets.join(',');
+            if (unchanged) return true;
+
+            pages = blocks.length;
+            step = 0;
+            offsets = tops;
+            buildBars(pages);
+            goTo(Math.min(index, pages - 1));
+            return true;
+          }
+
+          // Fallback: one opaque node (an iframe, or markup we cannot read
+          // into). Page by equal slices of the measured height.
           const total = Math.max(
             inner.scrollHeight,
             unit.scrollHeight,
@@ -2488,6 +2532,7 @@
 
           pages = count;
           step = newStep;
+          offsets = Array.from({ length: count }, (_, i) => i * newStep);
           buildBars(count);
           goTo(Math.min(index, pages - 1));
           return true;
@@ -2561,6 +2606,7 @@
           resizeTimer = setTimeout(() => {
             pages = 0;
             step = 0;
+            offsets = [];
             measure();
           }, 200);
         });
