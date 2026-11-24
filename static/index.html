@@ -2364,8 +2364,17 @@
             console.error('Ad load error:', err);
           }
         }
-        if (document.readyState === 'complete') setTimeout(requestAd, 1200);
-        else window.addEventListener('load', () => setTimeout(requestAd, 1200), { once: true });
+        // Start as soon as the DOM is ready. Waiting for window "load" means
+        // waiting on every image and font, which on a phone can add seconds
+        // before the ad is even requested. The card is below the fold.
+        function startAd() {
+          setTimeout(requestAd, 600);
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', startAd, { once: true });
+        } else {
+          startAd();
+        }
 
         // ---- Paging ----------------------------------------------------
         function buildBars(count) {
@@ -2540,15 +2549,19 @@
           return true;
         }
 
-        // The unit injects asynchronously; check a few times, then settle.
+        // The unit injects asynchronously. Check often at first so the card is
+        // fitted the moment the creatives land, then back off. Giving up after
+        // ~24s collapses the section instead of leaving an empty frame.
         let tries = 0;
-        const poll = setInterval(() => {
+        (function pollUnit() {
           tries += 1;
-          if (measure() || tries >= 12) {
-            clearInterval(poll);
-            if (!pages) section.classList.add('is-empty');
+          if (measure()) return;
+          if (tries >= 30) {
+            section.classList.add('is-empty');
+            return;
           }
-        }, 600);
+          setTimeout(pollUnit, tries < 8 ? 250 : 800);
+        })();
 
         // ---- Pause sources --------------------------------------------
         window.addEventListener('scroll', () => {
