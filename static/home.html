@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Droplabs — Free Creator Utility Tools &amp; Workspace</title>
+  <meta name="description" content="Lightweight, ungated creator tools: download Reels, TikToks & YouTube Shorts, transcribe video to timestamped text, and compress thumbnails — with 1-click Save to Workspace." />
+  <meta name="keywords" content="droplabs, creator tools, video downloader, video to text, image compressor, creator workspace" />
+  <link rel="canonical" href="https://droplabs.site/" />
+  <meta name="theme-color" content="#08070b" />
+
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon-96.png?v=3" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48.png?v=3" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=3" />
+
+  <meta property="og:title" content="Droplabs — Free Creator Tools &amp; Workspace" />
+  <meta property="og:description" content="Download short videos, transcribe with Whisper, and compress thumbnails — then save straight to your Creator Workspace." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://droplabs.site/" />
+  <meta property="og:site_name" content="Droplabs" />
+  <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Droplabs — Free Creator Tools &amp; Workspace" />
+  <meta name="twitter:description" content="Free, ungated creator tools powered by a 1-click Creator Workspace." />
+  <meta name="twitter:image" content="https://droplabs.site/static/og-image.jpg" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": "Droplabs",
+          "url": "https://droplabs.site/",
+          "description": "Free creator utility ecosystem: Video Downloader, Video to Text, and Image Compressor with 1-click Creator Workspace."
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Droplabs Creator Workspace",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Web",
+          "offers": [
+            { "@type": "Offer", "name": "Free Tools & Local Workspace", "price": "0", "priceCurrency": "USD" },
+            { "@type": "Offer", "name": "Droplabs Pro", "price": "20", "priceCurrency": "USD" }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/tool.css?v=6" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+</head>
+<body>
+
+  <section id="top" class="hero-stage">
+    <canvas id="bg3dCanvas" aria-hidden="true"></canvas>
+    <div class="hero-vignette"></div>
+
+    <header class="site-head">
+      <div class="wrap">
+        <nav class="nav">
+          <a class="brand" href="/" aria-label="Droplabs home">
+            <span class="brand-mark">
+              <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                    <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
+                    <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
+                  </linearGradient>
+                </defs>
+                <path fill="url(#dropMark)" fill-rule="evenodd"
+                  d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
+              </svg>
+            </span>
+            <span class="brand-text">
+              <span class="brand-name">Droplabs</span>
+              <span class="brand-sub">Creator Tools</span>
+            </span>
+          </a>
+          <div class="nav-links">
+            <a href="/tools/video-downloader">Downloader</a>
+            <a href="/tools/video-to-text">Video to Text</a>
+            <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
+            <a href="/workspace" class="ws-link">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
+          </div>
+        </nav>
+        <div class="mobile-tools" aria-label="Droplabs tools">
+          <a href="/tools/video-downloader">Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor">Compressor</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <section class="hero">
+        <span class="pill"><span class="dot"></span>Free Creator Utilities · No Login Wall</span>
+        <h1>Fast tools for creators.<br /><em>One workspace.</em></h1>
+
+        <div class="hub-grid" aria-label="Droplabs public tools">
+          <a class="card hub-card" href="/tools/video-downloader">
+            <div class="hub-card-top">
+              <span class="hub-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+              </span>
+              <span class="meta-badge is-accent">MP4</span>
+            </div>
+            <h2>Video Downloader</h2>
+            <p>Instagram Reels, TikTok, and YouTube Shorts with thumbnail preview.</p>
+            <span class="hub-cta">Open tool →</span>
+          </a>
+
+          <a class="card hub-card" href="/tools/video-to-text">
+            <div class="hub-card-top">
+              <span class="hub-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" />
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                  <line x1="12" y1="19" x2="12" y2="22" />
+                </svg>
+              </span>
+              <span class="meta-badge is-accent">Whisper</span>
+            </div>
+            <h2>Video to Text</h2>
+            <p>Paste a link or upload a clip for timestamped transcripts + Copy All.</p>
+            <span class="hub-cta">Open tool →</span>
+          </a>
+
+          <a class="card hub-card" href="/tools/image-compressor">
+            <div class="hub-card-top">
+              <span class="hub-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="3" />
+                  <circle cx="8.8" cy="8.8" r="1.6" />
+                  <path d="M21 15.5l-4.2-4.2a1.6 1.6 0 0 0-2.3 0L6 20" />
+                </svg>
+              </span>
+              <span class="meta-badge is-accent">In-Browser</span>
+            </div>
+            <h2>Image Compressor</h2>
+            <p>Shrink PNG, JPG &amp; WebP with presets like Under 2MB YouTube Thumbnail.</p>
+            <span class="hub-cta">Open tool →</span>
+          </a>
+        </div>
+
+        <div class="hub-actions">
+          <a class="btn btn-primary" href="/workspace">Open Creator Workspace</a>
+          <a class="btn btn-ghost" href="/tools/video-downloader">Try Video Downloader</a>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <section class="section" id="how">
+      <h2>How Droplabs works</h2>
+      <p class="section-sub">Start with zero-friction utilities, then keep your best hooks, scripts, and thumbnails in one place.</p>
+      <div class="steps">
+        <div class="step card">
+          <div class="num">01</div>
+          <h3>Use any tool ungated</h3>
+          <p>No account required to download short videos, transcribe reels with Whisper, or compress thumbnails.</p>
+        </div>
+        <div class="step card">
+          <div class="num">02</div>
+          <h3>1-click Save to Workspace</h3>
+          <p>Send extracted clips, timestamped transcripts, and compressed assets straight into your Creator Workspace.</p>
+        </div>
+        <div class="step card">
+          <div class="num">03</div>
+          <h3>Scale with Droplabs Pro</h3>
+          <p>Organize research notes locally for free, or upgrade to Pro ($20/month) when cloud sync and folders roll out.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <h2>Frequently asked questions</h2>
+      <div class="faq" style="margin-top:20px">
+        <details open>
+          <summary>Are all Droplabs tools really free without signup?</summary>
+          <div class="answer">Yes. Every tool under <code>/tools/*</code> is public and ungated so you can download, transcribe, or compress in seconds without creating an account.</div>
+        </details>
+        <details>
+          <summary>What does Save to Workspace do?</summary>
+          <div class="answer">Clicking Save to Workspace sends your video reference, timestamped transcript, or compressed image straight to your Workspace board so you can add creator notes and keep everything organized.</div>
+        </details>
+        <details>
+          <summary>Which platforms are supported by the Video Downloader?</summary>
+          <div class="answer">Instagram Reels, Stories, Photos, and Carousels, TikTok videos (including <code>vm.tiktok.com</code>), and YouTube Shorts.</div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div class="foot-row">
+        <div>
+          Droplabs · creator utility ecosystem ·
+          <button type="button" class="legal-btn" data-legal="privacy">Privacy</button> ·
+          <button type="button" class="legal-btn" data-legal="terms">Terms</button> ·
+          <button type="button" class="legal-btn" data-legal="dmca">DMCA</button>
+        </div>
+        <div class="foot-links">
+          <a href="/tools/video-downloader">Video Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/workspace">Workspace</a>
+          <a href="/instagram-reel-downloader">Reels</a>
+          <a href="/instagram-story-downloader">Stories</a>
+          <a href="/instagram-photo-downloader">Photos</a>
+          <a href="/instagram-carousel-downloader">Carousels</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/liquid-bg.js?v=1" defer></script>
+  <script src="/static/workspace-handoff.js?v=1" defer></script>
+</body>
+</html>

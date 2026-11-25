@@ -1342,11 +1342,11 @@ def _page(slug: Optional[str]) -> HTMLResponse:
 
 @app.get("/")
 async def index():
-    return _page(None)
+    return _render_tool_page("home.html")
 
 @app.head("/", include_in_schema=False)
 async def index_head():
-    return _page(None)
+    return _render_tool_page("home.html")
 
 
 def _render_tool_page(filename: str) -> HTMLResponse:

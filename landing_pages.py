@@ -530,6 +530,28 @@ def _faq_section(page) -> str:
 
 
 def _related_block(slug: str) -> str:
+    if slug == "tools/video-downloader":
+        cards = [
+            ("/tools/video-to-text", "Video to Text", "Strip audio with FFmpeg and get timestamped Whisper transcripts."),
+            ("/tools/image-compressor", "Image Compressor", "Shrink JPG, PNG & WebP with presets like Under 2MB Thumbnail."),
+            ("/workspace", "Creator Workspace", "Organize saved clips, transcripts, and thumbnails in one place."),
+        ]
+        items = []
+        for href, title, desc in cards:
+            items.append(
+                f"""
+        <a href="{href}" class="smoked-card rounded-2xl p-5 block no-underline hover:border-white/25 transition-colors">
+          <span class="block text-[15px] font-semibold text-white mb-1">{title}</span>
+          <span class="block text-xs text-white/50 leading-relaxed">{desc}</span>
+        </a>"""
+            )
+        return f"""
+      <div class="mt-10">
+        <div class="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35 mb-3">More Droplabs tools</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">{''.join(items)}
+        </div>
+      </div>"""
+
     links = []
     for other in ORDER:
         if other == slug:

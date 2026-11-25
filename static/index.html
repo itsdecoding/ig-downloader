@@ -143,12 +143,45 @@
       background: linear-gradient(180deg, rgba(28, 26, 32, 0.72) 0%, rgba(16, 15, 20, 0.64) 100%);
       backdrop-filter: blur(24px) saturate(160%);
       -webkit-backdrop-filter: blur(24px) saturate(160%);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid var(--glass-border);
       box-shadow:
         0 14px 40px rgba(0, 0, 0, 0.55),
         inset 0 1px 0 rgba(255, 255, 255, 0.16),
         inset 0 -1px 0 rgba(255, 255, 255, 0.04);
     }
+    .ws-pill-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #ffffff;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: border-color 0.18s ease, background 0.18s ease;
+    }
+    .ws-pill-link:hover {
+      border-color: rgba(244, 65, 116, 0.65);
+      background: rgba(255, 255, 255, 0.11);
+    }
+    .ws-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: linear-gradient(95deg, #ff7b47, #dc1e8e);
+      color: #ffffff;
+    }
+    .ws-pill-badge[hidden] { display: none; }
 
     /* Frosted Top Quality Badge */
     .quality-pill {
@@ -705,7 +738,7 @@
     <header class="relative z-30 w-full max-w-[1040px] px-4 sm:px-6 pt-5 sm:pt-7">
       <nav class="glass-nav rounded-2xl sm:rounded-[20px] px-4 sm:px-6 h-14 sm:h-[62px] flex items-center justify-between">
         <!-- Brand -->
-        <a href="#top" class="flex items-center gap-3 min-h-11 group focus:outline-none">
+        <a href="/" class="flex items-center gap-3 min-h-11 group focus:outline-none">
           <span class="metallic-icon w-9 h-9 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105">
             <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
               <defs>
@@ -720,24 +753,22 @@
             </svg>
           </span>
           <span class="flex flex-col justify-center leading-none">
-            <span class="text-[18px] sm:text-[19px] font-bold tracking-[-0.025em] text-white">InstaFetch</span>
-            <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40 mt-1">by Droplabs</span>
+            <span class="text-[18px] sm:text-[19px] font-bold tracking-[-0.025em] text-white">Droplabs</span>
+            <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40 mt-1">Video Downloader</span>
           </span>
         </a>
 
         <!-- Desktop Links -->
-        <div class="hidden sm:flex items-center gap-8 text-[14px] font-medium text-white/75">
-          <a href="#how-to-use" class="hover:text-white transition-colors">How to Use</a>
-          <a href="#features" class="hover:text-white transition-colors">Features</a>
-          <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        <div class="hidden sm:flex items-center gap-5 text-[13px] font-medium text-white/75">
+          <a href="/tools/video-downloader" class="text-white font-semibold transition-colors">Downloader</a>
+          <a href="/tools/video-to-text" class="hover:text-white transition-colors">Video to Text</a>
+          <a href="/tools/image-compressor" class="hover:text-white transition-colors">Compressor</a>
+          <a href="/workspace" class="ws-pill-link">Workspace <span class="ws-pill-badge" data-ws-count hidden>0</span></a>
         </div>
 
-        <!-- Mobile Right Controls: Active Pill + Menu Button -->
-        <div class="flex sm:hidden items-center gap-2.5">
-          <span id="navActivePill" class="active-pill inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium text-emerald-300">
-            <span class="active-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            Active
-          </span>
+        <!-- Mobile Right Controls: Workspace Pill + Menu Button -->
+        <div class="flex sm:hidden items-center gap-2">
+          <a href="/workspace" class="ws-pill-link">Workspace <span class="ws-pill-badge" data-ws-count hidden>0</span></a>
           <button
             id="mobileMenuBtn"
             type="button"
@@ -760,9 +791,10 @@
 
       <!-- Mobile Dropdown Menu -->
       <div id="mobileMenu" class="hidden sm:hidden mt-2.5 glass-nav rounded-2xl p-2 flex flex-col gap-1">
-        <a href="#how-to-use" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">How to Use</a>
-        <a href="#features" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Features</a>
-        <a href="#faq" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">FAQ</a>
+        <a href="/tools/video-downloader" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/[0.06]">Video Downloader</a>
+        <a href="/tools/video-to-text" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Video to Text</a>
+        <a href="/tools/image-compressor" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Image Compressor</a>
+        <a href="/workspace" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Creator Workspace</a>
       </div>
     </header>
 
@@ -2207,6 +2239,22 @@
         saveFileBtn.download = `${filename}.mp4`;
       }
 
+      function syncWsBadge(count) {
+        let n = count;
+        if (typeof n !== 'number') {
+          try {
+            const raw = localStorage.getItem('droplabs_workspace_v1');
+            const parsed = raw ? JSON.parse(raw) : [];
+            n = Array.isArray(parsed) ? parsed.length : 0;
+          } catch (_) { n = 0; }
+        }
+        document.querySelectorAll('[data-ws-count]').forEach(el => {
+          el.textContent = String(n);
+          el.hidden = n === 0;
+        });
+      }
+      syncWsBadge();
+
       if (saveWsBtn) {
         saveWsBtn.addEventListener('click', () => {
           if (!currentMediaData) return;
@@ -2233,7 +2281,9 @@
               thumbnail: currentMediaData.thumbnail_proxy || currentMediaData.thumbnail || '',
               caption: currentMediaData.caption || ''
             });
-            localStorage.setItem('droplabs_workspace_v1', JSON.stringify(filtered.slice(0, 100)));
+            const nextItems = filtered.slice(0, 100);
+            localStorage.setItem('droplabs_workspace_v1', JSON.stringify(nextItems));
+            syncWsBadge(nextItems.length);
             saveWsBtn.textContent = 'Saved ✓';
             saveWsBtn.disabled = true;
             showToast('Saved to Workspace — open /workspace');
