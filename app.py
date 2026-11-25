@@ -452,7 +452,14 @@ async def sitemap_xml():
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon_ico():
-    return FileResponse(str(STATIC_DIR / "favicon-32.png"), media_type="image/png")
+    # A real multi-size ICO (16/32/48/64). This used to be a 32x32 PNG, which
+    # is below Google's 48px favicon minimum and gave its crawler a stale,
+    # undersized source to fall back to.
+    return FileResponse(
+        str(STATIC_DIR / "favicon.ico"),
+        media_type="image/x-icon",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 # Web app manifest + service worker live at the root so their scope covers "/".
 # A service worker served from /static/ could not control the page itself.
