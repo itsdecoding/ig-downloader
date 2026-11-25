@@ -7,7 +7,13 @@ from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query, Header
-from fastapi.responses import FileResponse, StreamingResponse, PlainTextResponse, Response
+from fastapi.responses import (
+    FileResponse,
+    HTMLResponse,
+    StreamingResponse,
+    PlainTextResponse,
+    Response,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -15,11 +21,21 @@ from dotenv import load_dotenv
 import httpx
 import yt_dlp
 
+import landing_pages
+
 # Load environment variables from .env if present
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
+
+# Optional search/analytics tags. Both are empty by default: no token, no tag,
+# no bytes. Set them as environment variables in Render when the tokens exist.
+GOOGLE_SITE_VERIFICATION = (os.getenv("GOOGLE_SITE_VERIFICATION") or "").strip()
+CF_ANALYTICS_TOKEN = (os.getenv("CF_ANALYTICS_TOKEN") or "").strip()
+
+# Bump when the page content changes so the sitemap's lastmod stays truthful.
+SITE_UPDATED = "2026-11-24"
 
 # Optional Proxy Configuration
 PROXY_URL = os.getenv("PROXY_URL") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY")
@@ -416,15 +432,21 @@ async def robots_txt():
 
 @app.get("/sitemap.xml", include_in_schema=False)
 async def sitemap_xml():
+    entries = []
+    for path, priority in landing_pages.sitemap_urls():
+        entries.append(
+            "  <url>\n"
+            f"    <loc>https://droplabs.site{path}</loc>\n"
+            f"    <lastmod>{SITE_UPDATED}</lastmod>\n"
+            "    <changefreq>weekly</changefreq>\n"
+            f"    <priority>{priority}</priority>\n"
+            "  </url>\n"
+        )
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        '  <url>\n'
-        '    <loc>https://droplabs.site/</loc>\n'
-        '    <changefreq>weekly</changefreq>\n'
-        '    <priority>1.0</priority>\n'
-        '  </url>\n'
-        '</urlset>\n'
+        + "".join(entries)
+        + "</urlset>\n"
     )
     return Response(content=xml, media_type="application/xml")
 
@@ -456,13 +478,61 @@ async def service_worker():
 # Mount static web UI
 app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
+# ---- HTML pages ----------------------------------------------------------
+# index.html stays the single source of truth for the app shell. A landing
+# page is that same file with the format-specific parts swapped at request
+# time, so the downloader, the ad deck and every script stay identical and
+# only ever need fixing once.
+_HTML_CACHE: Dict[str, Any] = {"mtime": None, "html": ""}
+
+
+def _base_html() -> str:
+    path = STATIC_DIR / "index.html"
+    mtime = path.stat().st_mtime
+    if _HTML_CACHE["mtime"] != mtime:
+        _HTML_CACHE["html"] = path.read_text(encoding="utf-8")
+        _HTML_CACHE["mtime"] = mtime
+    return _HTML_CACHE["html"]
+
+
+def _head_extras() -> str:
+    """Verification and analytics tags, only when a token is configured."""
+    bits = []
+    if GOOGLE_SITE_VERIFICATION:
+        bits.append(
+            '<meta name="google-site-verification" '
+            f'content="{GOOGLE_SITE_VERIFICATION}" />'
+        )
+    if CF_ANALYTICS_TOKEN:
+        bits.append(
+            '<script defer src="https://static.cloudflareinsights.com/beacon.min.js" '
+            'data-cf-beacon=\'{"token": "' + CF_ANALYTICS_TOKEN + '"}\'></script>'
+        )
+    return "\n  ".join(bits)
+
+
+def _page(slug: Optional[str]) -> HTMLResponse:
+    base = _base_html()
+    html = landing_pages.render(base, slug) if slug else landing_pages.strip_markers(base)
+    extras = _head_extras()
+    if extras:
+        html = html.replace("</head>", "  " + extras + "\n</head>", 1)
+    return HTMLResponse(content=html)
+
+
 @app.get("/")
 async def index():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    return _page(None)
 
 @app.head("/", include_in_schema=False)
 async def index_head():
-    return FileResponse(str(STATIC_DIR / "index.html"))
+    return _page(None)
+
+@app.api_route("/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
+async def landing_page(slug: str):
+    if slug not in landing_pages.PAGES:
+        raise HTTPException(status_code=404, detail="Not found")
+    return _page(slug)
 
 if __name__ == "__main__":
     import uvicorn

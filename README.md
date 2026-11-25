@@ -79,3 +79,49 @@ To deploy on Railway, Render, Fly.io, or VPS:
 docker build -t instafetch .
 docker run -d -p 8000:8000 instafetch
 ```
+
+---
+
+## Search pages (SEO)
+
+One downloader, four front doors. `static/index.html` is the single source of
+truth; `landing_pages.py` swaps the format-specific parts at request time and
+`app.py` serves them:
+
+| URL | Intent |
+| --- | --- |
+| `/` | instagram video downloader |
+| `/instagram-reel-downloader` | instagram reel downloader |
+| `/instagram-story-downloader` | instagram story downloader |
+| `/instagram-photo-downloader` | instagram photo downloader |
+| `/instagram-carousel-downloader` | instagram carousel downloader |
+
+Each page gets its own title, description, canonical, OG tags, headline,
+how-to steps, long-form copy, FAQ and JSON-LD (`WebApplication` +
+`BreadcrumbList` + `FAQPage`). `/sitemap.xml` is generated from the same list.
+
+To add a page: add an entry to `PAGES` in `landing_pages.py` and append its
+slug to `ORDER`. Nothing else changes.
+
+The blocks in `static/index.html` marked `<!--LANDING:NAME-->` are the
+substitution points. If an anchor is ever renamed, `render()` raises instead of
+silently serving homepage copy on four URLs.
+
+## Optional tags
+
+Both are off unless the environment variable exists:
+
+- `GOOGLE_SITE_VERIFICATION` — adds the Search Console meta tag.
+- `CF_ANALYTICS_TOKEN` — adds the Cloudflare Web Analytics beacon (~2KB,
+  cookieless, no consent banner).
+
+## Tailwind
+
+Compiled ahead of time; there is no CDN runtime. After changing markup:
+
+```bash
+npx --yes tailwindcss@3.4.17 -i tw-in.css -o static/tailwind.css --minify
+```
+
+`tailwind.config.js` lists the files to scan, including `landing_pages.py`,
+because its class names only exist inside Python strings.
