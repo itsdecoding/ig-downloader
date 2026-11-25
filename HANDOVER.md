@@ -134,6 +134,8 @@ Everything is optional; the app runs with none set.
 | `PROXY_URL` | **Operationally important.** Instagram blocks datacenter IPs. If extraction fails on Render but works locally, this is almost certainly why. Residential/rotating proxy. |
 | `GOOGLE_SITE_VERIFICATION` | Adds the Search Console meta tag |
 | `CF_ANALYTICS_TOKEN` | Adds the Cloudflare Web Analytics beacon (~2 KB, cookieless) |
+| `GROQ_API_KEY` | **Required for `/tools/video-to-text`.** Groq Whisper API key (`POST /api/transcribe`). |
+| `GROQ_WHISPER_MODEL` | Optional Whisper model override (defaults to `whisper-large-v3-turbo`). |
 
 `.env.example` documents all of them. **There is currently no analytics at all** —
 the token was never supplied. The first thing to fix if you need data.

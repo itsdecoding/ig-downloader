@@ -6,7 +6,7 @@
   <title>Compress Images Online Free — No Upload, No Signup | Droplabs</title>
   <meta name="description" content="Compress JPG, PNG and WebP images in your browser. Smaller files, same look, nothing uploaded to a server. Free, no signup, works on phone and desktop." />
   <meta name="keywords" content="compress image online, image compressor, compress jpg, reduce image size, compress png, webp converter, compress image to 100kb" />
-  <link rel="canonical" href="https://droplabs.site/image-compressor" />
+  <link rel="canonical" href="https://droplabs.site/tools/image-compressor" />
   <meta name="theme-color" content="#08070b" />
 
   <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
@@ -17,7 +17,7 @@
   <meta property="og:title" content="Compress Images Without Uploading Them — Droplabs" />
   <meta property="og:description" content="Shrink JPG, PNG and WebP files in your browser. Nothing leaves your device. Free, no signup." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://droplabs.site/image-compressor" />
+  <meta property="og:url" content="https://droplabs.site/tools/image-compressor" />
   <meta property="og:site_name" content="Droplabs" />
   <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -93,7 +93,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=1" />
+  <link rel="stylesheet" href="/static/tool.css?v=2" />
 </head>
 <body>
 
@@ -120,9 +120,10 @@
           </span>
         </a>
         <div class="nav-links">
-          <a href="/">InstaFetch</a>
-          <a href="/instagram-reel-downloader">Reels</a>
-          <a href="#faq">FAQ</a>
+          <a href="/tools/video-downloader" data-hide-mobile="1">Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor" class="is-current">Compressor</a>
+          <a href="/workspace" class="ws-link">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
         </div>
       </nav>
     </div>
@@ -148,6 +149,16 @@
         </span>
         <strong>Drop images here</strong>
         <span class="drop-sub">or click to choose · JPG, PNG, WebP · 20 at a time</span>
+      </div>
+
+      <div class="card presets-bar" id="presetsBar">
+        <div class="presets-label">Creator size presets</div>
+        <div class="presets" id="presetGroup" role="group" aria-label="Target size presets">
+          <button type="button" class="preset-btn" data-preset="yt-thumb" data-target="2048" data-width="1280" data-format="image/jpeg">Under 2MB for YouTube Thumbnail</button>
+          <button type="button" class="preset-btn" data-preset="social-500" data-target="500" data-width="1920" data-format="image/webp">Under 500KB · Web / Social</button>
+          <button type="button" class="preset-btn" data-preset="avatar-100" data-target="100" data-width="1080" data-format="image/jpeg">Under 100KB · Avatar / Email</button>
+          <button type="button" class="preset-btn is-active" data-preset="custom" data-target="0" data-width="0" data-format="keep">Auto 80% Quality</button>
+        </div>
       </div>
 
       <div class="card controls" id="controls" hidden>
@@ -281,18 +292,24 @@
   <footer class="site-foot">
     <div class="wrap">
       <div class="foot-row">
-        <div>Droplabs · free tools for people who make things</div>
+        <div>
+          Droplabs · creator utility ecosystem ·
+          <button type="button" class="legal-btn" data-legal="privacy">Privacy</button> ·
+          <button type="button" class="legal-btn" data-legal="terms">Terms</button> ·
+          <button type="button" class="legal-btn" data-legal="dmca">DMCA</button>
+        </div>
         <div class="foot-links">
+          <a href="/tools/video-downloader">Video Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/workspace">Workspace</a>
           <a href="/">InstaFetch</a>
-          <a href="/instagram-reel-downloader">Reels</a>
-          <a href="/instagram-story-downloader">Stories</a>
-          <a href="/instagram-photo-downloader">Photos</a>
-          <a href="/instagram-carousel-downloader">Carousels</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <script src="/static/compress.js?v=1" defer></script>
+  <script src="/static/workspace-handoff.js?v=1" defer></script>
+  <script src="/static/compress.js?v=2" defer></script>
 </body>
 </html>

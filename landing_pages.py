@@ -644,7 +644,10 @@ def strip_markers(html: str) -> str:
 # Standalone tool pages that are not Instagram landing pages. Each one is its
 # own hand-written document in static/, so it only needs to be listed here.
 TOOL_URLS = [
-    ("/image-compressor", "0.9"),
+    ("/tools/video-downloader", "0.95"),
+    ("/tools/video-to-text", "0.95"),
+    ("/tools/image-compressor", "0.95"),
+    ("/image-compressor", "0.8"),
 ]
 
 

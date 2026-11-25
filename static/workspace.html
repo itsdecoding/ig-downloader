@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Creator Workspace — Saved Clips, Transcripts &amp; Assets | Droplabs</title>
+  <meta name="description" content="Your Droplabs Creator Workspace: review saved video references, Whisper transcripts, and compressed thumbnails in one place." />
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#08070b" />
+
+  <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon-96.png?v=3" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48.png?v=3" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=3" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/tool.css?v=2" />
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="wrap">
+      <nav class="nav">
+        <a class="brand" href="/" aria-label="Droplabs home">
+          <span class="brand-mark">
+            <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                  <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
+                  <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
+                </linearGradient>
+              </defs>
+              <path fill="url(#dropMark)" fill-rule="evenodd"
+                d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name">Droplabs</span>
+            <span class="brand-sub">Creator Workspace</span>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="/tools/video-downloader">Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
+          <a href="/workspace" class="ws-link is-current">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="pill"><span class="dot"></span>Local Creator Workspace · Free Tier</span>
+      <h1>Your saved clips,<br /><em>scripts &amp; assets</em></h1>
+      <p class="lede">
+        Everything you send with "Save to Workspace" across Droplabs tools lands here — saved
+        instantly in your browser with zero signup wall.
+      </p>
+
+      <div class="card ws-plan">
+        <div>
+          <strong style="font-size:15px">Droplabs Pro · $20/month (Coming Soon)</strong>
+          <div style="font-size:13px;color:var(--text-2);margin-top:4px">
+            Cloud sync across devices, unlimited Whisper transcriptions, and shared creator project folders.
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" id="proBtn">Join Pro Early Access</button>
+      </div>
+
+      <div class="ws-toolbar">
+        <div class="ws-filters" id="wsFilters" role="group" aria-label="Filter saved items">
+          <button type="button" class="preset-btn is-active" data-filter="all">All</button>
+          <button type="button" class="preset-btn" data-filter="video">Videos</button>
+          <button type="button" class="preset-btn" data-filter="transcript">Transcripts</button>
+          <button type="button" class="preset-btn" data-filter="image">Images</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="wsSearch" type="text" placeholder="Search saved items..." style="width:200px;height:36px" aria-label="Search workspace" />
+          <button type="button" class="btn btn-ghost btn-sm" id="wsClearBtn">Clear all</button>
+        </div>
+      </div>
+
+      <div class="ws-grid" id="wsGrid"></div>
+      <div class="card" id="wsEmpty" hidden style="margin-top:18px;padding:34px 20px">
+        <strong style="font-size:16px">Your Workspace is empty</strong>
+        <p style="font-size:13.5px;color:var(--text-2);margin:8px auto 18px;max-width:46ch">
+          Use any Droplabs tool and click <strong>Save to Workspace</strong> to collect video references, transcripts, or compressed thumbnails here.
+        </p>
+        <div class="actions-row" style="justify-content:center">
+          <a class="btn btn-primary btn-sm" href="/tools/video-downloader">Open Video Downloader</a>
+          <a class="btn btn-ghost btn-sm" href="/tools/video-to-text">Open Video to Text</a>
+          <a class="btn btn-ghost btn-sm" href="/tools/image-compressor">Open Image Compressor</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div class="foot-row">
+        <div>
+          Droplabs · creator utility ecosystem ·
+          <button type="button" class="legal-btn" data-legal="privacy">Privacy</button> ·
+          <button type="button" class="legal-btn" data-legal="terms">Terms</button> ·
+          <button type="button" class="legal-btn" data-legal="dmca">DMCA</button>
+        </div>
+        <div class="foot-links">
+          <a href="/tools/video-downloader">Video Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/">InstaFetch</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/workspace-handoff.js?v=1" defer></script>
+  <script src="/static/workspace.js?v=1" defer></script>
+</body>
+</html>

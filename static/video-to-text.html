@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Video to Text — Timestamped Whisper Transcripts | Droplabs</title>
+  <meta name="description" content="Convert Instagram Reels, TikTok, YouTube Shorts, or uploaded short clips into timestamped text transcripts using FFmpeg and Groq Whisper. Free, 1-click Copy All." />
+  <meta name="keywords" content="video to text, transcribe reel, tiktok transcript, youtube shorts to text, whisper transcription, droplabs" />
+  <link rel="canonical" href="https://droplabs.site/tools/video-to-text" />
+  <meta name="theme-color" content="#08070b" />
+
+  <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon-96.png?v=3" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48.png?v=3" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=3" />
+
+  <meta property="og:title" content="Video to Text — Timestamped Transcripts | Droplabs" />
+  <meta property="og:description" content="Paste a video URL or upload a short clip. Strips audio with FFmpeg, transcribes via Groq Whisper, returns timestamped text with 1-click Copy All." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://droplabs.site/tools/video-to-text" />
+  <meta property="og:site_name" content="Droplabs" />
+  <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Video to Text — Timestamped Transcripts | Droplabs" />
+  <meta name="twitter:description" content="Transcribe Reels, TikToks, Shorts, or uploaded clips into timestamped text in seconds." />
+  <meta name="twitter:image" content="https://droplabs.site/static/og-image.jpg" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Droplabs Video to Text",
+          "url": "https://droplabs.site/tools/video-to-text",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "description": "Extract audio via FFmpeg and transcribe video URLs or uploaded clips into timestamped text with Groq Whisper.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Paste Instagram, TikTok, or YouTube Shorts URL",
+            "Upload short video or audio clip (up to 50 MB)",
+            "Timestamped transcript segments",
+            "One-click Copy All and Save to Workspace"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Droplabs", "item": "https://droplabs.site/" },
+            { "@type": "ListItem", "position": 2, "name": "Video to Text", "item": "https://droplabs.site/tools/video-to-text" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "How does Video to Text work?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Paste a public video URL or upload a clip up to 50 MB. Our server strips the audio track with FFmpeg into a compact mono MP3 and sends it to Groq Whisper to return timestamped segments." }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my uploaded clips stored on your server?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. Processing runs inside a temporary directory that is automatically deleted as soon as your transcript returns." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I export captions or copy without timestamps?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can copy the full timestamped transcript with Copy All, copy plain text, download an .SRT subtitle file, or save it directly to your Droplabs Workspace." }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/tool.css?v=2" />
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="wrap">
+      <nav class="nav">
+        <a class="brand" href="/" aria-label="Droplabs home">
+          <span class="brand-mark">
+            <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                  <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
+                  <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
+                </linearGradient>
+              </defs>
+              <path fill="url(#dropMark)" fill-rule="evenodd"
+                d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name">Droplabs</span>
+            <span class="brand-sub">Video to Text</span>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="/tools/video-downloader">Downloader</a>
+          <a href="/tools/video-to-text" class="is-current">Video to Text</a>
+          <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
+          <a href="/workspace" class="ws-link">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="pill"><span class="dot"></span>FFmpeg audio strip · Groq Whisper</span>
+      <h1>Turn any short video<br /><em>into timestamped text</em></h1>
+      <p class="lede">
+        Paste an Instagram Reel, TikTok, or YouTube Shorts link — or upload a short clip — and get a
+        timestamped script ready to copy or save to your Workspace.
+      </p>
+
+      <div class="mode-switch" role="tablist" aria-label="Input source">
+        <button type="button" id="tabUrl" class="is-active" role="tab" aria-selected="true">Paste Video URL</button>
+        <button type="button" id="tabFile" role="tab" aria-selected="false">Upload Short Clip</button>
+      </div>
+
+      <form class="dock" id="urlForm" novalidate>
+        <input
+          id="txUrlInput"
+          type="url"
+          inputmode="url"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Paste Instagram Reel, TikTok, or YouTube Shorts URL..."
+          aria-label="Video URL to transcribe"
+        />
+        <div class="dock-actions">
+          <button type="button" class="btn btn-ghost btn-sm" id="txPasteBtn">Paste</button>
+          <button type="submit" class="btn btn-primary" id="txSubmitUrl">Transcribe</button>
+        </div>
+      </form>
+
+      <div class="drop" id="txDrop" role="button" tabindex="0" hidden aria-label="Upload short video or audio clip">
+        <input id="txFileInput" type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.mp3,.m4a,.wav" hidden />
+        <span class="drop-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 16V4" />
+            <polyline points="7 9 12 4 17 9" />
+            <path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3" />
+          </svg>
+        </span>
+        <strong id="txFileLabel">Drop a short video or audio clip here</strong>
+        <span class="drop-sub">MP4, MOV, WebM, MP3, M4A · up to 50 MB · audio stripped via FFmpeg</span>
+      </div>
+
+      <div class="tx-options">
+        <span>Spoken language:</span>
+        <select id="txLang" class="tx-select" aria-label="Spoken language">
+          <option value="auto">Auto-detect</option>
+          <option value="en">English</option>
+          <option value="es">Spanish</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="pt">Portuguese</option>
+          <option value="hi">Hindi</option>
+          <option value="ur">Urdu</option>
+          <option value="ar">Arabic</option>
+          <option value="ja">Japanese</option>
+        </select>
+      </div>
+
+      <div class="status-box" id="txStatus" hidden role="status" aria-live="polite"></div>
+
+      <div class="card tx-card" id="txResultCard" hidden>
+        <div class="results-head">
+          <div>
+            <div class="summary" id="txTitle">Transcript</div>
+            <small id="txMeta"></small>
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn btn-primary btn-sm" id="copyAllBtn">Copy All</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="copyPlainBtn">Copy Plain</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="downloadSrtBtn">Download .SRT</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="saveTxWsBtn">Save to Workspace</button>
+          </div>
+        </div>
+        <div class="tx-segments" id="txSegments"></div>
+      </div>
+    </section>
+
+    <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
+      <div class="ad-head">Advertisement</div>
+      <div class="ad-frame">
+        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="ad-unit"></div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <h2>How it works</h2>
+      <p class="section-sub">Fast creator transcription without uploading giant files unnecessarily.</p>
+      <div class="steps">
+        <div class="step card">
+          <div class="num">01</div>
+          <h3>Paste a link or drop a clip</h3>
+          <p>Works with public Instagram Reels, TikToks, YouTube Shorts, or local MP4/MOV/audio clips under 50 MB.</p>
+        </div>
+        <div class="step card">
+          <div class="num">02</div>
+          <h3>FFmpeg + Groq Whisper</h3>
+          <p>Audio is stripped to a lightweight mono stream via FFmpeg and transcribed with segment-level timestamps.</p>
+        </div>
+        <div class="step card">
+          <div class="num">03</div>
+          <h3>Copy All or save to Workspace</h3>
+          <p>Copy the full timestamped script, export an <code>.srt</code> file, or save it straight to your Workspace for hook breakdowns.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <h2>Frequently asked questions</h2>
+      <div class="faq" style="margin-top:20px">
+        <details open>
+          <summary>How accurate are the timestamps?</summary>
+          <div class="answer">Timestamps come directly from Whisper segment boundaries so every sentence or phrase lines up with the moment it is spoken in the video.</div>
+        </details>
+        <details>
+          <summary>What is the maximum clip length or upload size?</summary>
+          <div class="answer">Uploaded clips can be up to 50 MB, and linked videos up to 10 minutes. Everything is deleted from temporary server storage immediately after transcription finishes.</div>
+        </details>
+        <details>
+          <summary>Why use FFmpeg before Whisper?</summary>
+          <div class="answer">Stripping the video frames down to a 16 kHz mono MP3 shrinks a 40 MB video to under 1 MB of clean speech audio, which makes transcription much faster.</div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div class="foot-row">
+        <div>
+          Droplabs · creator utility ecosystem ·
+          <button type="button" class="legal-btn" data-legal="privacy">Privacy</button> ·
+          <button type="button" class="legal-btn" data-legal="terms">Terms</button> ·
+          <button type="button" class="legal-btn" data-legal="dmca">DMCA</button>
+        </div>
+        <div class="foot-links">
+          <a href="/tools/video-downloader">Video Downloader</a>
+          <a href="/tools/video-to-text">Video to Text</a>
+          <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/workspace">Workspace</a>
+          <a href="/">InstaFetch</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/workspace-handoff.js?v=1" defer></script>
+  <script src="/static/video-to-text.js?v=1" defer></script>
+</body>
+</html>

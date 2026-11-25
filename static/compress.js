@@ -36,6 +36,7 @@
   var downloadAll = $('downloadAll');
   var clearBtn = $('clearBtn');
   var adSlot = $('adSlot');
+  var presetGroup = $('presetGroup');
   var runTimer = null;
 
   /* ------------------------------------------------------------ helpers */
@@ -333,8 +334,10 @@
       } else if (item.busy || !item.out) {
         html += '<span class="spinner" aria-label="Working"></span>';
       } else {
-        html += '<a class="btn btn-ghost btn-sm" href="' + item.outUrl + '" download="' +
-          escapeHtml(item.outName) + '">Download</a>';
+        html += '<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-save-ws="' + index + '">Save to Workspace</button>' +
+          '<a class="btn btn-ghost btn-sm" href="' + item.outUrl + '" download="' +
+          escapeHtml(item.outName) + '">Download</a></div>';
       }
       html += '</div>';
     });
@@ -427,19 +430,82 @@
       : '70–80% is usually invisible on a screen.';
   }
 
+  function clearPresetHighlight() {
+    if (!presetGroup) return;
+    Array.prototype.forEach.call(presetGroup.querySelectorAll('button'), function (b) {
+      b.classList.remove('is-active');
+    });
+  }
+
+  if (presetGroup) {
+    presetGroup.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-preset]');
+      if (!btn) return;
+      Array.prototype.forEach.call(presetGroup.querySelectorAll('button'), function (b) {
+        b.classList.toggle('is-active', b === btn);
+      });
+      var tKb = Number(btn.getAttribute('data-target')) || 0;
+      var mW = Number(btn.getAttribute('data-width')) || 0;
+      var fmt = btn.getAttribute('data-format') || 'keep';
+
+      state.targetKb = tKb;
+      state.maxWidth = mW;
+      state.format = fmt;
+      target.value = tKb > 0 ? String(tKb) : '';
+      maxWidth.value = mW > 0 ? String(mW) : '';
+
+      Array.prototype.forEach.call(seg.querySelectorAll('button'), function (b) {
+        b.classList.toggle('is-active', b.getAttribute('data-format') === fmt);
+      });
+      syncQuality();
+      if (state.items.length) scheduleRun();
+    });
+  }
+
+  list.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-save-ws]');
+    if (!btn || !window.DroplabsWorkspace) return;
+    var idx = Number(btn.getAttribute('data-save-ws'));
+    var item = state.items[idx];
+    if (!item || !item.out) return;
+
+    var pct = item.file.size ? Math.round((1 - item.out.size / item.file.size) * 100) : 0;
+    // Generate tiny thumbnail dataURL so Workspace shows a persistent preview
+    var reader = new FileReader();
+    reader.onloadend = function () {
+      window.DroplabsWorkspace.save({
+        type: 'image',
+        sourceKey: 'img:' + item.outName + ':' + item.out.size,
+        title: item.outName,
+        dims: item.w + '×' + item.h,
+        format: extFor(item.outType).toUpperCase(),
+        originalSize: bytes(item.file.size),
+        compressedSize: bytes(item.out.size),
+        savedPct: pct,
+        previewDataUrl: typeof reader.result === 'string' && reader.result.length < 300000 ? reader.result : ''
+      });
+      btn.textContent = 'Saved ✓';
+      btn.disabled = true;
+    };
+    reader.readAsDataURL(item.out);
+  });
+
   quality.addEventListener('input', function () {
     state.quality = Number(quality.value) / 100;
     qualityOut.textContent = quality.value + '%';
+    clearPresetHighlight();
     scheduleRun();
   });
 
   maxWidth.addEventListener('input', function () {
     state.maxWidth = Math.max(0, Number(maxWidth.value) || 0);
+    clearPresetHighlight();
     scheduleRun();
   });
 
   target.addEventListener('input', function () {
     state.targetKb = Math.max(0, Number(target.value) || 0);
+    clearPresetHighlight();
     scheduleRun();
   });
 
