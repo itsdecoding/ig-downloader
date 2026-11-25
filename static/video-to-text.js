@@ -204,11 +204,31 @@
   async function copyText(str, btn, resetLabel) {
     if (!str) return;
     try {
-      await navigator.clipboard.writeText(str);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(str);
+      } else {
+        throw new Error('no-clipboard-api');
+      }
       btn.textContent = 'Copied ✓';
       setTimeout(function () { btn.textContent = resetLabel; }, 1800);
     } catch (err) {
-      showError('Clipboard permission blocked. Select and copy manually.');
+      // Fallback for non-HTTPS or browsers blocking async clipboard API
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = str;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        ta.remove();
+        if (!ok) throw new Error('execCommand-failed');
+        btn.textContent = 'Copied ✓';
+        setTimeout(function () { btn.textContent = resetLabel; }, 1800);
+      } catch (e2) {
+        showError('Clipboard permission blocked. Select and copy manually.');
+      }
     }
   }
 

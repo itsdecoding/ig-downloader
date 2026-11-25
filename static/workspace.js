@@ -127,8 +127,25 @@
     if (copyBtn) {
       var id = copyBtn.getAttribute('data-copy-tx');
       var found = window.DroplabsWorkspace.list().filter(function (x) { return x.id === id; })[0];
-      if (found && navigator.clipboard) {
-        await navigator.clipboard.writeText(found.timestampedText || found.plainText || '');
+      var text = found ? (found.timestampedText || found.plainText || '') : '';
+      if (text) {
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(text);
+          } else {
+            throw new Error('no-clipboard-api');
+          }
+        } catch (err) {
+          var ta = document.createElement('textarea');
+          ta.value = text;
+          ta.setAttribute('readonly', '');
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+        }
         copyBtn.textContent = 'Copied ✓';
         setTimeout(function () { copyBtn.textContent = 'Copy Script'; }, 1600);
       }

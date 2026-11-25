@@ -78,7 +78,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=2" />
+  <link rel="stylesheet" href="/static/tool.css?v=3" />
 </head>
 <body>
 
@@ -111,6 +111,11 @@
           <a href="/workspace" class="ws-link">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
         </div>
       </nav>
+      <div class="mobile-tools" aria-label="Droplabs tools">
+        <a href="/tools/video-downloader">Downloader</a>
+        <a href="/tools/video-to-text" class="is-current">Video to Text</a>
+        <a href="/tools/image-compressor">Compressor</a>
+      </div>
     </div>
   </header>
 
@@ -135,7 +140,7 @@
           inputmode="url"
           autocomplete="off"
           spellcheck="false"
-          placeholder="Paste Instagram Reel, TikTok, or YouTube Shorts URL..."
+          placeholder="Paste Reel, TikTok, or Shorts link..."
           aria-label="Video URL to transcribe"
         />
         <div class="dock-actions">
