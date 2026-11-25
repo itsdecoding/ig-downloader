@@ -78,13 +78,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=3" />
+  <link rel="stylesheet" href="/static/tool.css?v=5" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 </head>
 <body>
 
-  <header class="site-head">
-    <div class="wrap">
-      <nav class="nav">
+  <section id="top" class="hero-stage">
+    <canvas id="bg3dCanvas" aria-hidden="true"></canvas>
+    <div class="hero-vignette"></div>
+
+    <header class="site-head">
+      <div class="wrap">
+        <nav class="nav">
         <a class="brand" href="/" aria-label="Droplabs home">
           <span class="brand-mark">
             <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
@@ -117,85 +123,91 @@
         <a href="/tools/image-compressor">Compressor</a>
       </div>
     </div>
-  </header>
+    </header>
+
+    <div class="wrap">
+      <section class="hero">
+        <span class="pill"><span class="dot"></span>FFmpeg audio strip · Groq Whisper</span>
+        <h1>Turn any short video<br /><em>into timestamped text</em></h1>
+        <p class="lede">
+          Paste an Instagram Reel, TikTok, or YouTube Shorts link — or upload a short clip — and get a
+          timestamped script ready to copy or save to your Workspace.
+        </p>
+
+        <div class="mode-switch" role="tablist" aria-label="Input source">
+          <button type="button" id="tabUrl" class="is-active" role="tab" aria-selected="true">Paste Video URL</button>
+          <button type="button" id="tabFile" role="tab" aria-selected="false">Upload Short Clip</button>
+        </div>
+
+        <form class="dock" id="urlForm" novalidate>
+          <div class="dock-well">
+            <input
+              id="txUrlInput"
+              type="url"
+              inputmode="url"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Paste Reel, TikTok, or Shorts link..."
+              aria-label="Video URL to transcribe"
+            />
+            <div class="dock-actions">
+              <button type="button" class="btn btn-ghost btn-sm" id="txPasteBtn">Paste</button>
+              <button type="submit" class="btn btn-primary" id="txSubmitUrl">Transcribe</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="drop" id="txDrop" role="button" tabindex="0" hidden aria-label="Upload short video or audio clip">
+          <input id="txFileInput" type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.mp3,.m4a,.wav" hidden />
+          <span class="drop-icon">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 16V4" />
+              <polyline points="7 9 12 4 17 9" />
+              <path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3" />
+            </svg>
+          </span>
+          <strong id="txFileLabel">Drop a short video or audio clip here</strong>
+          <span class="drop-sub">MP4, MOV, WebM, MP3, M4A · up to 50 MB · audio stripped via FFmpeg</span>
+        </div>
+
+        <div class="tx-options">
+          <span>Spoken language:</span>
+          <select id="txLang" class="tx-select" aria-label="Spoken language">
+            <option value="auto">Auto-detect</option>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+            <option value="de">German</option>
+            <option value="pt">Portuguese</option>
+            <option value="hi">Hindi</option>
+            <option value="ur">Urdu</option>
+            <option value="ar">Arabic</option>
+            <option value="ja">Japanese</option>
+          </select>
+        </div>
+
+        <div class="status-box" id="txStatus" hidden role="status" aria-live="polite"></div>
+
+        <div class="card tx-card" id="txResultCard" hidden>
+          <div class="results-head">
+            <div>
+              <div class="summary" id="txTitle">Transcript</div>
+              <small id="txMeta"></small>
+            </div>
+            <div class="actions-row">
+              <button type="button" class="btn btn-primary btn-sm" id="copyAllBtn">Copy All</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="copyPlainBtn">Copy Plain</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="downloadSrtBtn">Download .SRT</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="saveTxWsBtn">Save to Workspace</button>
+            </div>
+          </div>
+          <div class="tx-segments" id="txSegments"></div>
+        </div>
+      </section>
+    </div>
+  </section>
 
   <main class="wrap">
-    <section class="hero">
-      <span class="pill"><span class="dot"></span>FFmpeg audio strip · Groq Whisper</span>
-      <h1>Turn any short video<br /><em>into timestamped text</em></h1>
-      <p class="lede">
-        Paste an Instagram Reel, TikTok, or YouTube Shorts link — or upload a short clip — and get a
-        timestamped script ready to copy or save to your Workspace.
-      </p>
-
-      <div class="mode-switch" role="tablist" aria-label="Input source">
-        <button type="button" id="tabUrl" class="is-active" role="tab" aria-selected="true">Paste Video URL</button>
-        <button type="button" id="tabFile" role="tab" aria-selected="false">Upload Short Clip</button>
-      </div>
-
-      <form class="dock" id="urlForm" novalidate>
-        <input
-          id="txUrlInput"
-          type="url"
-          inputmode="url"
-          autocomplete="off"
-          spellcheck="false"
-          placeholder="Paste Reel, TikTok, or Shorts link..."
-          aria-label="Video URL to transcribe"
-        />
-        <div class="dock-actions">
-          <button type="button" class="btn btn-ghost btn-sm" id="txPasteBtn">Paste</button>
-          <button type="submit" class="btn btn-primary" id="txSubmitUrl">Transcribe</button>
-        </div>
-      </form>
-
-      <div class="drop" id="txDrop" role="button" tabindex="0" hidden aria-label="Upload short video or audio clip">
-        <input id="txFileInput" type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.mp3,.m4a,.wav" hidden />
-        <span class="drop-icon">
-          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 16V4" />
-            <polyline points="7 9 12 4 17 9" />
-            <path d="M20 16v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-3" />
-          </svg>
-        </span>
-        <strong id="txFileLabel">Drop a short video or audio clip here</strong>
-        <span class="drop-sub">MP4, MOV, WebM, MP3, M4A · up to 50 MB · audio stripped via FFmpeg</span>
-      </div>
-
-      <div class="tx-options">
-        <span>Spoken language:</span>
-        <select id="txLang" class="tx-select" aria-label="Spoken language">
-          <option value="auto">Auto-detect</option>
-          <option value="en">English</option>
-          <option value="es">Spanish</option>
-          <option value="fr">French</option>
-          <option value="de">German</option>
-          <option value="pt">Portuguese</option>
-          <option value="hi">Hindi</option>
-          <option value="ur">Urdu</option>
-          <option value="ar">Arabic</option>
-          <option value="ja">Japanese</option>
-        </select>
-      </div>
-
-      <div class="status-box" id="txStatus" hidden role="status" aria-live="polite"></div>
-
-      <div class="card tx-card" id="txResultCard" hidden>
-        <div class="results-head">
-          <div>
-            <div class="summary" id="txTitle">Transcript</div>
-            <small id="txMeta"></small>
-          </div>
-          <div class="actions-row">
-            <button type="button" class="btn btn-primary btn-sm" id="copyAllBtn">Copy All</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="copyPlainBtn">Copy Plain</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="downloadSrtBtn">Download .SRT</button>
-            <button type="button" class="btn btn-ghost btn-sm" id="saveTxWsBtn">Save to Workspace</button>
-          </div>
-        </div>
-        <div class="tx-segments" id="txSegments"></div>
-      </div>
-    </section>
 
     <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
       <div class="ad-head">Advertisement</div>
@@ -265,6 +277,7 @@
     </div>
   </footer>
 
+  <script src="/static/liquid-bg.js?v=1" defer></script>
   <script src="/static/workspace-handoff.js?v=1" defer></script>
   <script src="/static/video-to-text.js?v=1" defer></script>
 </body>

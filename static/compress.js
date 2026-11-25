@@ -215,6 +215,7 @@
     if (!state.items.length) return;
     var token = ++state.token;
     state.running = true;
+    if (window.DroplabsSet3DPaused) window.DroplabsSet3DPaused(true);
     state.items.forEach(function (item) { item.busy = true; item.error = ''; item.note = ''; });
     render();
 
@@ -223,6 +224,7 @@
       if (token !== state.token) return;         // superseded by a newer run
       if (i >= state.items.length) {
         state.running = false;
+        if (window.DroplabsSet3DPaused) window.DroplabsSet3DPaused(false);
         render();
         return;
       }

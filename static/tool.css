@@ -52,8 +52,42 @@ button { font: inherit; }
   padding: 0 18px;
 }
 
+/* ----------------------------------------------------- 3D Hero Stage */
+.hero-stage {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  padding-bottom: 44px;
+  background: radial-gradient(circle at 65% 35%, #161118 0%, #0a080e 45%, #07060a 100%);
+}
+.hero-stage > .wrap { position: relative; z-index: 10; }
+
+#bg3dCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.28) 0%, rgba(8, 7, 11, 0.08) 56%, rgba(8, 7, 11, 0.58) 100%),
+    linear-gradient(180deg, rgba(8, 7, 11, 0.52) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
+}
+
 /* ---------------------------------------------------------------- nav */
-.site-head { padding: 18px 0 0; }
+.site-head { padding: 20px 0 0; width: 100%; position: relative; z-index: 20; }
 
 .nav {
   display: flex;
@@ -145,12 +179,13 @@ button { font: inherit; }
 }
 
 h1 {
-  font-size: clamp(30px, 6vw, 52px);
+  font-size: clamp(32px, 6vw, 56px);
   line-height: 1.05;
   letter-spacing: -0.035em;
   font-weight: 700;
-  margin: 18px auto 0;
+  margin: 22px auto 0;
   max-width: 24ch;
+  text-shadow: 0 10px 36px rgba(0, 0, 0, 0.72);
 }
 h1 em {
   font-style: normal;
@@ -163,9 +198,10 @@ h1 em {
 .lede {
   font-size: 15px;
   line-height: 1.6;
-  color: var(--text-2);
+  color: rgba(255, 255, 255, 0.8);
   max-width: 54ch;
   margin: 16px auto 0;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
 /* --------------------------------------------------------------- drop */
@@ -173,8 +209,11 @@ h1 em {
   margin: 30px 0 0;
   padding: 34px 20px;
   border-radius: 22px;
-  border: 1.5px dashed rgba(255, 255, 255, 0.18);
-  background: linear-gradient(180deg, rgba(28, 25, 31, 0.55) 0%, rgba(14, 13, 18, 0.7) 100%);
+  border: 1.5px dashed rgba(255, 255, 255, 0.22);
+  background: linear-gradient(180deg, rgba(22, 20, 26, 0.76) 0%, rgba(12, 11, 16, 0.86) 100%);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -274,8 +313,10 @@ input[type="number"], input[type="text"] {
   height: 42px;
   padding: 0 13px;
   border-radius: 11px;
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(12, 11, 16, 0.78);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   color: #fff;
   font-size: 14px;
   outline: none;
@@ -337,6 +378,8 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
   white-space: nowrap;
 }
 .btn-primary {
+  position: relative;
+  overflow: hidden;
   color: #fff;
   background: linear-gradient(95deg, var(--brand-a) 0%, var(--brand-b) 54%, var(--brand-c) 100%);
   border-color: rgba(255, 200, 185, 0.45);
@@ -344,6 +387,17 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
     0 10px 28px rgba(238, 48, 126, 0.42),
     inset 0 2px 3px rgba(255, 255, 255, 0.48),
     inset 0 -3px 6px rgba(145, 10, 74, 0.38);
+}
+.btn-primary::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 8%;
+  right: 8%;
+  height: 44%;
+  border-radius: 9999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.36) 0%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
 }
 .btn-primary:hover { transform: translateY(-1px); }
 .btn-primary:active { transform: translateY(0); }
@@ -632,15 +686,38 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
   .mobile-tools { display: flex; }
 }
 
-/* URL Dock (Video Downloader & Video to Text) */
+/* Dual-Layer Smoked Liquid-Glass URL Dock (matches InstaFetch) */
 .dock {
   margin: 28px auto 0;
-  max-width: 740px;
-  padding: 8px;
-  border-radius: 20px;
-  background: linear-gradient(180deg, rgba(28, 25, 31, 0.85) 0%, rgba(14, 13, 18, 0.9) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  max-width: 720px;
+  padding: 12px;
+  border-radius: 26px;
+  background:
+    radial-gradient(120% 140% at 50% 0%, rgba(255, 198, 172, 0.14) 0%, rgba(255, 255, 255, 0.03) 45%, rgba(14, 12, 16, 0.68) 100%),
+    linear-gradient(180deg, rgba(44, 38, 42, 0.56) 0%, rgba(18, 16, 20, 0.72) 100%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.72),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -1px 0 rgba(255, 175, 140, 0.12);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.dock:focus-within {
+  border-color: rgba(255, 185, 155, 0.42);
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.78),
+    0 0 42px rgba(242, 74, 130, 0.16),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.38);
+}
+.dock-well {
+  border-radius: 9999px;
+  padding: 6px 7px 6px 14px;
+  background: linear-gradient(180deg, rgba(12, 11, 15, 0.78) 0%, rgba(24, 21, 26, 0.68) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -649,17 +726,25 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
 .dock input[type="text"] {
   flex: 1;
   min-width: 0;
-  height: 46px;
+  height: 44px;
   border: 0;
   background: transparent;
-  padding: 0 12px;
+  padding: 0 6px;
   font-size: 15px;
   color: #fff;
 }
 .dock input[type="url"]:focus { outline: none; }
 .dock-actions { display: flex; align-items: center; gap: 6px; flex: none; }
 @media (max-width: 560px) {
-  .dock { flex-direction: column; align-items: stretch; padding: 10px; }
+  .dock { padding: 12px; border-radius: 24px; }
+  .dock-well {
+    border-radius: 18px;
+    padding: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dock input[type="url"],
+  .dock input[type="text"] { padding: 0 10px; height: 42px; }
   .dock-actions { justify-content: flex-end; }
   .dock-actions .btn-primary { flex: 1; }
 }
@@ -674,11 +759,14 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
 .plat-pill {
   font-size: 11.5px;
   font-weight: 500;
-  color: var(--text-2);
-  padding: 5px 11px;
+  color: rgba(255, 255, 255, 0.78);
+  padding: 5px 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(12, 11, 16, 0.76);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
 }
 
 /* Status & Error Banner */
@@ -827,9 +915,11 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; }
 .preset-btn {
   appearance: none;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-2);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(14, 12, 18, 0.78);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 12.5px;
   font-weight: 500;
   padding: 8px 13px;

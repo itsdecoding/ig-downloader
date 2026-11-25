@@ -93,13 +93,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=3" />
+  <link rel="stylesheet" href="/static/tool.css?v=5" />
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 </head>
 <body>
 
-  <header class="site-head">
-    <div class="wrap">
-      <nav class="nav">
+  <section id="top" class="hero-stage">
+    <canvas id="bg3dCanvas" aria-hidden="true"></canvas>
+    <div class="hero-vignette"></div>
+
+    <header class="site-head">
+      <div class="wrap">
+        <nav class="nav">
         <a class="brand" href="/" aria-label="Droplabs home">
           <span class="brand-mark">
             <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
@@ -132,10 +138,10 @@
         <a href="/tools/image-compressor" class="is-current">Compressor</a>
       </div>
     </div>
-  </header>
+    </header>
 
-  <main class="wrap">
-    <section class="hero">
+    <div class="wrap">
+      <section class="hero">
       <span class="pill"><span class="dot"></span>Runs in your browser · Nothing uploaded</span>
       <h1>Compress images<br /><em>without uploading them</em></h1>
       <p class="lede">
@@ -214,7 +220,10 @@
         <div class="result-list" id="resultList"></div>
       </div>
     </section>
+    </div>
+  </section>
 
+  <main class="wrap">
     <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
       <div class="ad-head">Advertisement</div>
       <div class="ad-frame">
@@ -314,6 +323,7 @@
     </div>
   </footer>
 
+  <script src="/static/liquid-bg.js?v=1" defer></script>
   <script src="/static/workspace-handoff.js?v=1" defer></script>
   <script src="/static/compress.js?v=2" defer></script>
 </body>
