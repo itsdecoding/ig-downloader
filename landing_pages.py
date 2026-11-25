@@ -641,8 +641,16 @@ def strip_markers(html: str) -> str:
     return _MARKER.sub("", html)
 
 
+# Standalone tool pages that are not Instagram landing pages. Each one is its
+# own hand-written document in static/, so it only needs to be listed here.
+TOOL_URLS = [
+    ("/image-compressor", "0.9"),
+]
+
+
 def sitemap_urls():
     """(path, priority) pairs, homepage first."""
     urls = [("/", "1.0")]
     urls += [(f"/{slug}", "0.9") for slug in ORDER]
+    urls += TOOL_URLS
     return urls

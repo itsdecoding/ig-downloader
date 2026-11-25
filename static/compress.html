@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compress Images Online Free — No Upload, No Signup | Droplabs</title>
+  <meta name="description" content="Compress JPG, PNG and WebP images in your browser. Smaller files, same look, nothing uploaded to a server. Free, no signup, works on phone and desktop." />
+  <meta name="keywords" content="compress image online, image compressor, compress jpg, reduce image size, compress png, webp converter, compress image to 100kb" />
+  <link rel="canonical" href="https://droplabs.site/image-compressor" />
+  <meta name="theme-color" content="#08070b" />
+
+  <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon-96.png?v=3" />
+  <link rel="icon" type="image/png" sizes="48x48" href="/static/favicon-48.png?v=3" />
+  <link rel="apple-touch-icon" href="/static/apple-touch-icon.png?v=3" />
+
+  <meta property="og:title" content="Compress Images Without Uploading Them — Droplabs" />
+  <meta property="og:description" content="Shrink JPG, PNG and WebP files in your browser. Nothing leaves your device. Free, no signup." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://droplabs.site/image-compressor" />
+  <meta property="og:site_name" content="Droplabs" />
+  <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Compress Images Without Uploading Them — Droplabs" />
+  <meta name="twitter:description" content="Shrink JPG, PNG and WebP files in your browser. Nothing leaves your device." />
+  <meta name="twitter:image" content="https://droplabs.site/static/og-image.jpg" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "name": "Droplabs Image Compressor",
+          "url": "https://droplabs.site/image-compressor",
+          "applicationCategory": "MultimediaApplication",
+          "operatingSystem": "Any",
+          "description": "Compress JPG, PNG and WebP images entirely in the browser. Files are never uploaded to a server.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+          "featureList": [
+            "Batch compression",
+            "JPEG, PNG and WebP output",
+            "Target file size in KB",
+            "No upload — runs on the device"
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Droplabs", "item": "https://droplabs.site/" },
+            { "@type": "ListItem", "position": 2, "name": "Image Compressor", "item": "https://droplabs.site/image-compressor" }
+          ]
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Are my images uploaded to a server?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No. The compression runs in your browser using the canvas API, so the file never leaves your device. There is no upload step, no server copy and no storage." }
+            },
+            {
+              "@type": "Question",
+              "name": "How much smaller will my image get?",
+              "acceptedAnswer": { "@type": "Answer", "text": "A typical phone photo saved as JPEG at 75-80% quality comes out 60-85% smaller with no visible difference on a screen. PNG screenshots shrink far less unless you convert them to JPEG or WebP." }
+            },
+            {
+              "@type": "Question",
+              "name": "Which format should I choose?",
+              "acceptedAnswer": { "@type": "Answer", "text": "WebP is smallest for photos and works in every current browser. JPEG is the safest choice for compatibility and email. PNG is only worth keeping for graphics with transparency, and it does not respond to the quality slider." }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I compress an image to exactly 100 KB?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Enter a target size and the tool searches for the highest quality that still fits under it. If even the lowest quality is too large, lower the maximum width and it will fit." }
+            },
+            {
+              "@type": "Question",
+              "name": "Does compressing remove the EXIF data?",
+              "acceptedAnswer": { "@type": "Answer", "text": "Yes. Re-encoding through a canvas drops EXIF, including GPS coordinates. That is usually what you want before posting a photo publicly." }
+            },
+            {
+              "@type": "Question",
+              "name": "Is there a file size or count limit?",
+              "acceptedAnswer": { "@type": "Answer", "text": "No server limit, because nothing is uploaded. Very large images are bounded only by your device's memory. Twenty files at a time is a comfortable batch on a phone." }
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/tool.css?v=1" />
+</head>
+<body>
+
+  <header class="site-head">
+    <div class="wrap">
+      <nav class="nav">
+        <a class="brand" href="/" aria-label="Droplabs home">
+          <span class="brand-mark">
+            <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
+              <defs>
+                <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                  <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
+                  <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
+                </linearGradient>
+              </defs>
+              <path fill="url(#dropMark)" fill-rule="evenodd"
+                d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
+            </svg>
+          </span>
+          <span class="brand-text">
+            <span class="brand-name">Droplabs</span>
+            <span class="brand-sub">Image Compressor</span>
+          </span>
+        </a>
+        <div class="nav-links">
+          <a href="/">InstaFetch</a>
+          <a href="/instagram-reel-downloader">Reels</a>
+          <a href="#faq">FAQ</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <span class="pill"><span class="dot"></span>Runs in your browser · Nothing uploaded</span>
+      <h1>Compress images<br /><em>without uploading them</em></h1>
+      <p class="lede">
+        Drop a JPG, PNG or WebP and get a smaller file in seconds. Your photos never leave this
+        device — no upload, no server, no queue, no account.
+      </p>
+
+      <div class="drop" id="drop" role="button" tabindex="0" aria-label="Choose images to compress">
+        <input id="fileInput" type="file" accept="image/*" multiple hidden />
+        <span class="drop-icon">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <circle cx="8.8" cy="8.8" r="1.6" />
+            <path d="M21 15.5l-4.2-4.2a1.6 1.6 0 0 0-2.3 0L6 20" />
+          </svg>
+        </span>
+        <strong>Drop images here</strong>
+        <span class="drop-sub">or click to choose · JPG, PNG, WebP · 20 at a time</span>
+      </div>
+
+      <div class="card controls" id="controls" hidden>
+        <div class="control">
+          <span class="label">Output format</span>
+          <div class="seg" id="formatSeg" role="group" aria-label="Output format">
+            <button type="button" data-format="keep" class="is-active">Keep</button>
+            <button type="button" data-format="image/jpeg">JPEG</button>
+            <button type="button" data-format="image/webp">WebP</button>
+            <button type="button" data-format="image/png">PNG</button>
+          </div>
+          <p class="hint">WebP is smallest. JPEG is the safest for email and old apps.</p>
+        </div>
+
+        <div class="control">
+          <label for="quality">Quality <output id="qualityOut">80%</output></label>
+          <input id="quality" type="range" min="20" max="100" step="1" value="80" />
+          <p class="hint" id="qualityHint">70–80% is usually invisible on a screen.</p>
+        </div>
+
+        <div class="control">
+          <label for="maxWidth">Max width <span style="text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></label>
+          <input id="maxWidth" type="number" min="64" max="12000" step="10" placeholder="Original" inputmode="numeric" />
+          <p class="hint">1080 is plenty for a phone screen. Leave blank to keep the size.</p>
+        </div>
+
+        <div class="control">
+          <label for="target">Target size <span style="text-transform:none;letter-spacing:0;font-weight:400">(optional)</span></label>
+          <div class="suffix">
+            <input id="target" type="number" min="5" max="20000" step="5" placeholder="Off" inputmode="numeric" />
+            <span>KB</span>
+          </div>
+          <p class="hint">Finds the best quality that still fits under this size.</p>
+        </div>
+      </div>
+
+      <div class="card results" id="results" hidden>
+        <div class="results-head">
+          <div>
+            <div class="summary" id="summary">Working…</div>
+            <small id="summarySub"></small>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button type="button" class="btn btn-ghost btn-sm" id="clearBtn">Clear</button>
+            <button type="button" class="btn btn-primary btn-sm" id="downloadAll">Download all</button>
+          </div>
+        </div>
+        <div class="result-list" id="resultList"></div>
+      </div>
+    </section>
+
+    <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
+      <div class="ad-head">Advertisement</div>
+      <div class="ad-frame">
+        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="ad-unit"></div>
+      </div>
+    </section>
+
+    <section class="section" id="how">
+      <h2>How it works</h2>
+      <p class="section-sub">Three steps, and none of them involve a server.</p>
+      <div class="steps">
+        <div class="step card">
+          <div class="num">01</div>
+          <h3>Pick your images</h3>
+          <p>Drag a folder in, tap to browse, or paste a screenshot straight from the clipboard. Up to 20 at once.</p>
+        </div>
+        <div class="step card">
+          <div class="num">02</div>
+          <h3>Set the size you need</h3>
+          <p>Choose a format and quality, cap the width, or type a target in KB and let the tool find the best quality that fits.</p>
+        </div>
+        <div class="step card">
+          <div class="num">03</div>
+          <h3>Download</h3>
+          <p>Each file shows its before and after size. Save them one by one or hit download all.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What actually happens to your file</h2>
+      <div class="prose">
+        <p>Your browser decodes the image, draws it onto a canvas at the size you asked for, and re-encodes it. That re-encoding step is the compression: the picture is rebuilt from pixels and written back out with a smaller palette of detail. Nothing is sent anywhere, because the canvas lives in your tab.</p>
+
+        <h3>Why the same photo can drop 80%</h3>
+        <p>Phone cameras save at a quality setting far above what a screen can show. Dropping from 95% to 78% throws away detail your eye cannot resolve at normal viewing size, and the file gets dramatically smaller. Below about 60% you start to see blocking in gradients and skies, which is why the slider defaults to 80%.</p>
+
+        <h3>JPEG, WebP or PNG</h3>
+        <p><strong>WebP</strong> is typically 25–35% smaller than JPEG at the same visible quality and is supported everywhere that matters now. <strong>JPEG</strong> wins on compatibility — email clients, old software, print shops. <strong>PNG</strong> is lossless, so the quality slider does nothing for it: the only way to shrink a PNG is to reduce its dimensions or convert it to JPEG or WebP.</p>
+
+        <h3>Transparency</h3>
+        <p>JPEG has no alpha channel. If you convert a transparent PNG to JPEG, the transparent area becomes white. Keep PNG or use WebP when you need the background to stay see-through.</p>
+
+        <h3>What gets removed</h3>
+        <p>Re-encoding through a canvas drops EXIF metadata, including the GPS coordinates some cameras embed. The picture stays, the location does not. That is usually an improvement before posting a photo publicly.</p>
+      </div>
+    </section>
+
+    <section class="section" id="faq">
+      <h2>Frequently asked questions</h2>
+      <div class="faq" style="margin-top:20px">
+        <details open>
+          <summary>Are my images uploaded to a server?</summary>
+          <div class="answer">No. Compression runs in your browser using the canvas API, so the file never leaves your device. There is no upload step, no server copy and no storage.</div>
+        </details>
+        <details>
+          <summary>How much smaller will my image get?</summary>
+          <div class="answer">A typical phone photo saved as JPEG at 75–80% quality comes out 60–85% smaller with no visible difference on a screen. PNG screenshots shrink far less unless you convert them to JPEG or WebP.</div>
+        </details>
+        <details>
+          <summary>Which format should I choose?</summary>
+          <div class="answer">WebP is smallest for photos and works in every current browser. JPEG is the safest choice for compatibility and email. PNG is only worth keeping for graphics with transparency, and it does not respond to the quality slider.</div>
+        </details>
+        <details>
+          <summary>Can I compress an image to exactly 100 KB?</summary>
+          <div class="answer">Yes. Enter a target size and the tool searches for the highest quality that still fits under it. If even the lowest quality is too large, lower the maximum width and it will fit.</div>
+        </details>
+        <details>
+          <summary>Does compressing remove the EXIF data?</summary>
+          <div class="answer">Yes. Re-encoding through a canvas drops EXIF, including GPS coordinates. That is usually what you want before posting a photo publicly.</div>
+        </details>
+        <details>
+          <summary>Is there a file size or count limit?</summary>
+          <div class="answer">No server limit, because nothing is uploaded. Very large images are bounded only by your device's memory. Twenty files at a time is a comfortable batch on a phone.</div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div class="foot-row">
+        <div>Droplabs · free tools for people who make things</div>
+        <div class="foot-links">
+          <a href="/">InstaFetch</a>
+          <a href="/instagram-reel-downloader">Reels</a>
+          <a href="/instagram-story-downloader">Stories</a>
+          <a href="/instagram-photo-downloader">Photos</a>
+          <a href="/instagram-carousel-downloader">Carousels</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/compress.js?v=1" defer></script>
+</body>
+</html>

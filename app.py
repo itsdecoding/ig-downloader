@@ -35,7 +35,7 @@ GOOGLE_SITE_VERIFICATION = (os.getenv("GOOGLE_SITE_VERIFICATION") or "").strip()
 CF_ANALYTICS_TOKEN = (os.getenv("CF_ANALYTICS_TOKEN") or "").strip()
 
 # Bump when the page content changes so the sitemap's lastmod stays truthful.
-SITE_UPDATED = "2026-11-24"
+SITE_UPDATED = "2026-11-25"
 
 # Optional Proxy Configuration
 PROXY_URL = os.getenv("PROXY_URL") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY")
@@ -492,6 +492,20 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 # only ever need fixing once.
 _HTML_CACHE: Dict[str, Any] = {"mtime": None, "html": ""}
 
+# Standalone tool pages are hand-written documents, not the app shell, so they
+# get their own tiny mtime cache instead of going through landing_pages.
+_TOOL_CACHE: Dict[str, Any] = {}
+
+
+def _tool_html(name: str) -> str:
+    path = STATIC_DIR / name
+    mtime = path.stat().st_mtime
+    entry = _TOOL_CACHE.get(name)
+    if not entry or entry["mtime"] != mtime:
+        entry = {"mtime": mtime, "html": path.read_text(encoding="utf-8")}
+        _TOOL_CACHE[name] = entry
+    return entry["html"]
+
 
 def _base_html() -> str:
     path = STATIC_DIR / "index.html"
@@ -534,6 +548,16 @@ async def index():
 @app.head("/", include_in_schema=False)
 async def index_head():
     return _page(None)
+
+
+@app.api_route("/image-compressor", methods=["GET", "HEAD"], include_in_schema=False)
+async def image_compressor():
+    html = _tool_html("compress.html")
+    extras = _head_extras()
+    if extras:
+        html = html.replace("</head>", "  " + extras + "\n</head>", 1)
+    return HTMLResponse(content=html)
+
 
 @app.api_route("/{slug}", methods=["GET", "HEAD"], include_in_schema=False)
 async def landing_page(slug: str):
