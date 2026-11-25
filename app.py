@@ -1359,7 +1359,7 @@ def _render_tool_page(filename: str) -> HTMLResponse:
 
 @app.api_route("/tools/video-downloader", methods=["GET", "HEAD"], include_in_schema=False)
 async def tool_video_downloader():
-    return _render_tool_page("video-downloader.html")
+    return _page("tools/video-downloader")
 
 
 @app.api_route("/tools/video-to-text", methods=["GET", "HEAD"], include_in_schema=False)

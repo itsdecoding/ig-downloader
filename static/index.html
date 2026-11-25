@@ -964,6 +964,20 @@
                   </svg>
                   <span id="saveBtnLabel">Save HD Video</span>
                 </a>
+                <button
+                  id="saveWsBtn"
+                  type="button"
+                  class="btn-paste px-4 h-11 sm:h-9 rounded-full text-[12.5px] font-medium text-white/90 inline-flex items-center justify-center cursor-pointer"
+                >
+                  Save to Workspace
+                </button>
+                <a
+                  id="transcribeLink"
+                  href="/tools/video-to-text"
+                  class="btn-paste px-3.5 h-11 sm:h-9 rounded-full text-[12.5px] font-medium text-white/80 inline-flex items-center justify-center no-underline"
+                >
+                  Transcribe
+                </a>
                 <span id="selectedMeta" class="text-[11px] text-white/45">MP4 • Direct attachment</span>
               </div>
             </div>
@@ -1808,6 +1822,8 @@
 
       const quality1080Btn = document.getElementById('quality1080Btn');
       const saveFileBtn = document.getElementById('saveFileBtn');
+      const saveWsBtn = document.getElementById('saveWsBtn');
+      const transcribeLink = document.getElementById('transcribeLink');
       const saveBtnLabel = document.getElementById('saveBtnLabel');
       const selectedMeta = document.getElementById('selectedMeta');
 
@@ -2061,7 +2077,7 @@
         setButtonsLoading(true);
 
         try {
-          const res = await fetch('/api/extract', {
+          const res = await fetch('/api/video/extract', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: rawUrl })
@@ -2091,8 +2107,8 @@
       }
 
       function renderVideoResult(data, inputUrl) {
-        previewTitle.textContent = data.title || 'Instagram Video';
-        previewAuthor.textContent = data.author ? `@${data.author}` : '@instagram_creator';
+        previewTitle.textContent = data.title || 'Creator Video';
+        previewAuthor.textContent = data.author ? `@${String(data.author).replace(/^@/, '')}` : '@creator';
         previewUrl.textContent = inputUrl;
         previewDuration.textContent = data.duration_str && data.duration_str !== '0:00' ? data.duration_str : 'HD';
 
@@ -2107,21 +2123,30 @@
         }
 
         // Setup preview thumbnail & video player
-        activeDownloadUrl = data.video_url;
-        activeFilename = (data.title || 'instagram_video').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 35);
-        if (!activeFilename) activeFilename = 'instagram_reel';
+        activeDownloadUrl = data.download_url || data.video_url;
+        activeFilename = (data.title || 'droplabs_video').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 35);
+        if (!activeFilename) activeFilename = 'droplabs_video';
 
-        if (data.thumbnail) {
-          previewThumbnail.src = data.thumbnail;
+        const thumbSrc = data.thumbnail_proxy || data.thumbnail || '';
+        if (thumbSrc) {
+          previewThumbnail.src = thumbSrc;
           previewThumbnail.classList.remove('hidden');
         } else {
           previewThumbnail.classList.add('hidden');
         }
 
-        previewVideo.src = data.video_url;
+        previewVideo.src = data.video_url || '';
         previewVideo.classList.add('hidden');
         playPreviewBtn.classList.remove('hidden');
         applyStreamMetadata();
+
+        if (transcribeLink) {
+          transcribeLink.href = `/tools/video-to-text?url=${encodeURIComponent(data.source_url || inputUrl)}`;
+        }
+        if (saveWsBtn) {
+          saveWsBtn.textContent = 'Save to Workspace';
+          saveWsBtn.disabled = false;
+        }
 
         playPreviewBtn.onclick = () => {
           previewThumbnail.classList.add('hidden');
@@ -2130,8 +2155,8 @@
           previewVideo.play();
         };
 
-        // Save File button triggers attachment proxy
-        updateDownloadLinks(activeDownloadUrl, activeFilename);
+        // Save File button triggers attachment proxy (or HD mux for YouTube Shorts)
+        updateDownloadLinks(activeDownloadUrl, activeFilename, !!data.download_url);
 
         // Check if carousel album
         if (data.is_carousel && data.items && data.items.length > 1) {
@@ -2156,9 +2181,10 @@
 
               activeDownloadUrl = item.video_url;
               const clipFilename = `${activeFilename}_clip_${idx + 1}`;
-              updateDownloadLinks(activeDownloadUrl, clipFilename);
+              updateDownloadLinks(activeDownloadUrl, clipFilename, false);
               previewVideo.src = item.video_url;
-              if (item.thumbnail) previewThumbnail.src = item.thumbnail;
+              const clipThumb = item.thumbnail_proxy || item.thumbnail;
+              if (clipThumb) previewThumbnail.src = clipThumb;
               previewThumbnail.classList.remove('hidden');
               playPreviewBtn.classList.remove('hidden');
               previewVideo.classList.add('hidden');
@@ -2174,9 +2200,47 @@
         previewState.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
 
-      function updateDownloadLinks(videoUrl, filename) {
-        saveFileBtn.href = `/api/download?url=${encodeURIComponent(videoUrl)}&filename=${encodeURIComponent(filename)}`;
+      function updateDownloadLinks(urlOrPath, filename, isDirectApiPath) {
+        saveFileBtn.href = isDirectApiPath
+          ? urlOrPath
+          : `/api/video/download?url=${encodeURIComponent(urlOrPath)}&filename=${encodeURIComponent(filename)}`;
         saveFileBtn.download = `${filename}.mp4`;
+      }
+
+      if (saveWsBtn) {
+        saveWsBtn.addEventListener('click', () => {
+          if (!currentMediaData) return;
+          try {
+            const raw = localStorage.getItem('droplabs_workspace_v1');
+            const items = raw ? JSON.parse(raw) : [];
+            const sourceUrl = currentMediaData.source_url || getUrlValue();
+            const sourceKey = `video:${sourceUrl || currentMediaData.id}`;
+            const filtered = Array.isArray(items) ? items.filter(it => it.sourceKey !== sourceKey) : [];
+            const plat = currentMediaData.platform === 'youtube' ? 'YouTube Shorts'
+              : currentMediaData.platform === 'tiktok' ? 'TikTok' : 'Instagram';
+            filtered.unshift({
+              id: `ws_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+              savedAt: new Date().toISOString(),
+              note: '',
+              type: 'video',
+              sourceKey,
+              platform: plat,
+              title: currentMediaData.title || 'Saved Video',
+              author: currentMediaData.author || '',
+              quality: currentMediaData.quality || 'HD',
+              duration: currentMediaData.duration_str || '',
+              sourceUrl,
+              thumbnail: currentMediaData.thumbnail_proxy || currentMediaData.thumbnail || '',
+              caption: currentMediaData.caption || ''
+            });
+            localStorage.setItem('droplabs_workspace_v1', JSON.stringify(filtered.slice(0, 100)));
+            saveWsBtn.textContent = 'Saved ✓';
+            saveWsBtn.disabled = true;
+            showToast('Saved to Workspace — open /workspace');
+          } catch (_) {
+            showToast('Could not save to Workspace');
+          }
+        });
       }
 
       clearPreviewBtn.addEventListener('click', () => {

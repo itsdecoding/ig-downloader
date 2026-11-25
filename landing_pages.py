@@ -392,6 +392,74 @@ PAGES["instagram-carousel-downloader"] = {
 }
 
 
+PAGES["tools/video-downloader"] = {
+    "label": "Video Downloader",
+    "short": "All Videos",
+    "title": "Free Video Downloader — Instagram Reels, TikTok & YouTube Shorts | Droplabs",
+    "desc": (
+        "Download Instagram Reels, TikTok videos, and YouTube Shorts as clean MP4 files with thumbnail preview. "
+        "Free, no login wall, works on iPhone, Android, and desktop."
+    ),
+    "keywords": (
+        "video downloader, instagram reel downloader, tiktok video downloader, "
+        "youtube shorts downloader, download reels mp4, droplabs"
+    ),
+    "h1": "Download Reels,<br />TikToks &amp; Shorts",
+    "badge": "INSTAGRAM \u2022 TIKTOK \u2022 YOUTUBE SHORTS",
+    "placeholder": "Paste Reel, TikTok, or Shorts link...",
+    "support": "Supports Instagram Reels, TikTok &amp; YouTube Shorts",
+    "steps_label": "3 Simple Steps",
+    "howto_h2": "How to Download Any Short Video",
+    "howto_sub": "Save public Instagram Reels, TikToks, and YouTube Shorts as clean MP4 files in seconds.",
+    "steps": [
+        (
+            "link",
+            "Copy the Video Link",
+            "Grab the share URL from an Instagram Reel, TikTok clip (including vm.tiktok.com), or YouTube Short.",
+        ),
+        (
+            "clipboard",
+            "Paste Into the Dock",
+            "Drop the link into the dock above and hit Download. Droplabs resolves the direct MP4 stream with no login.",
+        ),
+        (
+            "download",
+            "Save MP4 or Workspace",
+            "Download the MP4 straight to your device, transcribe it in one click, or save it to your Droplabs Workspace.",
+        ),
+    ],
+    "body": """
+      <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-white mb-4">One fast downloader for Reels, TikTok &amp; YouTube Shorts</h2>
+      <p>Creators research across all three short-form feeds. Instead of juggling three different ad-ridden sites, paste any public Instagram Reel, TikTok video, or YouTube Shorts link into the same dock above and get a clean MP4 with audio intact.</p>
+      <p>Every extraction shows a thumbnail preview, duration, and resolution before you save, with a 1-click handoff to Video to Text or your Droplabs Workspace.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">HD YouTube Shorts without 360p limits</h3>
+      <p>YouTube separates 720p and 1080p video from audio. When an HD split stream is exposed for a Short, our server automatically muxes video and audio with FFmpeg into one playable MP4 instead of handing back a low-res file.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">TikTok short links &amp; Instagram carousels</h3>
+      <p>Short share URLs like <code class="text-white/80">vm.tiktok.com</code>, <code class="text-white/80">vt.tiktok.com</code>, and <code class="text-white/80">youtu.be</code> work out of the box, alongside multi-clip Instagram carousel posts.</p>
+    """,
+    "faq": [
+        (
+            "Which video platforms are supported?",
+            "Public Instagram Reels, Posts, Stories, and Carousels, TikTok videos (including vm.tiktok.com and vt.tiktok.com), and YouTube Shorts / YouTube videos.",
+        ),
+        (
+            "Do I need an account or login?",
+            "No. The downloader is completely free and ungated. You can also save extracted clips straight to your Droplabs Workspace in one click.",
+        ),
+        (
+            "What video quality do I get?",
+            "You get the highest MP4 resolution the platform publicly exposes (typically 720p or 1080p), with original audio included and no artificial upscaling.",
+        ),
+        (
+            "Can I transcribe the video right after extracting?",
+            "Yes. Click Transcribe on the preview card to send the same video URL straight into Video to Text for timestamped Whisper transcripts.",
+        ),
+    ],
+}
+
+
 ORDER = [
     "instagram-reel-downloader",
     "instagram-story-downloader",
@@ -616,6 +684,11 @@ def render(base: str, slug: str) -> str:
         f'<div class="hero-badge quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-6 sm:mb-7">{page["badge"]}</div>',
         out,
     )
+    if "placeholder" in page:
+        out = out.replace('placeholder="Paste Instagram link here..."', f'placeholder="{page["placeholder"]}"')
+        out = out.replace('placeholder="Paste reel link..."', f'placeholder="{page["placeholder"]}"')
+    if "support" in page:
+        out = out.replace('<span>Supports Reels, Posts, IGTV &amp; Carousels</span>', f'<span>{page["support"]}</span>', 1)
 
     out = _between(out, "HOWTO", _howto_section(page))
     out = _between(out, "FAQ", _faq_section(page))
