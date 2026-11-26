@@ -792,6 +792,29 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: rgba(255, 255, 255, 0.85);
 }
+.notice {
+  margin: 18px auto 0;
+  max-width: 740px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  text-align: left;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fde68a;
+}
+.notice[hidden] { display: none; }
+.notice strong { color: #fff; }
+.hub-note {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #fca5a5;
+}
+.hub-note[hidden] { display: none; }
 .status-box .spinner {
   width: 16px; height: 16px;
   border-radius: 50%;

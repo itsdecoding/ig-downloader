@@ -78,7 +78,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=5" />
+  <link rel="stylesheet" href="/static/tool.css?v=7" />
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
 </head>
@@ -130,12 +130,17 @@
         <span class="pill"><span class="dot"></span>FFmpeg audio strip · Groq Whisper</span>
         <h1>Turn any short video<br /><em>into timestamped text</em></h1>
 
+        <div class="notice" data-groq-unavailable hidden role="status">
+          <strong>Transcription is temporarily unavailable.</strong>
+          <span>The server is missing its Whisper key. The Video Downloader and Image Compressor are fully working.</span>
+        </div>
+
         <div class="mode-switch" role="tablist" aria-label="Input source">
           <button type="button" id="tabUrl" class="is-active" role="tab" aria-selected="true">Paste Video URL</button>
           <button type="button" id="tabFile" role="tab" aria-selected="false">Upload Short Clip</button>
         </div>
 
-        <form class="dock" id="urlForm" novalidate>
+        <form class="dock" id="urlForm" novalidate data-groq-block>
           <div class="dock-well">
             <input
               id="txUrlInput"
@@ -148,13 +153,13 @@
             />
             <div class="dock-actions">
               <button type="button" class="btn btn-ghost btn-sm" id="txPasteBtn">Paste</button>
-              <button type="submit" class="btn btn-primary" id="txSubmitUrl">Transcribe</button>
+              <button type="submit" class="btn btn-primary" id="txSubmitUrl" data-groq-submit>Transcribe</button>
             </div>
           </div>
         </form>
 
-        <div class="drop" id="txDrop" role="button" tabindex="0" hidden aria-label="Upload short video or audio clip">
-          <input id="txFileInput" type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.mp3,.m4a,.wav" hidden />
+        <div class="drop" id="txDrop" role="button" tabindex="0" hidden aria-label="Upload short video or audio clip" data-groq-block>
+          <input id="txFileInput" type="file" accept="video/*,audio/*,.mp4,.mov,.webm,.mkv,.mp3,.m4a,.wav" hidden data-groq-submit />
           <span class="drop-icon">
             <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 16V4" />
@@ -275,6 +280,7 @@
 
   <script src="/static/liquid-bg.js?v=1" defer></script>
   <script src="/static/workspace-handoff.js?v=1" defer></script>
+  <script src="/static/groq-status.js?v=1" defer></script>
   <script src="/static/video-to-text.js?v=1" defer></script>
 </body>
 </html>
