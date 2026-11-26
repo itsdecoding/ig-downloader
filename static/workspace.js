@@ -8,7 +8,6 @@
   var filters = $('wsFilters');
   var search = $('wsSearch');
   var clearBtn = $('wsClearBtn');
-  var proBtn = $('proBtn');
 
   var currentFilter = 'all';
   var currentQuery = '';
@@ -156,12 +155,6 @@
     var ta = e.target.closest('textarea[data-note]');
     if (!ta || !window.DroplabsWorkspace) return;
     window.DroplabsWorkspace.updateNote(ta.getAttribute('data-note'), ta.value);
-  });
-
-  proBtn.addEventListener('click', function () {
-    if (window.DroplabsWorkspace) {
-      window.DroplabsWorkspace.showToast('Pro cloud sync & unlimited Whisper ($20/mo) launching soon.', '', '');
-    }
   });
 
   document.addEventListener('DOMContentLoaded', render);
