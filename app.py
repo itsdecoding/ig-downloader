@@ -21,6 +21,7 @@ from fastapi.responses import (
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.background import BackgroundTask
+from starlette.datastructures import MutableHeaders
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import httpx
@@ -135,6 +136,40 @@ class TranscribeBodyLimitMiddleware:
         await self.app(scope, receive, send)
 
 
+class StaticCacheMiddleware:
+    """Give hashed/versioned static assets a long, immutable cache lifetime.
+
+    Every asset reference in the HTML carries ?v=N, so a version bump is the
+    cache key. Without this header Cloudflare marks the files DYNAMIC and the
+    browser revalidates them on each visit.
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        path = scope.get("path", "")
+        if scope.get("type") != "http" or not path.startswith("/static/"):
+            await self.app(scope, receive, send)
+            return
+
+        versioned = b"v=" in (scope.get("query_string") or b"")
+        cache_value = (
+            "public, max-age=31536000, immutable"
+            if versioned
+            else "public, max-age=86400"
+        )
+
+        async def send_with_cache(message):
+            if message["type"] == "http.response.start":
+                headers = MutableHeaders(scope=message)
+                if "cache-control" not in headers:
+                    headers["cache-control"] = cache_value
+            await send(message)
+
+        await self.app(scope, receive, send_with_cache)
+
+
 app = FastAPI(
     title="InstaFetch API",
     description="High-speed public Instagram video extraction and streaming engine.",
@@ -155,6 +190,9 @@ app.add_middleware(
     TranscribeBodyLimitMiddleware,
     max_bytes=MAX_TRANSCRIBE_UPLOAD_BYTES + 2 * 1024 * 1024,
 )
+
+# Let versioned JS/CSS/images cache at the edge and in the browser.
+app.add_middleware(StaticCacheMiddleware)
 
 class ExtractRequest(BaseModel):
     url: str
