@@ -153,7 +153,7 @@
   var LEGAL_COPY = {
     privacy: {
       title: 'Privacy Policy',
-      body: '<p>Droplabs tools run without user accounts or tracking cookies. The Image Compressor processes images 100% locally in your browser tab without uploading files.</p><p>For Video Downloader and Video-to-Text, URLs or temporary audio clips are processed in memory/ephemeral temp folders solely to return your MP4 or transcript and are discarded immediately after the request completes.</p><p>Items you save with "Save to Workspace" are stored locally in your browser (localStorage) until you choose to sync to a cloud account.</p>'
+      body: '<p>Droplabs does not require an account and does not run its own analytics or tracking cookies. The Image Compressor runs entirely in your browser, so your images never leave your device.</p><p>The Video Downloader resolves public media URLs and streams the file through our server so your browser can save it. Video-to-Text temporarily downloads the clip, strips the audio with FFmpeg, and sends that audio to Groq\'s Whisper API for transcription. Groq processes it under its own privacy policy. Temporary files are deleted when the request finishes.</p><p>We show ads through Adsterra. Adsterra and its partners may set cookies or similar technologies to measure and personalize ads.</p><p>Items saved with "Save to Workspace" stay in your browser\'s localStorage on this device. There is no cloud account or sync.</p>'
     },
     terms: {
       title: 'Terms of Service',
@@ -161,7 +161,7 @@
     },
     dmca: {
       title: 'DMCA & Copyright',
-      body: '<p>Droplabs does not host, index, or archive third-party social media videos. Our downloader resolves publicly accessible media streams on demand, and temporary transcription audio is deleted immediately after processing.</p><p>For copyright inquiries, reach out via the contact details published on droplabs.site.</p>'
+      body: '<p>Droplabs does not host, index, or archive third-party media. The downloader resolves publicly accessible streams on demand, and temporary transcription audio is deleted immediately after processing.</p><p>For copyright or takedown requests, open an issue at <a href="https://github.com/itsdecoding/ig-downloader/issues" target="_blank" rel="noopener">github.com/itsdecoding/ig-downloader</a> with the URL and a description of your rights. We respond to valid notices.</p>'
     }
   };
 
