@@ -5,9 +5,12 @@
   var $ = function (id) { return document.getElementById(id); };
   var grid = $('wsGrid');
   var empty = $('wsEmpty');
+  var noMatch = $('wsNoMatch');
+  var toolbar = $('wsToolbar');
   var filters = $('wsFilters');
   var search = $('wsSearch');
   var clearBtn = $('wsClearBtn');
+  var resetBtn = $('wsResetBtn');
 
   var currentFilter = 'all';
   var currentQuery = '';
@@ -28,6 +31,10 @@
   function render() {
     if (!window.DroplabsWorkspace) return;
     var items = window.DroplabsWorkspace.list();
+
+    // Controls only appear once there is something to filter or clear.
+    if (toolbar) toolbar.hidden = items.length === 0;
+
     var filtered = items.filter(function (it) {
       if (currentFilter !== 'all' && it.type !== currentFilter) return false;
       if (currentQuery) {
@@ -37,13 +44,22 @@
       return true;
     });
 
-    if (!filtered.length) {
+    if (!items.length) {
       grid.innerHTML = '';
       empty.hidden = false;
+      if (noMatch) noMatch.hidden = true;
+      return;
+    }
+
+    if (!filtered.length) {
+      grid.innerHTML = '';
+      empty.hidden = true;
+      if (noMatch) noMatch.hidden = false;
       return;
     }
 
     empty.hidden = true;
+    if (noMatch) noMatch.hidden = true;
     var html = '';
     filtered.forEach(function (it) {
       html += '<article class="card ws-item" data-id="' + escapeHtml(it.id) + '">';
@@ -114,6 +130,20 @@
     window.DroplabsWorkspace.clear();
     render();
   });
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      currentFilter = 'all';
+      currentQuery = '';
+      if (search) search.value = '';
+      if (filters) {
+        Array.prototype.forEach.call(filters.querySelectorAll('button'), function (b) {
+          b.classList.toggle('is-active', b.getAttribute('data-filter') === 'all');
+        });
+      }
+      render();
+    });
+  }
 
   grid.addEventListener('click', async function (e) {
     var rem = e.target.closest('[data-remove]');

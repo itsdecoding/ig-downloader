@@ -134,8 +134,8 @@
       z-index: 1;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.28) 0%, rgba(8, 7, 11, 0.08) 56%, rgba(8, 7, 11, 0.58) 100%),
-        linear-gradient(180deg, rgba(8, 7, 11, 0.52) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
+        radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.38) 0%, rgba(8, 7, 11, 0.16) 56%, rgba(8, 7, 11, 0.64) 100%),
+        linear-gradient(180deg, rgba(8, 7, 11, 0.58) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
     }
 
     /* Floating Smoked-Glass Pill Navbar */
@@ -370,10 +370,15 @@
       }
     }
 
-    /* Hero support line: scrim keeps it legible over bright 3D ribbons */
+    /* Hero support line: text shadow keeps it legible over bright 3D ribbons */
     .hero-support {
-      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.45);
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Phones: start the hero content near the top instead of centering it,
+       so the paste dock is visible immediately instead of below a large gap. */
+    @media (max-width: 639px) {
+      .hero-main { justify-content: flex-start !important; }
     }
 
     /* Landscape phones: compact the hero so the paste dock stays above the fold */
@@ -801,12 +806,12 @@
     <!-- Centered Hero Content -->
     <main class="hero-main relative z-20 flex-1 w-full max-w-[920px] px-4 sm:px-6 flex flex-col items-center justify-center pt-8 pb-12 sm:pt-12 sm:pb-20 text-center">
       <!-- Quality Badge -->
-      <div class="hero-badge quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-6 sm:mb-7">
+      <div class="hero-badge quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-4 sm:mb-7">
         ORIGINAL QUALITY • NO WATERMARK
       </div>
 
       <!-- Headline -->
-      <h1 class="hero-headline text-[38px] sm:text-[58px] md:text-[68px] font-bold text-white max-w-[780px] mb-8 sm:mb-12">
+      <h1 class="hero-headline text-[38px] sm:text-[58px] md:text-[68px] font-bold text-white max-w-[780px] mb-6 sm:mb-12">
         Download Instagram<br />Reels &amp; Videos
       </h1>
 
@@ -869,16 +874,16 @@
         </div>
 
         <!-- Subtle Supported Formats Line + Demo Link Trigger -->
-        <div class="hero-support-wrap mt-5 flex justify-center">
-          <div class="hero-support inline-flex flex-col sm:flex-row flex-wrap items-center justify-center gap-x-3 gap-y-0.5 rounded-2xl sm:rounded-full border border-white/[0.08] bg-black/40 px-4 py-1.5 text-[12px] sm:text-[13px] text-white/75 backdrop-blur-[3px]">
-            <span>Supports Reels, Posts, IGTV &amp; Carousels</span>
-            <span class="hidden sm:inline text-white/25">•</span>
+        <div class="hero-support-wrap mt-4 sm:mt-5 flex justify-center">
+          <div class="hero-support inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 px-2 py-1 text-[12px] sm:text-[12.5px] text-white/60">
+            <span>Reels, Posts, IGTV &amp; Carousels</span>
+            <span class="hidden sm:inline text-white/25">·</span>
             <button
               id="trySampleBtn"
               type="button"
-              class="py-1.5 -my-1.5 text-white/75 hover:text-white underline underline-offset-4 decoration-white/30 hover:decoration-white/60 transition-colors cursor-pointer"
+              class="py-1 -my-1 text-white/70 hover:text-white underline underline-offset-4 decoration-white/25 hover:decoration-white/60 transition-colors cursor-pointer"
             >
-              Try a sample link
+              Try a sample
             </button>
           </div>
         </div>

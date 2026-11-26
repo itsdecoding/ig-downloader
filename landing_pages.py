@@ -698,20 +698,20 @@ def render(base: str, slug: str) -> str:
     )
     out = _sub1(
         r'<h1 class="hero-headline[^"]*">.*?</h1>',
-        f'<h1 class="hero-headline text-[34px] sm:text-[54px] md:text-[62px] font-bold text-white max-w-[780px] mb-8 sm:mb-12">{page["h1"]}</h1>',
+        f'<h1 class="hero-headline text-[34px] sm:text-[54px] md:text-[62px] font-bold text-white max-w-[780px] mb-6 sm:mb-12">{page["h1"]}</h1>',
         out,
         re.S,
     )
     out = _sub1(
         r'(<div class="hero-badge[^"]*">)[^<]*(</div>)',
-        f'<div class="hero-badge quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-6 sm:mb-7">{page["badge"]}</div>',
+        f'<div class="hero-badge quality-pill inline-flex items-center px-4 py-1.5 rounded-full text-[11px] sm:text-[12px] font-medium text-white/85 uppercase mb-4 sm:mb-7">{page["badge"]}</div>',
         out,
     )
     if "placeholder" in page:
         out = out.replace('placeholder="Paste Instagram link here..."', f'placeholder="{page["placeholder"]}"')
         out = out.replace('placeholder="Paste reel link..."', f'placeholder="{page["placeholder"]}"')
     if "support" in page:
-        out = out.replace('<span>Supports Reels, Posts, IGTV &amp; Carousels</span>', f'<span>{page["support"]}</span>', 1)
+        out = out.replace('<span>Reels, Posts, IGTV &amp; Carousels</span>', f'<span>{page["support"]}</span>', 1)
 
     out = _between(out, "HOWTO", _howto_section(page))
     out = _between(out, "FAQ", _faq_section(page))

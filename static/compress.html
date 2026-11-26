@@ -93,12 +93,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=7" />
+  <link rel="stylesheet" href="/static/tool.css?v=8" />
 </head>
 <body>
 
   <section id="top" class="hero-stage">
-    <canvas id="bg3dCanvas" aria-hidden="true"></canvas>
     <div class="hero-vignette"></div>
 
     <header class="site-head">
@@ -140,7 +139,6 @@
 
     <div class="wrap">
       <section class="hero">
-      <span class="pill"><span class="dot"></span>Runs in your browser · Nothing uploaded</span>
       <h1>Compress images<br /><em>without uploading them</em></h1>
 
       <p class="lede">Shrink JPG, PNG and WebP right in your browser. Pick a preset or set a target size — nothing is uploaded.</p>
@@ -161,10 +159,10 @@
       <div class="card presets-bar" id="presetsBar">
         <div class="presets-label">Creator size presets</div>
         <div class="presets" id="presetGroup" role="group" aria-label="Target size presets">
-          <button type="button" class="preset-btn" data-preset="yt-thumb" data-target="2048" data-width="1280" data-format="image/jpeg">Under 2MB for YouTube Thumbnail</button>
-          <button type="button" class="preset-btn" data-preset="social-500" data-target="500" data-width="1920" data-format="image/webp">Under 500KB · Web / Social</button>
-          <button type="button" class="preset-btn" data-preset="avatar-100" data-target="100" data-width="1080" data-format="image/jpeg">Under 100KB · Avatar / Email</button>
-          <button type="button" class="preset-btn is-active" data-preset="custom" data-target="0" data-width="0" data-format="keep">Auto 80% Quality</button>
+          <button type="button" class="preset-btn" data-preset="yt-thumb" data-target="2048" data-width="1280" data-format="image/jpeg">YT Thumb · 2MB</button>
+          <button type="button" class="preset-btn" data-preset="social-500" data-target="500" data-width="1920" data-format="image/webp">Web · 500KB</button>
+          <button type="button" class="preset-btn" data-preset="avatar-100" data-target="100" data-width="1080" data-format="image/jpeg">Avatar · 100KB</button>
+          <button type="button" class="preset-btn is-active" data-preset="custom" data-target="0" data-width="0" data-format="keep">Auto · 80%</button>
         </div>
       </div>
 

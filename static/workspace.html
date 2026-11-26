@@ -16,12 +16,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=7" />
+  <link rel="stylesheet" href="/static/tool.css?v=8" />
 </head>
 <body>
 
   <section id="top" class="hero-stage">
-    <canvas id="bg3dCanvas" aria-hidden="true"></canvas>
     <div class="hero-vignette"></div>
 
     <header class="site-head">
@@ -50,7 +49,6 @@
           <a href="/tools/video-downloader">Downloader</a>
           <a href="/tools/video-to-text">Video to Text</a>
           <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
-          <a href="/workspace" class="ws-link is-current">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
         </div>
       </nav>
       <div class="mobile-tools" aria-label="Droplabs tools">
@@ -63,19 +61,10 @@
 
     <div class="wrap">
       <section class="hero">
-      <span class="pill"><span class="dot"></span>Local Creator Workspace · Saved on this device</span>
       <h1>Your saved clips,<br /><em>scripts &amp; assets</em></h1>
+      <p class="lede">Saved in this browser — no account, no sync.</p>
 
-      <div class="card ws-plan">
-        <div>
-          <strong style="font-size:15px">Everything here is free</strong>
-          <div style="font-size:13px;color:var(--text-2);margin-top:4px">
-            Your clips, transcripts, and images are saved locally in this browser. No account, no subscription.
-          </div>
-        </div>
-      </div>
-
-      <div class="ws-toolbar">
+      <div class="ws-toolbar" id="wsToolbar" hidden>
         <div class="ws-filters" id="wsFilters" role="group" aria-label="Filter saved items">
           <button type="button" class="preset-btn is-active" data-filter="all">All</button>
           <button type="button" class="preset-btn" data-filter="video">Videos</button>
@@ -96,9 +85,18 @@
         </p>
         <div class="actions-row" style="justify-content:center">
           <a class="btn btn-primary btn-sm" href="/tools/video-downloader">Open Video Downloader</a>
-          <a class="btn btn-ghost btn-sm" href="/tools/video-to-text">Open Video to Text</a>
-          <a class="btn btn-ghost btn-sm" href="/tools/image-compressor">Open Image Compressor</a>
         </div>
+        <p class="ws-empty-links">
+          <a href="/tools/video-to-text">Video to Text</a>
+          <span>·</span>
+          <a href="/tools/image-compressor">Image Compressor</a>
+        </p>
+      </div>
+
+      <div class="card" id="wsNoMatch" hidden style="margin-top:18px;padding:28px 20px">
+        <strong style="font-size:15px">No items match your filter</strong>
+        <p style="font-size:13.5px;color:var(--text-2);margin:8px auto 16px">Try a different search or filter.</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="wsResetBtn">Clear filters</button>
       </div>
     </section>
     </div>
@@ -133,7 +131,7 @@
   </footer>
 
   <script src="/static/workspace-handoff.js?v=3" defer></script>
-  <script src="/static/workspace.js?v=1" defer></script>
+  <script src="/static/workspace.js?v=2" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       if (window.DroplabsWorkspace) window.DroplabsWorkspace.loadAd();
