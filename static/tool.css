@@ -815,6 +815,13 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
   color: #fca5a5;
 }
 .hub-note[hidden] { display: none; }
+.ig-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
 .status-box .spinner {
   width: 16px; height: 16px;
   border-radius: 50%;
