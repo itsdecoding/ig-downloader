@@ -185,16 +185,37 @@ def is_allowed_thumb_url(url: str) -> bool:
 
 
 def _client_ip(request: Request) -> str:
-    xff = (request.headers.get("x-forwarded-for") or "").split(",")[0].strip()
+    # Cloudflare sets this at the edge to the real client address. Fall back to
+    # the last X-Forwarded-For hop (the one appended by the nearest proxy), not
+    # the first, because the first value is client-controlled and spoofable.
+    cf_ip = (request.headers.get("cf-connecting-ip") or "").strip()
+    if cf_ip:
+        return cf_ip
+    xff = [part.strip() for part in (request.headers.get("x-forwarded-for") or "").split(",") if part.strip()]
     if xff:
-        return xff
+        return xff[-1]
     if request.client and request.client.host:
         return request.client.host
     return "unknown"
 
 
+_RATE_SWEEP_AT = 0.0
+
+
+def _prune_rate_buckets(now: float) -> None:
+    """Drop buckets that have been idle for an hour so the dict cannot grow forever."""
+    global _RATE_SWEEP_AT
+    if now < _RATE_SWEEP_AT:
+        return
+    _RATE_SWEEP_AT = now + 300
+    stale = [key for key, q in _RATE_BUCKETS.items() if not q or now - q[-1] > 3600]
+    for key in stale:
+        _RATE_BUCKETS.pop(key, None)
+
+
 def _check_rate_limit(request: Request, bucket: str, limit: int, window_sec: int) -> None:
     now = time.time()
+    _prune_rate_buckets(now)
     key = f"{bucket}:{_client_ip(request)}"
     q = _RATE_BUCKETS[key]
     while q and now - q[0] > window_sec:
@@ -354,10 +375,11 @@ def _extract_media(url: str) -> Dict[str, Any]:
         return ydl.extract_info(url, download=False)
 
 @app.post("/api/extract", response_model=VideoMedia)
-async def extract_video(payload: ExtractRequest):
+async def extract_video(request: Request, payload: ExtractRequest):
     """
     Extracts high-resolution MP4 direct streams and metadata for any public Instagram video/reel.
     """
+    _check_rate_limit(request, "extract", limit=20, window_sec=600)
     try:
         clean_url = normalize_ig_url(payload.url)
     except ValueError as e:
@@ -493,6 +515,7 @@ async def extract_video(payload: ExtractRequest):
 
 @app.get("/api/download")
 async def download_video(
+    request: Request,
     url: str = Query(..., description="Direct CDN video URL"),
     filename: Optional[str] = Query(None, description="Output filename"),
     range_header: Optional[str] = Header(None, alias="Range"),
@@ -504,6 +527,7 @@ async def download_video(
     Only Instagram CDN hosts are proxied, upstream errors are reported before the
     response starts, and Range requests are forwarded so downloads can resume.
     """
+    _check_rate_limit(request, "download", limit=40, window_sec=600)
     if not is_allowed_media_url(url):
         raise HTTPException(status_code=400, detail="This media URL is not supported.")
 
@@ -672,10 +696,11 @@ def _download_for_transcribe_sync(url: str, out_dir: str) -> Tuple[str, str, int
 
 
 @app.post("/api/video/extract", response_model=MultiVideoMedia)
-async def extract_multi_video(payload: ExtractRequest):
+async def extract_multi_video(request: Request, payload: ExtractRequest):
     """
     Extracts MP4 stream + metadata for Instagram Reels, TikTok, or YouTube Shorts.
     """
+    _check_rate_limit(request, "extract", limit=20, window_sec=600)
     try:
         platform, clean_url = normalize_video_url(payload.url)
     except ValueError as e:
@@ -879,11 +904,13 @@ async def extract_multi_video(payload: ExtractRequest):
 
 @app.get("/api/video/download")
 async def download_multi_video(
+    request: Request,
     url: str = Query(..., description="Direct CDN video URL"),
     filename: Optional[str] = Query(None, description="Output filename"),
     range_header: Optional[str] = Header(None, alias="Range"),
 ):
     """Streams MP4 from allowed IG, TikTok, or YouTube CDNs with attachment headers."""
+    _check_rate_limit(request, "download", limit=40, window_sec=600)
     if not is_allowed_video_cdn_url(url):
         raise HTTPException(status_code=400, detail="This media URL is not supported.")
 
@@ -994,8 +1021,9 @@ async def mux_multi_video(
 
 
 @app.get("/api/thumbnail", include_in_schema=False)
-async def proxy_thumbnail(url: str = Query(...)):
+async def proxy_thumbnail(request: Request, url: str = Query(...)):
     """Proxies allowed CDN thumbnails so IG/TikTok/YT previews never break from Referer rules."""
+    _check_rate_limit(request, "thumbnail", limit=120, window_sec=600)
     if not is_allowed_thumb_url(url):
         raise HTTPException(status_code=400, detail="Unsupported thumbnail host.")
 
