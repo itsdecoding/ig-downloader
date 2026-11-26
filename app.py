@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException, Query, Header, Request, UploadFile, 
 from fastapi.responses import (
     FileResponse,
     HTMLResponse,
+    RedirectResponse,
     StreamingResponse,
     PlainTextResponse,
     Response,
@@ -1402,7 +1403,9 @@ async def tool_image_compressor():
 
 @app.api_route("/image-compressor", methods=["GET", "HEAD"], include_in_schema=False)
 async def image_compressor():
-    return _render_tool_page("compress.html")
+    # The canonical tool URL is /tools/image-compressor; keep old links working
+    # without serving duplicate content.
+    return RedirectResponse(url="/tools/image-compressor", status_code=301)
 
 
 @app.api_route("/workspace", methods=["GET", "HEAD"], include_in_schema=False)

@@ -742,7 +742,6 @@ TOOL_URLS = [
     ("/tools/video-downloader", "0.95"),
     ("/tools/video-to-text", "0.95"),
     ("/tools/image-compressor", "0.95"),
-    ("/image-compressor", "0.8"),
 ]
 
 
