@@ -165,6 +165,13 @@
   </section>
 
   <main class="wrap">
+    <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
+      <div class="ad-head">Advertisement</div>
+      <div class="ad-frame">
+        <div id="container-18527c484b75598c40e3c7284aae8ee4" class="ad-unit"></div>
+      </div>
+    </section>
+
     <section class="section" id="how">
       <h2>How Droplabs works</h2>
       <p class="section-sub">Start with zero-friction utilities, then keep your best hooks, scripts, and thumbnails in one place.</p>
@@ -232,5 +239,10 @@
   <script src="/static/liquid-bg.js?v=1" defer></script>
   <script src="/static/workspace-handoff.js?v=1" defer></script>
   <script src="/static/groq-status.js?v=1" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.DroplabsWorkspace) window.DroplabsWorkspace.loadAd();
+    });
+  </script>
 </body>
 </html>
