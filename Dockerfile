@@ -15,5 +15,7 @@ COPY . .
 
 EXPOSE 8000
 
-# Run with uvicorn
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
+# Run with a single worker: the rate limiter, extraction cache, and media
+# header cache all live in process memory, so multiple workers would each
+# enforce their own limits and multiply the effective quota.
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
