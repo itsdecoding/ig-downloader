@@ -100,6 +100,44 @@ _MEDIA_HEADERS_CACHE: Dict[str, Tuple[float, Dict[str, str]]] = {}
 # Simple sliding-window rate limiter per IP for expensive FFmpeg/Groq endpoints
 _RATE_BUCKETS: Dict[str, deque] = defaultdict(deque)
 
+class TranscribeBodyLimitMiddleware:
+    """Reject oversized transcription uploads before Starlette spools the body."""
+
+    def __init__(self, app, max_bytes: int):
+        self.app = app
+        self.max_bytes = max_bytes
+
+    async def __call__(self, scope, receive, send):
+        if (
+            scope.get("type") == "http"
+            and scope.get("method") == "POST"
+            and scope.get("path") == "/api/transcribe"
+        ):
+            for key, value in scope.get("headers") or []:
+                if key == b"content-length":
+                    try:
+                        too_big = int(value) > self.max_bytes
+                    except (TypeError, ValueError):
+                        too_big = False
+                    if too_big:
+                        body = b'{"detail":"Clip is too large. Keep uploads under 50 MB."}'
+                        await send(
+                            {
+                                "type": "http.response.start",
+                                "status": 413,
+                                "headers": [
+                                    (b"content-type", b"application/json"),
+                                    (b"content-length", str(len(body)).encode()),
+                                    (b"connection", b"close"),
+                                ],
+                            }
+                        )
+                        await send({"type": "http.response.body", "body": body})
+                        return
+                    break
+        await self.app(scope, receive, send)
+
+
 app = FastAPI(
     title="InstaFetch API",
     description="High-speed public Instagram video extraction and streaming engine.",
@@ -113,6 +151,12 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# Reject oversized uploads from the headers, before the multipart body is spooled.
+app.add_middleware(
+    TranscribeBodyLimitMiddleware,
+    max_bytes=MAX_TRANSCRIBE_UPLOAD_BYTES + 2 * 1024 * 1024,
 )
 
 class ExtractRequest(BaseModel):
