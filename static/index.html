@@ -134,7 +134,7 @@
       z-index: 1;
       pointer-events: none;
       background:
-        radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.38) 0%, rgba(8, 7, 11, 0.16) 56%, rgba(8, 7, 11, 0.64) 100%),
+        radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.36) 0%, rgba(8, 7, 11, 0.14) 56%, rgba(8, 7, 11, 0.62) 100%),
         linear-gradient(180deg, rgba(8, 7, 11, 0.58) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
     }
 
@@ -576,13 +576,13 @@
       }
     }
 
-    /* Phones: deepen the scrim behind the headline so floating 3D droplets
-       never sit on top of the letterforms. */
+    /* Phones: keep the same vignette shape and dark edges as every other
+       page, with a slightly deeper centre so 3D droplets never sit on text. */
     @media (max-width: 639px) {
       .hero-vignette {
         background:
-          radial-gradient(ellipse 88% 32% at 50% 45%, rgba(8, 7, 11, 0.82) 0%, rgba(8, 7, 11, 0.42) 60%, rgba(8, 7, 11, 0.18) 100%),
-          linear-gradient(180deg, rgba(8, 7, 11, 0.52) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
+          radial-gradient(ellipse 68% 50% at 50% 45%, rgba(8, 7, 11, 0.62) 0%, rgba(8, 7, 11, 0.26) 56%, rgba(8, 7, 11, 0.66) 100%),
+          linear-gradient(180deg, rgba(8, 7, 11, 0.58) 0%, rgba(8, 7, 11, 0.0) 22%, rgba(8, 7, 11, 0.0) 76%, #08070b 100%);
       }
     }
 
