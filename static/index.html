@@ -19,7 +19,7 @@
   <!-- Installable app (Add to Home Screen) -->
   <link rel="manifest" href="/manifest.json" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="InstaFetch" />
+  <meta name="apple-mobile-web-app-title" content="Droplabs" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
 
@@ -28,11 +28,11 @@
   <meta property="og:description" content="Download Instagram Reels, Videos, and Carousels in original HD without a watermark. Free & instant." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://droplabs.site/" />
-  <meta property="og:site_name" content="InstaFetch by Droplabs" />
+  <meta property="og:site_name" content="Droplabs" />
   <meta property="og:image" content="https://droplabs.site/static/og-image.jpg" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="InstaFetch — Download Instagram Reels & Videos" />
+  <meta property="og:image:alt" content="Droplabs — Download Reels, TikToks &amp; Shorts" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
@@ -1101,7 +1101,7 @@
   <section id="features" class="relative z-20 max-w-[1040px] mx-auto px-4 sm:px-6 py-16">
     <div class="text-center mb-12">
       <h2 class="text-2xl sm:text-4xl font-bold tracking-[-0.03em] text-white">
-        Why Choose <span class="bg-gradient-to-r from-[#ff8a5b] via-[#f44174] to-[#dc1e8e] bg-clip-text text-transparent">InstaFetch</span>?
+        Why Choose <span class="bg-gradient-to-r from-[#ff8a5b] via-[#f44174] to-[#dc1e8e] bg-clip-text text-transparent">Droplabs</span>?
       </h2>
       <p class="text-sm sm:text-[15px] text-white/55 mt-2.5">Built to feel like a real tool—fast, clean, and zero pop-up spam.</p>
     </div>
@@ -1195,11 +1195,11 @@
   <footer class="relative z-20 border-t border-white/[0.08] py-8 px-4 sm:px-6">
     <div class="max-w-[1040px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/40">
       <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-2 gap-y-1">
-        <span class="font-semibold text-white/75">InstaFetch</span>
+        <span class="font-semibold text-white/75">Droplabs</span>
         <span class="text-white/25">•</span>
-        <span class="text-white/55">a Droplabs tool</span>
+        <span class="text-white/55">Creator Tools</span>
         <span class="text-white/25">•</span>
-        <span>Fast Reels &amp; Video Downloader</span>
+        <span>Free, no signup</span>
       </div>
       <div class="flex items-center gap-4 text-xs">
         <button type="button" onclick="openLegalModal('privacyModal')" class="py-2 -my-2 hover:text-white transition-colors cursor-pointer">Privacy Policy</button>
@@ -1273,7 +1273,7 @@
         </svg>
       </span>
       <div class="min-w-0 flex-1">
-        <h4 id="retentionTitle" class="text-[13.5px] font-semibold text-white leading-snug">Keep InstaFetch one tap away</h4>
+        <h4 id="retentionTitle" class="text-[13.5px] font-semibold text-white leading-snug">Keep Droplabs one tap away</h4>
         <p id="retentionBody" class="text-[11.5px] text-white/60 mt-1 leading-relaxed">
           Add it to your home screen so your next Reel takes one tap instead of a search.
         </p>
@@ -2359,7 +2359,7 @@
       window.addEventListener('appinstalled', () => {
         installPrompt = null;
         window.dismissRetention();
-        showToast('InstaFetch added to your home screen');
+        showToast('Droplabs added to your home screen');
       });
 
       function retentionActionLabel() {
@@ -2401,7 +2401,7 @@
           installPrompt = null;
           if (choice && choice.outcome === 'accepted') {
             window.dismissRetention();
-            showToast('InstaFetch added to your home screen');
+            showToast('Droplabs added to your home screen');
           } else {
             retentionActionBtn.textContent = isIOS ? 'Show me how' : 'Bookmark this page';
           }

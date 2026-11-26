@@ -395,6 +395,7 @@ PAGES["instagram-carousel-downloader"] = {
 PAGES["tools/video-downloader"] = {
     "label": "Video Downloader",
     "short": "All Videos",
+    "brand": "Droplabs",
     "title": "Free Video Downloader — Instagram Reels, TikTok & YouTube Shorts | Droplabs",
     "desc": (
         "Download Instagram Reels, TikTok videos, and YouTube Shorts as clean MP4 files with thumbnail preview. "
@@ -666,7 +667,7 @@ def render(base: str, slug: str) -> str:
     )
     out = _sub1(
         r'<meta property="og:title" content="[^"]*" />',
-        f'<meta property="og:title" content="{page["label"]} \u2014 InstaFetch by Droplabs" />',
+        f'<meta property="og:title" content="{page["label"]} \u2014 {page.get("brand", "InstaFetch by Droplabs")}" />',
         out,
     )
     out = _sub1(
@@ -681,7 +682,7 @@ def render(base: str, slug: str) -> str:
     )
     out = _sub1(
         r'<meta name="twitter:title" content="[^"]*" />',
-        f'<meta name="twitter:title" content="{page["label"]} \u2014 InstaFetch" />',
+        f'<meta name="twitter:title" content="{page["label"]} \u2014 {page.get("brand", "InstaFetch")}" />',
         out,
     )
     out = _sub1(

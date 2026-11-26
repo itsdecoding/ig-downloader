@@ -1,7 +1,7 @@
 ﻿{
-  "name": "InstaFetch by Droplabs",
-  "short_name": "InstaFetch",
-  "description": "Download Instagram Reels, Videos and Carousels in original quality without a watermark.",
+  "name": "Droplabs — Creator Tools",
+  "short_name": "Droplabs",
+  "description": "Download Instagram Reels, TikTok and YouTube Shorts, transcribe video to text, and compress images — free, no signup.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
