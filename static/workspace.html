@@ -132,12 +132,26 @@
     </div>
   </footer>
 
-  <script src="/static/workspace-handoff.js?v=2" defer></script>
+  <script src="/static/workspace-handoff.js?v=3" defer></script>
   <script src="/static/workspace.js?v=1" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       if (window.DroplabsWorkspace) window.DroplabsWorkspace.loadAd();
     });
   </script>
+
+  <!-- Cloudflare Web Analytics (skipped on localhost) -->
+  <script>
+    (function () {
+      var host = location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || host === '') return;
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      s.setAttribute('data-cf-beacon', '{"token": "ff0082f126054536b6dfbad99c6e3d2a"}');
+      document.body.appendChild(s);
+    })();
+  </script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>

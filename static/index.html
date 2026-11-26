@@ -1320,7 +1320,7 @@
         <button onclick="closeLegalModal('privacyModal')" class="w-10 h-10 -mr-2 -mt-2 flex items-center justify-center rounded-lg text-white/60 hover:text-white">✕</button>
       </div>
       <div class="text-xs text-white/70 space-y-3 leading-relaxed">
-        <p>Droplabs (InstaFetch) does not require an account and does not run its own analytics or tracking cookies. Downloads are resolved on demand and streamed through our server to your browser; no media is stored permanently.</p>
+        <p>Droplabs (InstaFetch) does not require an account and does not use tracking cookies. We use Cloudflare Web Analytics, which is cookieless and reports only aggregate page views and performance data. Downloads are resolved on demand and streamed through our server to your browser; no media is stored permanently.</p>
         <p>If you use Video-to-Text, the clip's audio is sent to Groq's Whisper API for transcription and processed under Groq's privacy policy. Temporary files are deleted when the request finishes.</p>
         <p>Third-party advertising partners (such as Adsterra) may set cookies to measure and personalize ads. Items saved to your Workspace stay in this browser's localStorage.</p>
       </div>
@@ -2902,5 +2902,19 @@
       })();
     })();
   </script>
+
+  <!-- Cloudflare Web Analytics (skipped on localhost) -->
+  <script>
+    (function () {
+      var host = location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1' || host === '') return;
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+      s.setAttribute('data-cf-beacon', '{"token": "ff0082f126054536b6dfbad99c6e3d2a"}');
+      document.body.appendChild(s);
+    })();
+  </script>
+  <!-- End Cloudflare Web Analytics -->
 </body>
 </html>
