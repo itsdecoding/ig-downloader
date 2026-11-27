@@ -1,9 +1,11 @@
 import os
 import re
+import json
 import time
 import shutil
 import asyncio
 import tempfile
+import subprocess
 import mimetypes
 import urllib.parse
 from collections import defaultdict, deque
@@ -46,12 +48,13 @@ STATIC_DIR = BASE_DIR / "static"
 GOOGLE_SITE_VERIFICATION = (os.getenv("GOOGLE_SITE_VERIFICATION") or "").strip()
 CF_ANALYTICS_TOKEN = (os.getenv("CF_ANALYTICS_TOKEN") or "").strip()
 
-# Groq Whisper API for /tools/video-to-text
+# Groq Whisper & Llama APIs for /tools/video-to-text
 GROQ_API_KEY = (os.getenv("GROQ_API_KEY") or "").strip()
 GROQ_WHISPER_MODEL = (os.getenv("GROQ_WHISPER_MODEL") or "whisper-large-v3-turbo").strip()
+GROQ_CHAT_MODEL = (os.getenv("GROQ_CHAT_MODEL") or "openai/gpt-oss-20b").strip()
 
 # Bump when the page content changes so the sitemap's lastmod stays truthful.
-SITE_UPDATED = "2026-11-26"
+SITE_UPDATED = "2026-11-27"
 
 # Optional Proxy Configuration
 PROXY_URL = os.getenv("PROXY_URL") or os.getenv("HTTP_PROXY") or os.getenv("HTTPS_PROXY")
@@ -863,8 +866,61 @@ async def mux_multi_video(
     )
 
 
+def _extract_audio_mp3_sync(url: str, out_dir: str) -> Tuple[str, str]:
+    src_path, title, _ = _download_for_transcribe_sync(url, out_dir)
+    mp3_path = os.path.join(out_dir, "audio.mp3")
+    res = subprocess.run(
+        ["ffmpeg", "-y", "-i", src_path, "-vn", "-acodec", "libmp3lame", "-q:a", "2", mp3_path],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        timeout=60,
+    )
+    if res.returncode != 0 or not os.path.exists(mp3_path) or os.path.getsize(mp3_path) == 0:
+        raise RuntimeError("Could not extract MP3 audio.")
+    return mp3_path, title
+
+
+@app.get("/api/video/audio")
+async def download_video_audio(
+    request: Request,
+    url: str = Query(..., description="Source post URL"),
+    filename: Optional[str] = Query(None, description="Output filename"),
+):
+    """Extracts and downloads an MP3 audio track from a public Reel, TikTok, or Short."""
+    _check_rate_limit(request, "audio", limit=15, window_sec=600)
+    try:
+        _, clean_url = normalize_video_url(url)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    tmp_dir = tempfile.mkdtemp(prefix="droplabs_mp3_")
+    try:
+        loop = asyncio.get_running_loop()
+        file_path, title = await loop.run_in_executor(None, _extract_audio_mp3_sync, clean_url, tmp_dir)
+    except Exception:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+        raise HTTPException(status_code=502, detail="Could not extract MP3 audio from this link.")
+
+    safe_base = sanitize_filename(filename or title or "droplabs_audio")
+    safe_name = safe_base if safe_base.lower().endswith(".mp3") else f"{safe_base}.mp3"
+    return FileResponse(
+        path=file_path,
+        media_type="audio/mpeg",
+        headers={
+            "Content-Disposition": build_content_disposition(safe_name),
+            "Cache-Control": "no-store",
+        },
+        background=BackgroundTask(shutil.rmtree, tmp_dir, True),
+    )
+
+
 @app.get("/api/thumbnail", include_in_schema=False)
-async def proxy_thumbnail(request: Request, url: str = Query(...)):
+async def proxy_thumbnail(
+    request: Request,
+    url: str = Query(...),
+    download: bool = Query(False),
+    filename: Optional[str] = Query(None),
+):
     """Proxies allowed CDN thumbnails so IG/TikTok/YT previews never break from Referer rules."""
     _check_rate_limit(request, "thumbnail", limit=120, window_sec=600)
     if not is_allowed_thumb_url(url):
@@ -893,10 +949,16 @@ async def proxy_thumbnail(request: Request, url: str = Query(...)):
         ctype = resp.headers.get("content-type", "image/jpeg")
         if not ctype.startswith("image/"):
             raise HTTPException(status_code=400, detail="Invalid thumbnail content type.")
+        resp_headers = {"Cache-Control": "public, max-age=3600"}
+        if download:
+            ext = "png" if "png" in ctype else "webp" if "webp" in ctype else "jpg"
+            safe_base = sanitize_filename(filename or "thumbnail")
+            safe_name = f"{safe_base}.{ext}"
+            resp_headers["Content-Disposition"] = build_content_disposition(safe_name)
         return Response(
             content=resp.content,
             media_type=ctype,
-            headers={"Cache-Control": "public, max-age=3600"},
+            headers=resp_headers,
         )
 
 
@@ -1070,6 +1132,72 @@ async def transcribe_video(
             "text": full_text,
             "segments": segments,
         }
+
+
+class AnalyzeTranscriptRequest(BaseModel):
+    transcript: str
+    title: Optional[str] = ""
+
+
+@app.post("/api/analyze-transcript")
+async def analyze_transcript(request: Request, payload: AnalyzeTranscriptRequest):
+    """Breaks down the opening hook, structure, and remix ideas from a transcript via Groq Llama."""
+    _check_rate_limit(request, "analyze", limit=15, window_sec=600)
+    transcript = (payload.transcript or "").strip()
+    if len(transcript) < 12:
+        raise HTTPException(status_code=400, detail="Transcript is too short to analyze.")
+    if not GROQ_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="Hook analyzer is not configured yet (missing GROQ_API_KEY on the server).",
+        )
+
+    clipped = transcript[:8000]
+    prompt = (
+        "Analyze this short-form video transcript for a creator. Return strict JSON with keys: "
+        '"hook_pattern" (short 3-6 word label of the opening hook style), '
+        '"why_it_works" (1 concise sentence explaining why the opening captures attention), '
+        '"outline" (array of 3-5 concise bullet strings summarizing the flow), '
+        'and "remix_hooks" (array of 3 punchy alternative opening hooks inspired by this structure).\n\n'
+        f"Title: {(payload.title or '')[:120]}\nTranscript:\n{clipped}"
+    )
+
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
+            resp = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": GROQ_CHAT_MODEL,
+                    "temperature": 0.4,
+                    "response_format": {"type": "json_object"},
+                    "messages": [
+                        {"role": "system", "content": "You are an expert short-form video strategist. Always respond with valid JSON only."},
+                        {"role": "user", "content": prompt},
+                    ],
+                },
+            )
+    except httpx.HTTPError:
+        raise HTTPException(status_code=502, detail="Could not reach Groq API. Please try again.")
+
+    if resp.status_code != 200:
+        raise HTTPException(status_code=502, detail="Hook analyzer returned an error. Please try again shortly.")
+
+    try:
+        content = resp.json()["choices"][0]["message"]["content"]
+        parsed = json.loads(content)
+    except Exception:
+        raise HTTPException(status_code=502, detail="Could not parse hook breakdown response.")
+
+    return {
+        "hook_pattern": str(parsed.get("hook_pattern") or "Hook Breakdown").strip(),
+        "why_it_works": str(parsed.get("why_it_works") or "").strip(),
+        "outline": [str(x).strip() for x in (parsed.get("outline") or []) if str(x).strip()][:5],
+        "remix_hooks": [str(x).strip() for x in (parsed.get("remix_hooks") or []) if str(x).strip()][:3],
+    }
 
 @app.get("/api/health")
 async def health():

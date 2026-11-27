@@ -461,11 +461,200 @@ PAGES["tools/video-downloader"] = {
 }
 
 
+# --------------------------------------------------------------------------
+# 5. TikTok
+# --------------------------------------------------------------------------
+PAGES["tiktok-video-downloader"] = {
+    "label": "TikTok Video Downloader",
+    "short": "TikToks",
+    "brand": "Droplabs",
+    "related_desc": "Save public TikToks as MP4 with the original audio.",
+    "sample_url": "https://www.tiktok.com/@tiktok/video/7106594312292453675",
+    "title": "TikTok Video Downloader \u2014 Save TikToks as MP4, No Watermark | Droplabs",
+    "desc": (
+        "Download public TikTok videos as clean MP4 files with the original audio. "
+        "Paste a tiktok.com, vm.tiktok.com or vt.tiktok.com link \u2014 no login, no app, "
+        "and no watermark added by us."
+    ),
+    "keywords": (
+        "tiktok video downloader, download tiktok video, tiktok downloader no watermark, "
+        "save tiktok mp4, tiktok video saver, vm.tiktok.com downloader"
+    ),
+    "h1": "TikTok Video<br />Downloader",
+    "badge": "TIKTOK \u2022 MP4 \u2022 AUDIO INCLUDED",
+    "placeholder": "Paste a TikTok link...",
+    "support": "Supports TikTok videos &amp; vm/vt short links",
+    "steps_label": "3 Simple Steps",
+    "howto_h2": "How to Download a TikTok Video",
+    "howto_sub": "Save any public TikTok as an MP4 with its sound in about ten seconds.",
+    "steps": [
+        (
+            "link",
+            "Copy the TikTok Link",
+            "Open the video in TikTok, tap Share, then Copy link. The short vm.tiktok.com "
+            "and vt.tiktok.com links work exactly the same as the full address.",
+        ),
+        (
+            "clipboard",
+            "Paste It Into the Dock",
+            "Drop the link into the box above and press Download. Droplabs resolves the "
+            "video's direct MP4 stream \u2014 no login and no app install.",
+        ),
+        (
+            "download",
+            "Save the MP4",
+            "The clip downloads with its original audio. On iPhone choose Save Video to move "
+            "it into Photos; on Android and desktop it lands in Downloads.",
+        ),
+    ],
+    "body": """
+      <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-white mb-4">Saving a TikTok as a real MP4</h2>
+      <p>TikTok does not hand you a file. The in-app Save option keeps a bookmark, and the download button some regions see produces a re-compressed copy stamped with a moving watermark. This tool takes a different route: it reads the public post and returns the direct MP4 stream the app itself plays.</p>
+      <p>Nothing is screen-recorded and nothing is re-encoded on our side. The resolution, frame rate and audio are whatever TikTok published for that video.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">About the watermark</h3>
+      <p>We never add a watermark. For most public videos TikTok exposes a clean stream, and that is the file you get. When a post only has a watermarked download variant available, you receive that file instead of a broken download \u2014 an honest fallback rather than a silent failure.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Quality you can expect</h3>
+      <p>Most TikToks are served at 720p or 1080p vertical. We always take the largest MP4 TikTok exposes and never upscale, so a soft clip was soft when it was uploaded. Stretching it would only make the file bigger, not better.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Links that work</h3>
+      <p>Full links like <code class="text-white/80">tiktok.com/@user/video/&hellip;</code> are accepted, along with the short share links <code class="text-white/80">vm.tiktok.com</code> and <code class="text-white/80">vt.tiktok.com</code>. Private and friends-only posts are not \u2014 there is no public file to fetch, and we never ask for a login.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Sound, music and reuse</h3>
+      <p>The audio is inside the MP4, so the sound arrives with the picture. A track licensed inside TikTok is licensed for TikTok; saving a clip for personal reference is not the same as republishing it commercially.</p>
+    """,
+    "faq": [
+        (
+            "Does the download have a watermark?",
+            "No watermark is added by us. Droplabs fetches the direct stream TikTok serves to its own player, so the file is the same clean MP4 the app plays. If a post only exposes a watermarked download variant, you get that file rather than a broken download.",
+        ),
+        (
+            "Do I need the TikTok app or an account?",
+            "No. Paste the link in any browser \u2014 Safari, Chrome, Edge or Firefox \u2014 on a phone or desktop. There is no login, no app install and no sign-up.",
+        ),
+        (
+            "What quality do I get?",
+            "The highest MP4 TikTok publicly exposes for that video, usually 720p or 1080p vertical. We never upscale, so the download is never worse than what the app plays.",
+        ),
+        (
+            "Does the sound come with the video?",
+            "Yes. The audio track is part of the MP4, so music, voiceover and effects arrive with the picture. No separate audio file is needed.",
+        ),
+        (
+            "Do vm.tiktok.com and vt.tiktok.com links work?",
+            "Yes. The short share links redirect to the same post and are resolved the same way as a full tiktok.com/@user/video/ link.",
+        ),
+        (
+            "Can I download private or friends-only videos?",
+            "No. Those posts are only reachable with a signed-in session, and we deliberately do not accept logins. If you can open the video in a normal browser tab without signing in, the download will work.",
+        ),
+        (
+            "Is there a limit on how many TikToks I can save?",
+            "No daily cap and no countdown timers. Save one clip or fifty; the tool treats them the same.",
+        ),
+    ],
+}
+
+
+# --------------------------------------------------------------------------
+# 6. YouTube Shorts
+# --------------------------------------------------------------------------
+PAGES["youtube-shorts-downloader"] = {
+    "label": "YouTube Shorts Downloader",
+    "short": "Shorts",
+    "brand": "Droplabs",
+    "related_desc": "Save YouTube Shorts as MP4 in up to 1080p.",
+    "sample_url": "https://www.youtube.com/shorts/aqz-KE-bpKQ",
+    "title": "YouTube Shorts Downloader \u2014 Save Shorts as MP4 in HD | Droplabs",
+    "desc": (
+        "Download YouTube Shorts as normal MP4 files with sound, up to 1080p. "
+        "Paste a youtube.com/shorts or youtu.be link \u2014 free, no login, no app install."
+    ),
+    "keywords": (
+        "youtube shorts downloader, download youtube shorts, shorts video download, "
+        "save youtube shorts mp4, youtube shorts to mp4, yt shorts downloader"
+    ),
+    "h1": "YouTube Shorts<br />Downloader",
+    "badge": "SHORTS \u2022 UP TO 1080P \u2022 AUDIO MERGED",
+    "placeholder": "Paste a YouTube Shorts link...",
+    "support": "Supports YouTube Shorts, youtu.be &amp; watch links",
+    "steps_label": "3 Simple Steps",
+    "howto_h2": "How to Download a YouTube Short",
+    "howto_sub": "Save a Short as one normal MP4 you can play anywhere, with sound.",
+    "steps": [
+        (
+            "link",
+            "Copy the Shorts Link",
+            "Open the Short in YouTube, tap Share, then Copy link. Both "
+            "youtube.com/shorts/\u2026 and youtu.be/\u2026 links are accepted.",
+        ),
+        (
+            "clipboard",
+            "Paste It Into the Dock",
+            "Drop the link above and press Download. Droplabs reads the Short and resolves "
+            "its video stream without an account.",
+        ),
+        (
+            "download",
+            "Save the MP4",
+            "YouTube keeps HD picture and audio in separate streams. When that happens we "
+            "merge them server-side into one MP4 with sound, ready for Photos, Files or Downloads.",
+        ),
+    ],
+    "body": """
+      <h2 class="text-2xl sm:text-3xl font-bold tracking-[-0.03em] text-white mb-4">Why Shorts need a merge step</h2>
+      <p>YouTube does not store a Short as one file. It keeps the picture and the sound as separate streams, and above 360p there is usually no ready-made MP4 that contains both. That is why so many downloaders hand back a silent video or a low-resolution one.</p>
+      <p>Droplabs resolves the streams and, when they are split, merges the best MP4 picture with the original audio on our server using FFmpeg. You get one normal MP4 that plays with sound in Photos, QuickTime, VLC or any editor.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Up to 1080p, never upscaled</h3>
+      <p>The merge is capped at 1080p, which is the highest vertical resolution YouTube publishes for Shorts. If a Short was uploaded at 720p, that is the ceiling; we do not stretch it to 1080p to win a spec sheet.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Shorts and normal videos</h3>
+      <p>The same engine accepts <code class="text-white/80">youtube.com/shorts/&hellip;</code>, <code class="text-white/80">youtu.be/&hellip;</code> and standard <code class="text-white/80">watch?v=</code> links. A Short is simply a vertical video under a minute, so the extraction path is identical.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">What will not work</h3>
+      <p>Private, members-only and age-restricted videos are not available without a signed-in session, and we deliberately do not accept logins. If you can watch it in a normal browser tab without signing in, the download will work.</p>
+
+      <h3 class="text-[17px] font-semibold text-white mt-6 mb-2">Keep it fair to the creator</h3>
+      <p>Saving a Short for personal reference, research or an edit you are licensed to make is one thing. Re-uploading someone else's video as your own is copyright infringement, and a download does not change that.</p>
+    """,
+    "faq": [
+        (
+            "Why do some Shorts come back at 720p instead of 1080p?",
+            "Because YouTube splits HD picture from audio and only publishes what the creator uploaded. We merge up to 1080p; if the source is 720p, that is the highest quality that exists for that video.",
+        ),
+        (
+            "Does the audio work after merging?",
+            "Yes. The separate audio stream is muxed into the same MP4, so the finished file plays with sound in any normal player. The merge adds a few seconds to the download.",
+        ),
+        (
+            "Do normal YouTube videos work too?",
+            "Yes. Standard watch?v= links and youtu.be links go through the same engine, not just /shorts/ URLs.",
+        ),
+        (
+            "Do I need a YouTube account?",
+            "No. There is no login, no OAuth and no app install. Paste the link and download.",
+        ),
+        (
+            "Can I download private, members-only or age-restricted videos?",
+            "No. Those need a signed-in session, and we never ask for one. Public videos that play in a logged-out browser tab are supported.",
+        ),
+        (
+            "Is there a limit on how many Shorts I can save?",
+            "No daily cap and no countdown timers. Save one Short or fifty; the tool treats them the same.",
+        ),
+    ],
+}
+
+
 ORDER = [
     "instagram-reel-downloader",
     "instagram-story-downloader",
     "instagram-photo-downloader",
     "instagram-carousel-downloader",
+    "tiktok-video-downloader",
+    "youtube-shorts-downloader",
 ]
 
 
@@ -558,16 +747,19 @@ def _related_block(slug: str) -> str:
         if other == slug:
             continue
         page = PAGES[other]
+        blurb = page.get("related_desc") or (
+            f'Save {page["short"].lower()} from Instagram in original quality.'
+        )
         links.append(
             f"""
         <a href="/{other}" class="smoked-card rounded-2xl p-5 block no-underline hover:border-white/25 transition-colors">
           <span class="block text-[15px] font-semibold text-white mb-1">{page["label"]}</span>
-          <span class="block text-xs text-white/50 leading-relaxed">Save {page["short"].lower()} from Instagram in original quality.</span>
+          <span class="block text-xs text-white/50 leading-relaxed">{blurb}</span>
         </a>"""
         )
     return f"""
       <div class="mt-10">
-        <div class="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35 mb-3">More Instagram downloaders</div>
+        <div class="text-[11px] font-medium uppercase tracking-[0.14em] text-white/35 mb-3">More downloaders</div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">{''.join(links)}
         </div>
       </div>"""
@@ -585,6 +777,7 @@ def _body_section(page, slug: str) -> str:
 
 def _schema(page, slug: str) -> str:
     url = f"{SITE}/{slug}"
+    brand_name = page.get("brand", "InstaFetch")
     questions = []
     for q, a in page["faq"]:
         questions.append(
@@ -610,7 +803,7 @@ def _schema(page, slug: str) -> str:
         {{
           "@type": "BreadcrumbList",
           "itemListElement": [
-            {{ "@type": "ListItem", "position": 1, "name": "InstaFetch", "item": "{SITE}/" }},
+            {{ "@type": "ListItem", "position": 1, "name": "Droplabs", "item": "{SITE}/" }},
             {{ "@type": "ListItem", "position": 2, "name": {_json(page["label"])}, "item": {_json(url)} }}
           ]
         }},
@@ -712,6 +905,12 @@ def render(base: str, slug: str) -> str:
         out = out.replace('placeholder="Paste reel link..."', f'placeholder="{page["placeholder"]}"')
     if "support" in page:
         out = out.replace('<span>Reels, Posts, IGTV &amp; Carousels</span>', f'<span>{page["support"]}</span>', 1)
+    if "sample_url" in page:
+        out = out.replace(
+            "const SAMPLE_REEL_URL = 'https://www.instagram.com/reel/DfHxCPwTzrp/';",
+            f"const SAMPLE_REEL_URL = {_json(page['sample_url'])};",
+            1,
+        )
 
     out = _between(out, "HOWTO", _howto_section(page))
     out = _between(out, "FAQ", _faq_section(page))

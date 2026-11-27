@@ -21,9 +21,13 @@
   var copyAllBtn = $('copyAllBtn');
   var copyPlainBtn = $('copyPlainBtn');
   var downloadSrtBtn = $('downloadSrtBtn');
+  var downloadTxtBtn = $('downloadTxtBtn');
+  var analyzeHookBtn = $('analyzeHookBtn');
+  var hookBox = $('hookBox');
   var saveTxWsBtn = $('saveTxWsBtn');
 
   var currentTx = null;
+  var currentHook = null;
 
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, function (c) {
@@ -108,6 +112,15 @@
     copyPlainBtn.textContent = 'Copy Plain';
     saveTxWsBtn.textContent = 'Save to Workspace';
     saveTxWsBtn.disabled = false;
+    currentHook = null;
+    if (hookBox) {
+      hookBox.hidden = true;
+      hookBox.innerHTML = '';
+    }
+    if (analyzeHookBtn) {
+      analyzeHookBtn.textContent = 'Analyze Hook';
+      analyzeHookBtn.disabled = false;
+    }
   }
 
   async function runTranscribe(formData, loadingLabel) {
@@ -240,6 +253,18 @@
     copyText((currentTx && currentTx.text) || '', copyPlainBtn, 'Copy Plain');
   });
 
+  function downloadTextFile(content, ext) {
+    var blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = ((currentTx.source_title || 'transcript').replace(/[^\w\-]+/g, '_') || 'transcript') + '.' + ext;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+
   downloadSrtBtn.addEventListener('click', function () {
     if (!currentTx) return;
     var segs = (currentTx.segments && currentTx.segments.length)
@@ -250,16 +275,70 @@
         formatSrtTime(seg.start) + ' --> ' + formatSrtTime(seg.end) + '\n' +
         seg.text + '\n';
     }).join('\n');
-    var blob = new Blob([srt], { type: 'text/plain;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = ((currentTx.source_title || 'transcript').replace(/[^\w\-]+/g, '_') || 'transcript') + '.srt';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    downloadTextFile(srt, 'srt');
   });
+
+  if (downloadTxtBtn) {
+    downloadTxtBtn.addEventListener('click', function () {
+      if (!currentTx) return;
+      var header = (currentTx.source_title || 'Transcript') + '\n' +
+        (currentTx.source_url ? currentTx.source_url + '\n' : '') + '\n';
+      downloadTextFile(header + buildTimestampedText(currentTx) + '\n', 'txt');
+    });
+  }
+
+  function renderHookAnalysis(data) {
+    if (!hookBox) return;
+    var outlineHtml = (data.outline || []).map(function (item) {
+      return '<li>' + escapeHtml(item) + '</li>';
+    }).join('');
+    var remixHtml = (data.remix_hooks || []).map(function (item) {
+      return '<li>' + escapeHtml(item) + '</li>';
+    }).join('');
+    hookBox.innerHTML =
+      '<span class="meta-badge is-accent">' + escapeHtml(data.hook_pattern || 'Hook Breakdown') + '</span>' +
+      '<h3>Why the opening works</h3>' +
+      '<p>' + escapeHtml(data.why_it_works || '') + '</p>' +
+      '<div class="hook-cols">' +
+      '  <div><div class="hook-list-title">Script structure</div><ul class="hook-list">' + outlineHtml + '</ul></div>' +
+      '  <div><div class="hook-list-title">Remix hook ideas</div><ul class="hook-list">' + remixHtml + '</ul></div>' +
+      '</div>';
+    hookBox.hidden = false;
+  }
+
+  if (analyzeHookBtn) {
+    analyzeHookBtn.addEventListener('click', async function () {
+      if (!currentTx || !currentTx.text) return;
+      analyzeHookBtn.disabled = true;
+      analyzeHookBtn.textContent = 'Analyzing…';
+      try {
+        var resp = await fetch('/api/analyze-transcript', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            transcript: currentTx.text,
+            title: currentTx.source_title || ''
+          })
+        });
+        var data = await resp.json().catch(function () { return {}; });
+        if (!resp.ok) {
+          showError(data.detail || 'Could not analyze hook right now.');
+          analyzeHookBtn.disabled = false;
+          analyzeHookBtn.textContent = 'Analyze Hook';
+          return;
+        }
+        currentHook = data;
+        renderHookAnalysis(data);
+        analyzeHookBtn.textContent = 'Hook Analyzed ✓';
+        saveTxWsBtn.textContent = 'Save to Workspace';
+        saveTxWsBtn.disabled = false;
+      } catch (err) {
+        showError('Network error while analyzing hook.');
+        analyzeHookBtn.disabled = false;
+        analyzeHookBtn.textContent = 'Analyze Hook';
+      }
+    });
+  }
 
   saveTxWsBtn.addEventListener('click', function () {
     if (!currentTx || !window.DroplabsWorkspace) return;
@@ -271,7 +350,8 @@
       duration: currentTx.duration_str || '',
       sourceUrl: currentTx.source_url || '',
       timestampedText: buildTimestampedText(currentTx),
-      plainText: currentTx.text || ''
+      plainText: currentTx.text || '',
+      hookAnalysis: currentHook || null
     });
     saveTxWsBtn.textContent = 'Saved ✓';
     saveTxWsBtn.disabled = true;

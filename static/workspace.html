@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=9" />
+  <link rel="stylesheet" href="/static/tool.css?v=10" />
 </head>
 <body>
 
@@ -73,8 +73,9 @@
           <button type="button" class="preset-btn" data-filter="transcript">Transcripts</button>
           <button type="button" class="preset-btn" data-filter="image">Images</button>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
           <input id="wsSearch" type="text" placeholder="Search saved items..." style="width:200px;height:36px" aria-label="Search workspace" />
+          <button type="button" class="btn btn-ghost btn-sm" id="wsExportBtn">Export .MD</button>
           <button type="button" class="btn btn-ghost btn-sm" id="wsClearBtn">Clear all</button>
         </div>
       </div>
@@ -126,6 +127,8 @@
           <a href="/tools/video-downloader">Video Downloader</a>
           <a href="/tools/video-to-text">Video to Text</a>
           <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/tiktok-video-downloader">TikTok</a>
+          <a href="/youtube-shorts-downloader">Shorts</a>
           <a href="/">Droplabs</a>
         </div>
       </div>

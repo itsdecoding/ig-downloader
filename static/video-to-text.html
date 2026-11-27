@@ -78,7 +78,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=9" />
+  <link rel="stylesheet" href="/static/tool.css?v=10" />
 </head>
 <body>
 
@@ -196,9 +196,12 @@
               <button type="button" class="btn btn-primary btn-sm" id="copyAllBtn">Copy All</button>
               <button type="button" class="btn btn-ghost btn-sm" id="copyPlainBtn">Copy Plain</button>
               <button type="button" class="btn btn-ghost btn-sm" id="downloadSrtBtn">Download .SRT</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="downloadTxtBtn">Download .TXT</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="analyzeHookBtn">Analyze Hook</button>
               <button type="button" class="btn btn-ghost btn-sm" id="saveTxWsBtn">Save to Workspace</button>
             </div>
           </div>
+          <div class="hook-box" id="hookBox" hidden></div>
           <div class="tx-segments" id="txSegments"></div>
         </div>
       </section>
@@ -268,6 +271,8 @@
           <a href="/tools/video-downloader">Video Downloader</a>
           <a href="/tools/video-to-text">Video to Text</a>
           <a href="/tools/image-compressor">Image Compressor</a>
+          <a href="/tiktok-video-downloader">TikTok</a>
+          <a href="/youtube-shorts-downloader">Shorts</a>
           <a href="/workspace">Workspace</a>
           <a href="/">Droplabs</a>
         </div>
@@ -277,7 +282,7 @@
 
   <script src="/static/workspace-handoff.js?v=3" defer></script>
   <script src="/static/groq-status.js?v=1" defer></script>
-  <script src="/static/video-to-text.js?v=1" defer></script>
+  <script src="/static/video-to-text.js?v=2" defer></script>
 
   <!-- Cloudflare Web Analytics (skipped on localhost) -->
   <script>

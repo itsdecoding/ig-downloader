@@ -436,9 +436,19 @@
       }
     }
 
-    /* Hero support line: text shadow keeps it legible over bright 3D ribbons */
+    /* Hero support line: frosted scrim keeps it legible over bright 3D ribbons */
     .hero-support {
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.95), 0 0 12px rgba(0, 0, 0, 0.55);
+      color: rgba(255, 255, 255, 0.82);
+      background: rgba(8, 7, 11, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 6px 14px;
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+    }
+    @media (min-width: 640px) {
+      .hero-support { border-radius: 999px; padding: 5px 14px; }
     }
 
     /* Phones: start the hero content near the top instead of centering it,
@@ -1050,6 +1060,20 @@
                   </svg>
                   <span id="saveBtnLabel">Save HD Video</span>
                 </a>
+                <a
+                  id="saveAudioBtn"
+                  href="#"
+                  class="btn-paste px-3.5 h-11 sm:h-9 rounded-full text-[12.5px] font-medium text-white/90 inline-flex items-center justify-center no-underline"
+                >
+                  Audio MP3
+                </a>
+                <a
+                  id="saveThumbBtn"
+                  href="#"
+                  class="btn-paste px-3.5 h-11 sm:h-9 rounded-full text-[12.5px] font-medium text-white/90 inline-flex items-center justify-center no-underline"
+                >
+                  Thumbnail
+                </a>
                 <button
                   id="saveWsBtn"
                   type="button"
@@ -1275,6 +1299,8 @@
       <a href="/instagram-story-downloader" class="py-2 -my-2 hover:text-white transition-colors">Story Downloader</a>
       <a href="/instagram-photo-downloader" class="py-2 -my-2 hover:text-white transition-colors">Photo Downloader</a>
       <a href="/instagram-carousel-downloader" class="py-2 -my-2 hover:text-white transition-colors">Carousel Downloader</a>
+      <a href="/tiktok-video-downloader" class="py-2 -my-2 hover:text-white transition-colors">TikTok Downloader</a>
+      <a href="/youtube-shorts-downloader" class="py-2 -my-2 hover:text-white transition-colors">Shorts Downloader</a>
     </nav>
   </footer>
 
@@ -1908,6 +1934,8 @@
 
       const quality1080Btn = document.getElementById('quality1080Btn');
       const saveFileBtn = document.getElementById('saveFileBtn');
+      const saveAudioBtn = document.getElementById('saveAudioBtn');
+      const saveThumbBtn = document.getElementById('saveThumbBtn');
       const saveWsBtn = document.getElementById('saveWsBtn');
       const transcribeLink = document.getElementById('transcribeLink');
       const saveBtnLabel = document.getElementById('saveBtnLabel');
@@ -2030,7 +2058,7 @@
         } catch (_) {}
         setUrlValue(SAMPLE_REEL_URL);
         pulseBoost = 0.7;
-        showToast('Sample Instagram Reel link inserted');
+        showToast('Sample link inserted');
       }
 
       pasteBtnDesktop.addEventListener('click', handlePaste);
@@ -2101,7 +2129,7 @@
           }
         } catch (_) {}
         stickyInput.value = SAMPLE_REEL_URL;
-        showToast('Sample Instagram Reel link inserted');
+        showToast('Sample link inserted');
       });
 
       stickySubmitBtn.addEventListener('click', () => {
@@ -2225,6 +2253,20 @@
         if (transcribeLink) {
           transcribeLink.href = `/tools/video-to-text?url=${encodeURIComponent(data.source_url || inputUrl)}`;
         }
+        if (saveAudioBtn) {
+          const srcUrl = data.source_url || inputUrl;
+          saveAudioBtn.href = `/api/video/audio?url=${encodeURIComponent(srcUrl)}&filename=${encodeURIComponent(activeFilename)}`;
+          saveAudioBtn.download = `${activeFilename}.mp3`;
+        }
+        if (saveThumbBtn) {
+          const rawThumb = data.thumbnail || '';
+          if (rawThumb) {
+            saveThumbBtn.href = `/api/thumbnail?url=${encodeURIComponent(rawThumb)}&download=1&filename=${encodeURIComponent(activeFilename + '_thumb')}`;
+            saveThumbBtn.classList.remove('hidden');
+          } else {
+            saveThumbBtn.classList.add('hidden');
+          }
+        }
         if (saveWsBtn) {
           saveWsBtn.textContent = 'Save to Workspace';
           saveWsBtn.disabled = false;
@@ -2279,7 +2321,13 @@
         }
 
         previewState.classList.remove('hidden');
-        previewState.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        const pRect = previewState.getBoundingClientRect();
+        if (pRect.top > window.innerHeight - 160) {
+          const hdr = document.getElementById('siteHeader');
+          const maxShift = hdr ? Math.max(0, hdr.getBoundingClientRect().top - 10) : 0;
+          const shift = Math.min(pRect.bottom - window.innerHeight + 24, maxShift);
+          if (shift > 0) window.scrollBy({ top: shift, behavior: 'smooth' });
+        }
       }
 
       function updateDownloadLinks(urlOrPath, filename, isDirectApiPath) {
