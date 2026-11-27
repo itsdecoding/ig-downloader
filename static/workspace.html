@@ -16,11 +16,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/static/tool.css?v=8" />
+  <link rel="stylesheet" href="/static/tool.css?v=9" />
 </head>
 <body>
 
   <section id="top" class="hero-stage">
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-vignette"></div>
 
     <header class="site-head">
@@ -49,6 +50,7 @@
           <a href="/tools/video-downloader">Downloader</a>
           <a href="/tools/video-to-text">Video to Text</a>
           <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
+          <a href="/workspace" class="ws-link is-current" aria-current="page">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
         </div>
       </nav>
       <div class="mobile-tools" aria-label="Droplabs tools">

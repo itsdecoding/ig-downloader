@@ -4,6 +4,7 @@ import time
 import shutil
 import asyncio
 import tempfile
+import mimetypes
 import urllib.parse
 from collections import defaultdict, deque
 from typing import Optional, List, Dict, Any, Tuple
@@ -28,6 +29,11 @@ import httpx
 import yt_dlp
 
 import landing_pages
+
+# Some Windows Python builds do not know .webp, which makes StaticFiles serve
+# the hero posters as application/octet-stream. Register it explicitly so every
+# platform returns image/webp.
+mimetypes.add_type("image/webp", ".webp")
 
 # Load environment variables from .env if present
 load_dotenv()

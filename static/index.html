@@ -159,6 +159,7 @@
       border: 1px solid rgba(255, 255, 255, 0.14);
       font-size: 12.5px;
       font-weight: 500;
+      line-height: 1.2;
       color: #ffffff;
       text-decoration: none;
       white-space: nowrap;
@@ -182,6 +183,71 @@
       color: #ffffff;
     }
     .ws-pill-badge[hidden] { display: none; }
+
+    /* Phones: the downloader nav becomes the same one-card, two-row pattern as
+       the tool pages (brand + Workspace pill, then the tool row), so the header
+       geometry never shifts when moving between pages. */
+    #siteHeader .mobile-tools { display: none; }
+    #siteHeader .dl-brand-name {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+    }
+    #siteHeader .dl-brand-sub {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 5px;
+    }
+    @media (max-width: 639px) {
+      #siteHeader {
+        max-width: none !important;
+        padding: 14px 14px 0 !important;
+      }
+      #siteHeader .nav-card {
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(27, 25, 32, 0.95) 0%, rgba(14, 13, 18, 0.97) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        overflow: hidden;
+      }
+      #siteHeader .glass-nav {
+        height: 54px !important;
+        padding: 0 13px !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      #siteHeader .mobile-tools {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+        padding: 8px 10px 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      #siteHeader .mobile-tools a {
+        font-size: 11.5px;
+        font-weight: 500;
+        line-height: 1.2;
+        color: rgba(255, 255, 255, 0.62);
+        text-decoration: none;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.11);
+        white-space: nowrap;
+      }
+      #siteHeader .mobile-tools a.is-current {
+        color: #fff;
+        border-color: rgba(244, 65, 116, 0.55);
+        background: rgba(244, 65, 116, 0.16);
+      }
+    }
 
     /* Frosted Top Quality Badge */
     .quality-pill {
@@ -740,7 +806,8 @@
     <div class="hero-vignette"></div>
 
     <!-- Floating Smoked-Glass Pill Navbar -->
-    <header class="relative z-30 w-full max-w-[1040px] px-4 sm:px-6 pt-5 sm:pt-7">
+    <header id="siteHeader" class="relative z-30 w-full max-w-[1040px] px-4 sm:px-6 pt-5 sm:pt-7">
+      <div class="nav-card">
       <nav class="glass-nav rounded-2xl sm:rounded-[20px] px-4 sm:px-6 h-14 sm:h-[62px] flex items-center justify-between">
         <!-- Brand -->
         <a href="/" class="flex items-center gap-3 min-h-11 group focus:outline-none">
@@ -758,48 +825,30 @@
             </svg>
           </span>
           <span class="flex flex-col justify-center leading-none">
-            <span class="text-[18px] sm:text-[19px] font-bold tracking-[-0.025em] text-white">Droplabs</span>
-            <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-[0.16em] text-white/40 mt-1">Video Downloader</span>
+            <span class="dl-brand-name">Droplabs</span>
+            <span class="dl-brand-sub">Video Downloader</span>
           </span>
         </a>
 
         <!-- Desktop Links -->
         <div class="hidden sm:flex items-center text-[13px] font-medium text-white/75" style="gap:18px">
-          <a href="/tools/video-downloader" class="text-white font-semibold transition-colors">Downloader</a>
+          <a href="/tools/video-downloader" class="text-white transition-colors">Downloader</a>
           <a href="/tools/video-to-text" class="hover:text-white transition-colors">Video to Text</a>
           <a href="/tools/image-compressor" class="hover:text-white transition-colors">Compressor</a>
           <a href="/workspace" class="ws-pill-link">Workspace <span class="ws-pill-badge" data-ws-count hidden>0</span></a>
         </div>
 
-        <!-- Mobile Right Controls: Workspace Pill + Menu Button -->
+        <!-- Phones: Workspace stays on the brand row, tools move below -->
         <div class="flex sm:hidden items-center gap-2">
           <a href="/workspace" class="ws-pill-link">Workspace <span class="ws-pill-badge" data-ws-count hidden>0</span></a>
-          <button
-            id="mobileMenuBtn"
-            type="button"
-            aria-label="Toggle menu"
-            aria-expanded="false"
-            class="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white/85 hover:bg-white/10 transition-colors"
-          >
-            <svg id="menuIconOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="4" y1="7" x2="20" y2="7" />
-              <line x1="4" y1="12" x2="20" y2="12" />
-              <line x1="4" y1="17" x2="20" y2="17" />
-            </svg>
-            <svg id="menuIconClose" class="hidden" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <line x1="6" y1="6" x2="18" y2="18" />
-              <line x1="18" y1="6" x2="6" y2="18" />
-            </svg>
-          </button>
         </div>
       </nav>
 
-      <!-- Mobile Dropdown Menu -->
-      <div id="mobileMenu" class="hidden sm:hidden mt-2.5 glass-nav rounded-2xl p-2 flex flex-col gap-1">
-        <a href="/tools/video-downloader" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-white/[0.06]">Video Downloader</a>
-        <a href="/tools/video-to-text" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Video to Text</a>
-        <a href="/tools/image-compressor" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Image Compressor</a>
-        <a href="/workspace" class="mobile-nav-link px-4 py-2.5 rounded-xl text-sm font-medium text-white/85 hover:bg-white/[0.08] transition-colors">Creator Workspace</a>
+      <div class="mobile-tools" aria-label="Droplabs tools">
+        <a href="/tools/video-downloader" class="is-current">Downloader</a>
+        <a href="/tools/video-to-text">Video to Text</a>
+        <a href="/tools/image-compressor">Compressor</a>
+      </div>
       </div>
     </header>
 
@@ -1864,10 +1913,6 @@
       const saveBtnLabel = document.getElementById('saveBtnLabel');
       const selectedMeta = document.getElementById('selectedMeta');
 
-      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-      const mobileMenu = document.getElementById('mobileMenu');
-      const menuIconOpen = document.getElementById('menuIconOpen');
-      const menuIconClose = document.getElementById('menuIconClose');
       const toast = document.getElementById('toast');
       const toastText = document.getElementById('toastText');
       const retentionSheet = document.getElementById('retentionSheet');
@@ -2308,24 +2353,6 @@
         currentMediaData = null;
         stickyAllowed = false;
         hideStickyBar();
-      });
-
-      // Mobile Menu Toggle
-      mobileMenuBtn.addEventListener('click', () => {
-        const isOpen = !mobileMenu.classList.contains('hidden');
-        mobileMenu.classList.toggle('hidden');
-        menuIconOpen.classList.toggle('hidden');
-        menuIconClose.classList.toggle('hidden');
-        mobileMenuBtn.setAttribute('aria-expanded', String(!isOpen));
-      });
-
-      document.querySelectorAll('.mobile-nav-link').forEach((link) => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.add('hidden');
-          menuIconOpen.classList.remove('hidden');
-          menuIconClose.classList.add('hidden');
-          mobileMenuBtn.setAttribute('aria-expanded', 'false');
-        });
       });
 
       // FAQ Accordion

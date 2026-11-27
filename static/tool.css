@@ -76,6 +76,30 @@ button { font: inherit; }
   pointer-events: none;
 }
 
+/* Static poster of the downloader's live 3D scene. Tool pages skip WebGL, so
+   this keeps the hero visually identical without shipping Three.js. */
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100svh;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('/static/hero-poster.webp?v=1');
+  background-position: 50% 0;
+  background-size: cover;
+  background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 70%, transparent 100%);
+}
+@media (max-width: 639px) {
+  .hero-bg {
+    background-image: url('/static/hero-poster-mobile.webp?v=1');
+  }
+}
+
 .hero-vignette {
   position: absolute;
   inset: 0;
@@ -87,7 +111,9 @@ button { font: inherit; }
 }
 
 /* ---------------------------------------------------------------- nav */
-.site-head { padding: 20px 0 0; width: 100%; position: relative; z-index: 20; }
+.site-head { padding: 28px 0 0; width: 100%; position: relative; z-index: 20; }
+/* Header geometry mirrors the downloader's nav exactly (1040px / 24px). */
+.site-head .wrap { max-width: 1040px; padding: 0 24px; }
 
 .nav {
   display: flex;
@@ -95,7 +121,7 @@ button { font: inherit; }
   justify-content: space-between;
   gap: 14px;
   height: 62px;
-  padding: 0 16px;
+  padding: 0 24px;
   border-radius: 20px;
   background: linear-gradient(180deg, rgba(28, 26, 32, 0.72) 0%, rgba(16, 15, 20, 0.64) 100%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
@@ -110,15 +136,15 @@ button { font: inherit; }
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   text-decoration: none;
   min-width: 0;
 }
 
 .brand-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
   flex: none;
   display: flex;
   align-items: center;
@@ -132,9 +158,9 @@ button { font: inherit; }
 }
 
 .brand-text { display: flex; flex-direction: column; line-height: 1; min-width: 0; }
-.brand-name { font-size: 17px; font-weight: 700; letter-spacing: -0.025em; }
+.brand-name { font-size: 19px; font-weight: 700; letter-spacing: -0.025em; }
 .brand-sub {
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -147,7 +173,7 @@ button { font: inherit; }
 .nav-links a {
   font-size: 13px;
   font-weight: 500;
-  color: var(--text-2);
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   padding: 8px 0;
   transition: color 0.18s ease;
@@ -622,22 +648,28 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
 }
 
 /* ----------------------------------------------------- Droplabs v1 tools */
-.nav-links { gap: 14px; flex-wrap: nowrap; }
+.nav-links { gap: 18px; flex-wrap: nowrap; }
 .nav-links a { white-space: nowrap; }
-.nav-links a.is-current { color: #fff; font-weight: 600; }
+.nav-links a.is-current { color: #fff; }
 
 .ws-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 11px !important;
+  padding: 6px 12px !important;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.14);
   font-size: 12.5px !important;
+  line-height: 1.2;
   color: #fff !important;
 }
 .ws-link:hover { border-color: rgba(244, 65, 116, 0.65); background: rgba(255, 255, 255, 0.11); }
+.ws-link.is-current {
+  border-color: rgba(244, 65, 116, 0.55);
+  background: rgba(244, 65, 116, 0.16);
+  font-weight: 500 !important;
+}
 .ws-badge {
   display: inline-flex;
   align-items: center;
@@ -663,6 +695,7 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
 .mobile-tools a {
   font-size: 12px;
   font-weight: 500;
+  line-height: 1.2;
   color: var(--text-2);
   text-decoration: none;
   padding: 6px 12px;
@@ -677,17 +710,20 @@ input[type="range"]:disabled { opacity: 0.35; cursor: not-allowed; }
   background: rgba(244, 65, 116, 0.16);
 }
 
-@media (max-width: 700px) {
-  /* Phones: one glass card holds the brand row and the tool row. */
+@media (max-width: 639px) {
+  /* Phones: one glass card holds the brand row and the tool row. The card is
+     deliberately near-opaque with no blur, matching the downloader's phone
+     nav (which skips backdrop blur over its live WebGL canvas). */
   .site-head { padding-top: 14px; }
   .site-head .wrap {
     margin: 0 14px;
     padding: 0;
+    width: auto;
     max-width: none;
     border-radius: 18px;
-    background: linear-gradient(180deg, rgba(28, 26, 32, 0.78) 0%, rgba(16, 15, 20, 0.72) 100%);
-    -webkit-backdrop-filter: blur(24px) saturate(160%);
-    backdrop-filter: blur(24px) saturate(160%);
+    background: linear-gradient(180deg, rgba(27, 25, 32, 0.95) 0%, rgba(14, 13, 18, 0.97) 100%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
     border: 1px solid var(--glass-border);
     box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.16);
     overflow: hidden;
