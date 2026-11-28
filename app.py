@@ -1139,18 +1139,68 @@ class AnalyzeTranscriptRequest(BaseModel):
     title: Optional[str] = ""
 
 
+class WorkspaceGenerateRequest(BaseModel):
+    mode: str
+    title: Optional[str] = ""
+    source_text: Optional[str] = ""
+    target_format: Optional[str] = "IG Reel"
+    topic: Optional[str] = ""
+    hook_pattern: Optional[str] = ""
+
+
+async def _call_groq_json(
+    system_prompt: str,
+    user_prompt: str,
+    temperature: float = 0.45,
+    timeout_sec: float = 35.0,
+) -> Dict[str, Any]:
+    """Call Groq chat completions and parse a strict JSON object response."""
+    if not GROQ_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="AI Studio is not configured yet (missing GROQ_API_KEY on the server).",
+        )
+    try:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(timeout_sec, connect=10.0)) as client:
+            resp = await client.post(
+                "https://api.groq.com/openai/v1/chat/completions",
+                headers={
+                    "Authorization": f"Bearer {GROQ_API_KEY}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": GROQ_CHAT_MODEL,
+                    "temperature": temperature,
+                    "response_format": {"type": "json_object"},
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                },
+            )
+    except httpx.HTTPError:
+        raise HTTPException(status_code=502, detail="Could not reach Groq API. Please try again.")
+
+    if resp.status_code != 200:
+        raise HTTPException(status_code=502, detail="AI Studio returned an error. Please try again shortly.")
+
+    try:
+        content = resp.json()["choices"][0]["message"]["content"]
+        parsed = json.loads(content)
+        if not isinstance(parsed, dict):
+            raise ValueError("expected JSON object")
+        return parsed
+    except Exception:
+        raise HTTPException(status_code=502, detail="Could not parse AI Studio response.")
+
+
 @app.post("/api/analyze-transcript")
 async def analyze_transcript(request: Request, payload: AnalyzeTranscriptRequest):
-    """Breaks down the opening hook, structure, and remix ideas from a transcript via Groq Llama."""
+    """Breaks down the opening hook, structure, and remix ideas from a transcript via Groq."""
     _check_rate_limit(request, "analyze", limit=15, window_sec=600)
     transcript = (payload.transcript or "").strip()
     if len(transcript) < 12:
         raise HTTPException(status_code=400, detail="Transcript is too short to analyze.")
-    if not GROQ_API_KEY:
-        raise HTTPException(
-            status_code=503,
-            detail="Hook analyzer is not configured yet (missing GROQ_API_KEY on the server).",
-        )
 
     clipped = transcript[:8000]
     prompt = (
@@ -1161,42 +1211,118 @@ async def analyze_transcript(request: Request, payload: AnalyzeTranscriptRequest
         'and "remix_hooks" (array of 3 punchy alternative opening hooks inspired by this structure).\n\n'
         f"Title: {(payload.title or '')[:120]}\nTranscript:\n{clipped}"
     )
-
-    try:
-        async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
-            resp = await client.post(
-                "https://api.groq.com/openai/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {GROQ_API_KEY}",
-                    "Content-Type": "application/json",
-                },
-                json={
-                    "model": GROQ_CHAT_MODEL,
-                    "temperature": 0.4,
-                    "response_format": {"type": "json_object"},
-                    "messages": [
-                        {"role": "system", "content": "You are an expert short-form video strategist. Always respond with valid JSON only."},
-                        {"role": "user", "content": prompt},
-                    ],
-                },
-            )
-    except httpx.HTTPError:
-        raise HTTPException(status_code=502, detail="Could not reach Groq API. Please try again.")
-
-    if resp.status_code != 200:
-        raise HTTPException(status_code=502, detail="Hook analyzer returned an error. Please try again shortly.")
-
-    try:
-        content = resp.json()["choices"][0]["message"]["content"]
-        parsed = json.loads(content)
-    except Exception:
-        raise HTTPException(status_code=502, detail="Could not parse hook breakdown response.")
-
+    parsed = await _call_groq_json(
+        "You are an expert short-form video strategist. Always respond with valid JSON only.",
+        prompt,
+        temperature=0.4,
+        timeout_sec=30.0,
+    )
     return {
         "hook_pattern": str(parsed.get("hook_pattern") or "Hook Breakdown").strip(),
         "why_it_works": str(parsed.get("why_it_works") or "").strip(),
         "outline": [str(x).strip() for x in (parsed.get("outline") or []) if str(x).strip()][:5],
         "remix_hooks": [str(x).strip() for x in (parsed.get("remix_hooks") or []) if str(x).strip()][:3],
+    }
+
+
+@app.post("/api/workspace/generate")
+async def workspace_generate(request: Request, payload: WorkspaceGenerateRequest):
+    """Creator Studio AI actions: generate hook angles, repurpose formats, or polish drafts."""
+    _check_rate_limit(request, "ws_ai", limit=25, window_sec=600)
+    mode = (payload.mode or "").strip().lower()
+    if mode not in ("hooks", "repurpose", "polish"):
+        raise HTTPException(status_code=400, detail="Unsupported AI studio mode.")
+
+    title = (payload.title or "").strip()[:180]
+    source = (payload.source_text or "").strip()[:9000]
+    target_format = (payload.target_format or "IG Reel").strip()[:40]
+    topic = (payload.topic or "").strip()[:80]
+    hook_pattern = (payload.hook_pattern or "").strip()[:100]
+
+    if len(title) + len(source) < 6:
+        raise HTTPException(status_code=400, detail="Add a title, note, or transcript first.")
+
+    system_prompt = (
+        "You are an elite short-form & written content strategist. Write sharp, natural, spoken-word "
+        "creator copy with zero corporate filler or AI clichés. Always respond with strict valid JSON only."
+    )
+    context_block = (
+        f"Title/Idea: {title or 'Untitled'}\n"
+        f"Topic: {topic or 'General'}\n"
+        f"Target Format: {target_format}\n"
+        f"Hook Pattern: {hook_pattern or 'None'}\n"
+        f"Source Draft / Transcript:\n{source or title}"
+    )
+
+    if mode == "hooks":
+        prompt = (
+            "Generate 5 distinct, high-retention opening hooks for this piece. Keep each line under 18 words, "
+            "direct, and natural. Return JSON with key \"hooks\" as an array of 5 objects, each with "
+            "\"angle\" (1-2 word label like Contrarian, Curiosity, Pain Point, Proof, Story) and \"line\" (the hook).\n\n"
+            + context_block
+        )
+        parsed = await _call_groq_json(system_prompt, prompt, temperature=0.65)
+        raw_hooks = parsed.get("hooks") or []
+        hooks = []
+        for item in raw_hooks[:5]:
+            if isinstance(item, dict) and str(item.get("line") or "").strip():
+                hooks.append({
+                    "angle": str(item.get("angle") or "Hook").strip()[:24],
+                    "line": str(item.get("line") or "").strip(),
+                })
+            elif isinstance(item, str) and item.strip():
+                hooks.append({"angle": "Hook", "line": item.strip()})
+        return {"mode": "hooks", "hooks": hooks}
+
+    if mode == "repurpose":
+        fmt_lower = target_format.lower()
+        slide_hint = (
+            '6-8 crisp slides (Slide 1 cover headline, middle value slides, final CTA slide)'
+            if "carousel" in fmt_lower
+            else '5-7 short, punchy thread posts (each under 260 chars)'
+            if ("x" in fmt_lower or "thread" in fmt_lower or "twitter" in fmt_lower)
+            else '3-5 concise beat notes for filming/editing'
+        )
+        prompt = (
+            f"Repurpose this material into a ready-to-shoot/publish {target_format} piece. Keep sentences tight and human. "
+            "Return strict JSON with keys:\n"
+            '- "title": short working title (max 9 words)\n'
+            '- "hook": opening 0-3s spoken hook or cover headline\n'
+            '- "body": clean scannable script body or post text\n'
+            '- "cta": single concise closing CTA\n'
+            f'- "slides": array of strings ({slide_hint})\n'
+            '- "caption": short ready-to-post caption (2-3 lines)\n'
+            '- "hashtags": space-separated 3-5 relevant hashtags\n\n'
+            + context_block
+        )
+        parsed = await _call_groq_json(system_prompt, prompt, temperature=0.55)
+        return {
+            "mode": "repurpose",
+            "title": str(parsed.get("title") or title or "Untitled").strip()[:140],
+            "hook": str(parsed.get("hook") or "").strip(),
+            "body": str(parsed.get("body") or "").strip(),
+            "cta": str(parsed.get("cta") or "").strip(),
+            "slides": [str(x).strip() for x in (parsed.get("slides") or []) if str(x).strip()][:10],
+            "caption": str(parsed.get("caption") or "").strip(),
+            "hashtags": str(parsed.get("hashtags") or "").strip(),
+        }
+
+    # mode == "polish"
+    prompt = (
+        f"Tighten and sharpen this {target_format} draft so every line earns attention. Cut fluff, keep the creator's "
+        "voice, and return strict JSON with keys: "
+        '"title", "hook", "body", "cta", "caption", "hashtags".\n\n'
+        + context_block
+    )
+    parsed = await _call_groq_json(system_prompt, prompt, temperature=0.45)
+    return {
+        "mode": "polish",
+        "title": str(parsed.get("title") or title or "Untitled").strip()[:140],
+        "hook": str(parsed.get("hook") or "").strip(),
+        "body": str(parsed.get("body") or "").strip(),
+        "cta": str(parsed.get("cta") or "").strip(),
+        "caption": str(parsed.get("caption") or "").strip(),
+        "hashtags": str(parsed.get("hashtags") or "").strip(),
     }
 
 @app.get("/api/health")

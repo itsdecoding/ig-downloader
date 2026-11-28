@@ -1,12 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creator Workspace — Saved Clips, Transcripts &amp; Assets | Droplabs</title>
-  <meta name="description" content="Your Droplabs Creator Workspace: review saved video references, Whisper transcripts, and compressed thumbnails in one place." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Workspace | Droplabs</title>
+  <meta name="description" content="Creator Workspace for clips, transcripts, scripts, carousels, and production pipelines." />
   <meta name="robots" content="noindex" />
-  <meta name="theme-color" content="#08070b" />
+  <meta name="theme-color" content="#08070b" id="metaThemeColor" />
+
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('droplabs_ws_theme');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.setAttribute('data-theme', t);
+          var mc = document.getElementById('metaThemeColor');
+          if (mc) mc.setAttribute('content', t === 'light' ? '#F8F7F4' : '#08070b');
+        }
+      } catch (e) {}
+    })();
+  </script>
 
   <link rel="icon" href="/static/favicon.svg?v=3" type="image/svg+xml" />
   <link rel="icon" type="image/png" sizes="96x96" href="/static/favicon-96.png?v=3" />
@@ -17,95 +30,273 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/static/tool.css?v=10" />
+  <link rel="stylesheet" href="/static/workspace.css?v=6" />
 </head>
-<body>
+<body class="ws-body">
 
-  <section id="top" class="hero-stage">
+  <section id="top" class="hero-stage ws-stage">
     <div class="hero-bg" aria-hidden="true"></div>
-    <div class="hero-vignette"></div>
+    <div class="hero-vignette" aria-hidden="true"></div>
 
-    <header class="site-head">
-      <div class="wrap">
-        <nav class="nav">
-        <a class="brand" href="/" aria-label="Droplabs home">
-          <span class="brand-mark">
-            <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
-              <defs>
-                <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
-                  <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
-                  <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
-                </linearGradient>
-              </defs>
-              <path fill="url(#dropMark)" fill-rule="evenodd"
-                d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
-            </svg>
-          </span>
-          <span class="brand-text">
-            <span class="brand-name">Droplabs</span>
-            <span class="brand-sub">Creator Workspace</span>
-          </span>
-        </a>
-        <div class="nav-links">
-          <a href="/tools/video-downloader">Downloader</a>
-          <a href="/tools/video-to-text">Video to Text</a>
-          <a href="/tools/image-compressor" data-hide-mobile="1">Compressor</a>
-          <a href="/workspace" class="ws-link is-current" aria-current="page">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
-        </div>
-      </nav>
-      <div class="mobile-tools" aria-label="Droplabs tools">
-        <a href="/tools/video-downloader">Downloader</a>
-        <a href="/tools/video-to-text">Video to Text</a>
-        <a href="/tools/image-compressor">Compressor</a>
+    <header class="site-head ws-head">
+      <div class="wrap ws-head-wrap">
+        <nav class="nav ws-nav">
+          <div class="ws-nav-left">
+            <a class="brand" href="/" aria-label="Droplabs home">
+              <span class="brand-mark">
+                <svg width="17" height="20" viewBox="9.4 6 17 20" fill="none" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="dropMark" x1="10" y1="6" x2="26" y2="26" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95" />
+                      <stop offset="50%" stop-color="#d8c3b8" stop-opacity="0.8" />
+                      <stop offset="100%" stop-color="#8b8492" stop-opacity="0.95" />
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#dropMark)" fill-rule="evenodd"
+                    d="M10 6.5 H16.2 A9.5 9.5 0 0 1 16.2 25.5 H10 Z M17.4 10.4 C17.4 10.4 21 14.4 21 16.8 A3.6 3.6 0 1 1 13.8 16.8 C13.8 14.4 17.4 10.4 17.4 10.4 Z" />
+                </svg>
+              </span>
+              <span class="brand-text">
+                <span class="brand-name">Droplabs</span>
+                <span class="brand-sub ws-hide-mobile">Creator Workspace</span>
+              </span>
+            </a>
+
+            <!-- Mobile compact tools dropdown trigger -->
+            <div class="ws-mobile-only ws-menu-wrap" id="mobileToolsWrap">
+              <button type="button" class="ws-btn-icon-sm" id="mobileToolsBtn" aria-label="Switch Droplabs tool" aria-expanded="false">
+                Tools ▾
+              </button>
+              <div class="ws-popover ws-popover-left" id="mobileToolsMenu" hidden>
+                <a class="ws-pop-item" href="/tools/video-downloader">Video Downloader</a>
+                <a class="ws-pop-item" href="/tools/video-to-text">Video to Text</a>
+                <a class="ws-pop-item" href="/tools/image-compressor">Image Compressor</a>
+                <div class="ws-pop-sep"></div>
+                <a class="ws-pop-item" href="/">Droplabs Home</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-links ws-nav-links">
+            <a href="/tools/video-downloader">Downloader</a>
+            <a href="/tools/video-to-text">Video to Text</a>
+            <a href="/tools/image-compressor">Compressor</a>
+            <button type="button" class="ws-btn-icon-sm ws-mobile-only" id="mobileSearchBtn" aria-label="Search workspace">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </button>
+            <button type="button" class="ws-theme-btn" id="themeToggleBtn" aria-label="Switch theme" title="Switch Dark / Light theme">
+              <span class="ws-theme-icon" id="themeIcon" aria-hidden="true"></span>
+              <span class="ws-theme-label" id="themeLabel">Light</span>
+            </button>
+            <button type="button" class="ws-btn-icon-sm ws-mobile-only is-accent-pill" id="mobileNewBtn" aria-label="New card">+</button>
+            <a href="/workspace" class="ws-link is-current ws-hide-mobile" aria-current="page">Workspace <span class="ws-badge" data-ws-count hidden>0</span></a>
+          </div>
+        </nav>
       </div>
-    </div>
     </header>
 
-    <div class="wrap">
-      <section class="hero">
-      <h1>Your saved clips,<br /><em>scripts &amp; assets</em></h1>
-      <p class="lede">Saved in this browser — no account, no sync.</p>
+    <div class="ws-shell" data-active-view="overview">
+    <!-- Desktop Command Bar -->
+    <div class="ws-topbar">
+      <div class="ws-tabs" id="wsViewTabs" role="tablist" aria-label="Workspace views">
+        <button type="button" class="ws-tab is-active" data-view="overview" role="tab" aria-selected="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Overview</span>
+        </button>
+        <button type="button" class="ws-tab" data-view="board" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>
+          <span>Board</span>
+          <span class="ws-tab-count" id="tabCountBoard">0</span>
+        </button>
+        <button type="button" class="ws-tab" data-view="vault" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          <span>Vault</span>
+          <span class="ws-tab-count" id="tabCountVault">0</span>
+        </button>
+        <button type="button" class="ws-tab" data-view="calendar" role="tab" aria-selected="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendar</span>
+        </button>
+      </div>
 
-      <div class="ws-toolbar" id="wsToolbar" hidden>
-        <div class="ws-filters" id="wsFilters" role="group" aria-label="Filter saved items">
-          <button type="button" class="preset-btn is-active" data-filter="all">All</button>
-          <button type="button" class="preset-btn" data-filter="video">Videos</button>
-          <button type="button" class="preset-btn" data-filter="transcript">Transcripts</button>
-          <button type="button" class="preset-btn" data-filter="image">Images</button>
+      <div class="ws-actions">
+        <button type="button" class="ws-cmd-trigger" id="openCmdBtn" title="Search or run command (Ctrl+K)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span class="ws-cmd-text">Search</span>
+          <kbd>⌘K</kbd>
+        </button>
+        <button type="button" class="ws-btn ws-btn-primary" id="newCardBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>New Card</span>
+        </button>
+        <div class="ws-menu-wrap" id="moreActionsWrap">
+          <button type="button" class="ws-btn ws-btn-ghost ws-icon-btn" id="moreActionsBtn" aria-label="Workspace actions" aria-expanded="false">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </button>
+          <div class="ws-popover" id="moreActionsMenu" hidden>
+            <button type="button" class="ws-pop-item" id="menuExportMd">Export Script Pack (.MD)</button>
+            <button type="button" class="ws-pop-item" id="menuBackupJson">Backup Workspace (.JSON)</button>
+            <button type="button" class="ws-pop-item" id="menuImportJson">Restore Backup (.JSON)</button>
+            <button type="button" class="ws-pop-item" id="menuLoadSample">Load Sample Board</button>
+            <div class="ws-pop-sep"></div>
+            <button type="button" class="ws-pop-item is-danger" id="menuClearAll">Reset Workspace</button>
+          </div>
+          <input type="file" id="importJsonInput" accept="application/json,.json" hidden />
         </div>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input id="wsSearch" type="text" placeholder="Search saved items..." style="width:200px;height:36px" aria-label="Search workspace" />
-          <button type="button" class="btn btn-ghost btn-sm" id="wsExportBtn">Export .MD</button>
-          <button type="button" class="btn btn-ghost btn-sm" id="wsClearBtn">Clear all</button>
+      </div>
+    </div>
+
+    <!-- Compact Quick Capture Bar (hidden on mobile Board/Calendar to keep content first) -->
+    <form class="ws-capture" id="quickCaptureForm" novalidate>
+      <div class="ws-capture-input-wrap">
+        <svg class="ws-capture-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        <input id="quickUrlInput" type="url" inputmode="url" autocomplete="off" spellcheck="false"
+          placeholder="Paste Reel, TikTok, or Shorts link..." aria-label="Capture video URL into Workspace" />
+      </div>
+      <div class="ws-capture-btns">
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="captureClipBtn">Save</button>
+        <button type="submit" class="ws-btn ws-btn-accent-soft ws-btn-sm" id="captureBriefBtn" data-ws-ai-btn>AI Brief</button>
+      </div>
+    </form>
+    <div class="ws-capture-status" id="captureStatus" hidden role="status" aria-live="polite"></div>
+
+    <!-- VIEW 1: OVERVIEW -->
+    <section id="viewOverview" class="ws-view">
+      <div id="overviewPopulated" hidden>
+        <div class="ws-kpis" id="kpiGrid"></div>
+
+        <div class="ws-overview-grid">
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h2>In Progress</h2>
+              <button type="button" class="ws-link-btn" data-jump-view="board">Board →</button>
+            </div>
+            <div class="ws-queue" id="continueList"></div>
+          </div>
+
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h2>Formats</h2>
+              <span class="ws-muted-meta" id="readySummaryMeta"></span>
+            </div>
+            <div class="ws-bars" id="formatBars"></div>
+          </div>
+        </div>
+
+        <div class="ws-overview-grid ws-overview-sub">
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h2>Vault</h2>
+              <button type="button" class="ws-link-btn" data-jump-view="vault">All →</button>
+            </div>
+            <div class="ws-mini-vault" id="recentVaultList"></div>
+          </div>
+
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h2>Schedule</h2>
+              <button type="button" class="ws-link-btn" data-jump-view="calendar">Calendar →</button>
+            </div>
+            <div class="ws-deadlines" id="upcomingDatesList"></div>
+          </div>
         </div>
       </div>
 
-      <div class="ws-grid" id="wsGrid"></div>
-      <div class="card" id="wsEmpty" hidden style="margin-top:18px;padding:34px 20px">
-        <strong style="font-size:16px">Your Workspace is empty</strong>
-        <p style="font-size:13.5px;color:var(--text-2);margin:8px auto 18px;max-width:46ch">
-          Use any Droplabs tool and click <strong>Save to Workspace</strong> to collect video references, transcripts, or compressed thumbnails here.
-        </p>
-        <div class="actions-row" style="justify-content:center">
-          <a class="btn btn-primary btn-sm" href="/tools/video-downloader">Open Video Downloader</a>
+      <div class="ws-empty" id="overviewEmpty" hidden>
+        <div class="ws-empty-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
-        <p class="ws-empty-links">
-          <a href="/tools/video-to-text">Video to Text</a>
-          <span>·</span>
-          <a href="/tools/image-compressor">Image Compressor</a>
-        </p>
-      </div>
-
-      <div class="card" id="wsNoMatch" hidden style="margin-top:18px;padding:28px 20px">
-        <strong style="font-size:15px">No items match your filter</strong>
-        <p style="font-size:13.5px;color:var(--text-2);margin:8px auto 16px">Try a different search or filter.</p>
-        <button type="button" class="btn btn-ghost btn-sm" id="wsResetBtn">Clear filters</button>
+        <h1>Clean slate.</h1>
+        <p>Capture a link above, create a card, or load a sample board.</p>
+        <div class="ws-empty-actions">
+          <button type="button" class="ws-btn ws-btn-primary" id="emptyNewCardBtn">New Card</button>
+          <button type="button" class="ws-btn ws-btn-ghost" id="emptySampleBtn">Load Sample</button>
+        </div>
       </div>
     </section>
-    </div>
-  </section>
 
-  <main class="wrap">
+    <!-- VIEW 2: BOARD -->
+    <section id="viewBoard" class="ws-view" hidden>
+      <!-- Desktop filter strip -->
+      <div class="ws-filterbar ws-desktop-only">
+        <div class="ws-chips" id="boardFormatChips" role="group" aria-label="Filter by format"></div>
+        <div class="ws-filter-right">
+          <input type="text" id="boardSearchInput" class="ws-mini-search" placeholder="Filter cards..." aria-label="Filter board cards" />
+          <div class="ws-seg" role="group" aria-label="Board layout">
+            <button type="button" class="is-active" data-board-mode="kanban">Kanban</button>
+            <button type="button" data-board-mode="list">List</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile sleek single-line filter + stage selector -->
+      <div class="ws-mobile-board-bar">
+        <div class="ws-stage-strip" id="mobileStageStrip" role="tablist" aria-label="Pipeline stage"></div>
+        <div class="ws-mobile-board-controls">
+          <select id="mobileFormatSelect" class="ws-compact-select" aria-label="Filter by format"></select>
+          <input type="text" id="mobileBoardSearch" class="ws-compact-search" placeholder="Search cards..." aria-label="Search cards" />
+        </div>
+      </div>
+
+      <div class="ws-kanban" id="kanbanBoard"></div>
+      <div class="ws-list-view" id="boardListView" hidden></div>
+      <div class="ws-mobile-cards" id="mobileBoardCards"></div>
+    </section>
+
+    <!-- VIEW 3: VAULT -->
+    <section id="viewVault" class="ws-view" hidden>
+      <div class="ws-filterbar">
+        <div class="ws-chips ws-chips-scroll" id="vaultFilterChips" role="group" aria-label="Filter vault items">
+          <button type="button" class="ws-chip is-active" data-vault-filter="all">All</button>
+          <button type="button" class="ws-chip" data-vault-filter="video">Videos</button>
+          <button type="button" class="ws-chip" data-vault-filter="transcript">Transcripts</button>
+          <button type="button" class="ws-chip" data-vault-filter="image">Images</button>
+        </div>
+        <div class="ws-filter-right">
+          <input type="text" id="vaultSearchInput" class="ws-mini-search" placeholder="Search vault..." aria-label="Search vault" />
+        </div>
+      </div>
+
+      <div class="ws-vault-grid" id="vaultGrid"></div>
+      <div class="ws-empty ws-empty-compact" id="vaultEmpty" hidden>
+        <h2>Vault empty</h2>
+        <p>Saved clips, transcripts, and compressed images land here.</p>
+      </div>
+    </section>
+
+    <!-- VIEW 4: CALENDAR -->
+    <section id="viewCalendar" class="ws-view" hidden>
+      <div class="ws-cal-layout">
+        <div class="ws-panel ws-cal-main">
+          <div class="ws-cal-head">
+            <div class="ws-cal-nav">
+              <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="calPrevBtn" aria-label="Previous month">←</button>
+              <h2 id="calMonthLabel">Month</h2>
+              <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="calNextBtn" aria-label="Next month">→</button>
+            </div>
+            <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="calTodayBtn">Today</button>
+          </div>
+          <div class="ws-cal-weekdays" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="ws-cal-grid" id="calGrid"></div>
+          <div class="ws-cal-agenda" id="calAgenda"></div>
+        </div>
+
+        <aside class="ws-panel ws-cal-rail">
+          <div class="ws-panel-head">
+            <h2>Unscheduled</h2>
+            <span class="ws-muted-meta" id="unscheduledCount">0</span>
+          </div>
+          <div class="ws-unscheduled-list" id="unscheduledList"></div>
+        </aside>
+      </div>
+    </section>
+    </div><!-- /ws-shell -->
+  </section><!-- /hero-stage -->
+
+  <main class="wrap ws-below-fold">
+    <!-- Ad Slot (collapses automatically when localhost or no fill) -->
     <section class="ad-slot" id="adSlot" aria-label="Advertisement" hidden>
       <div class="ad-head">Advertisement</div>
       <div class="ad-frame">
@@ -114,29 +305,432 @@
     </section>
   </main>
 
-  <footer class="site-foot">
+  <footer class="site-foot ws-foot">
     <div class="wrap">
       <div class="foot-row">
         <div>
-          Droplabs · creator utility ecosystem ·
+          Droplabs ·
           <button type="button" class="legal-btn" data-legal="privacy">Privacy</button> ·
           <button type="button" class="legal-btn" data-legal="terms">Terms</button> ·
           <button type="button" class="legal-btn" data-legal="dmca">DMCA</button>
         </div>
         <div class="foot-links">
-          <a href="/tools/video-downloader">Video Downloader</a>
+          <a href="/tools/video-downloader">Downloader</a>
           <a href="/tools/video-to-text">Video to Text</a>
-          <a href="/tools/image-compressor">Image Compressor</a>
-          <a href="/tiktok-video-downloader">TikTok</a>
-          <a href="/youtube-shorts-downloader">Shorts</a>
-          <a href="/">Droplabs</a>
+          <a href="/tools/image-compressor">Compressor</a>
+          <a href="/">Home</a>
         </div>
       </div>
     </div>
   </footer>
 
-  <script src="/static/workspace-handoff.js?v=3" defer></script>
-  <script src="/static/workspace.js?v=2" defer></script>
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="ws-bottom-nav" id="mobileBottomNav" aria-label="Workspace navigation">
+    <button type="button" class="ws-bnav-btn is-active" data-view="overview">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      <span>Overview</span>
+    </button>
+    <button type="button" class="ws-bnav-btn" data-view="board">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="11" rx="1"/><rect x="17" y="4" width="4" height="14" rx="1"/></svg>
+      <span>Board</span>
+    </button>
+    <button type="button" class="ws-bnav-btn" data-view="vault">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span>Vault</span>
+    </button>
+    <button type="button" class="ws-bnav-btn" data-view="calendar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Calendar</span>
+    </button>
+    <button type="button" class="ws-bnav-btn" id="mobileMenuNavBtn" aria-label="Workspace menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      <span>More</span>
+    </button>
+  </nav>
+
+  <!-- STUDIO EDITOR OVERLAY -->
+  <div class="ws-overlay" id="studioOverlay" hidden role="dialog" aria-modal="true" aria-label="Card Studio">
+    <div class="ws-studio" id="studioDialog">
+      <div class="ws-studio-head">
+        <div class="ws-studio-head-l">
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="studioCloseBtn">← Back</button>
+          <span class="ws-save-pill" id="studioSaveState">Saved</span>
+        </div>
+        <div class="ws-studio-head-r">
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="studioTeleprompterBtn">Prompter</button>
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm ws-desktop-only-btn" id="studioHistoryBtn">Snapshots <span id="studioSnapCount">0</span></button>
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="studioRepurposeBtn">Repurpose</button>
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm ws-desktop-only-btn" id="studioCopyPackBtn">Copy Pack</button>
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm is-danger-text ws-desktop-only-btn" id="studioDeleteBtn">Delete</button>
+          <div class="ws-menu-wrap ws-mobile-only" id="studioMoreWrap">
+            <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="studioMoreBtn" aria-label="Card options">···</button>
+            <div class="ws-popover" id="studioMoreMenu" hidden>
+              <button type="button" class="ws-pop-item" id="studioMobileHistory">Snapshots</button>
+              <button type="button" class="ws-pop-item" id="studioMobileCopy">Copy Full Pack</button>
+              <div class="ws-pop-sep"></div>
+              <button type="button" class="ws-pop-item is-danger" id="studioMobileDelete">Delete Card</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ws-studio-body">
+        <!-- Main Canvas -->
+        <div class="ws-studio-main">
+          <div class="ws-panel ws-studio-meta-panel">
+            <textarea id="stTitle" rows="1" class="ws-studio-title" placeholder="Working title or hook..."></textarea>
+            <div class="ws-studio-pills">
+              <label class="ws-pill-field">
+                <span>Format</span>
+                <select id="stFormat"></select>
+              </label>
+              <label class="ws-pill-field">
+                <span>Stage</span>
+                <select id="stStage"></select>
+              </label>
+              <label class="ws-pill-field">
+                <span>Priority</span>
+                <select id="stPriority">
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </label>
+              <label class="ws-pill-field">
+                <span>Topic</span>
+                <input type="text" id="stTopic" placeholder="Topic" list="wsTopicSuggestions" />
+                <datalist id="wsTopicSuggestions">
+                  <option value="Growth"></option>
+                  <option value="Tutorial"></option>
+                  <option value="Story"></option>
+                  <option value="Breakdown"></option>
+                  <option value="Opinion"></option>
+                </datalist>
+              </label>
+              <label class="ws-pill-field">
+                <span>Due</span>
+                <input type="date" id="stDueDate" />
+              </label>
+            </div>
+          </div>
+
+          <!-- Studio Sub-Tabs -->
+          <div class="ws-studio-tabs" id="studioTabs" role="tablist">
+            <button type="button" class="ws-stab is-active" data-stab="script">Script</button>
+            <button type="button" class="ws-stab" data-stab="intel">Intel</button>
+            <button type="button" class="ws-stab" data-stab="assets">Assets</button>
+          </div>
+
+          <!-- TAB: SCRIPT & SLIDES -->
+          <div id="stabScript" class="ws-stab-panel">
+            <div class="ws-panel">
+              <div class="ws-ai-toolbar">
+                <div class="ws-ai-actions">
+                  <button type="button" class="ws-btn ws-btn-accent-soft ws-btn-sm" id="aiHooksBtn" data-ws-ai-btn>5 AI Hooks</button>
+                  <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="aiPolishBtn" data-ws-ai-btn>Polish</button>
+                  <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="aiBuildSlidesBtn" data-ws-ai-btn>AI Format</button>
+                </div>
+                <div class="ws-seg ws-seg-sm" id="scriptViewMode">
+                  <button type="button" class="is-active" data-smode="beats">Beats</button>
+                  <button type="button" data-smode="slides">Slides</button>
+                </div>
+              </div>
+
+              <div class="ws-ai-tray" id="studioAiTray" hidden></div>
+
+              <!-- Beat Script Editor -->
+              <div id="beatsEditor" class="ws-beats-editor">
+                <div class="ws-field-block">
+                  <div class="ws-field-head">
+                    <label for="stHook">Hook (0–3s)</label>
+                    <span class="ws-field-stat" id="hookPulseStat">0 words</span>
+                  </div>
+                  <textarea id="stHook" rows="2" placeholder="Stop-the-scroll opening line..."></textarea>
+                </div>
+
+                <div class="ws-field-block">
+                  <div class="ws-field-head">
+                    <label for="stBody">Body / Beats</label>
+                    <span class="ws-field-stat" id="bodyReadStat">0s read</span>
+                  </div>
+                  <textarea id="stBody" rows="7" placeholder="Core points, visual cues, story beats..."></textarea>
+                </div>
+
+                <div class="ws-field-block">
+                  <div class="ws-field-head">
+                    <label for="stCta">CTA</label>
+                  </div>
+                  <input type="text" id="stCta" placeholder="Save this / comment / link in bio..." />
+                </div>
+              </div>
+
+              <!-- Slide Deck Editor -->
+              <div id="slidesEditor" class="ws-slides-editor" hidden>
+                <div class="ws-slides-list" id="slidesList"></div>
+                <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="addSlideBtn">+ Add Slide</button>
+              </div>
+            </div>
+
+            <div class="ws-panel">
+              <div class="ws-field-block">
+                <div class="ws-field-head">
+                  <label for="stCaption">Caption</label>
+                  <button type="button" class="ws-link-btn" id="copyCaptionBtn">Copy</button>
+                </div>
+                <textarea id="stCaption" rows="2" placeholder="Post caption..."></textarea>
+              </div>
+              <div class="ws-field-block" style="margin-top:10px">
+                <div class="ws-field-head">
+                  <label for="stHashtags">Hashtags</label>
+                </div>
+                <input type="text" id="stHashtags" placeholder="#creator #workflow" />
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: INTEL & TRANSCRIPT -->
+          <div id="stabIntel" class="ws-stab-panel" hidden>
+            <div class="ws-panel">
+              <div class="ws-intel-top">
+                <div class="ws-intel-url-row">
+                  <input type="url" id="stSourceUrl" placeholder="Reference Reel / TikTok / Shorts URL..." />
+                  <button type="button" class="ws-btn ws-btn-accent-soft ws-btn-sm" id="studioAnalyzeUrlBtn" data-ws-ai-btn>Transcribe + Analyze</button>
+                </div>
+                <div class="ws-intel-status" id="studioIntelStatus" hidden></div>
+              </div>
+
+              <div id="studioHookIntel" class="ws-hook-intel" hidden></div>
+
+              <div class="ws-field-block" style="margin-top:14px">
+                <div class="ws-field-head">
+                  <label for="stTranscript">Source Transcript</label>
+                  <div style="display:flex;gap:10px">
+                    <button type="button" class="ws-link-btn" id="analyzeTextBtn" data-ws-ai-btn>Analyze Hook</button>
+                    <button type="button" class="ws-link-btn" id="copyTxBtn">Copy</button>
+                  </div>
+                </div>
+                <textarea id="stTranscript" rows="8" placeholder="Transcript appears here or paste any script..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB: ASSETS & PUBLISH -->
+          <div id="stabAssets" class="ws-stab-panel" hidden>
+            <div class="ws-panel">
+              <div class="ws-panel-head">
+                <h2>Media</h2>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="attachFromVaultBtn">+ Vault</button>
+                  <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="uploadCardAssetBtn">+ Image</button>
+                  <input type="file" id="cardAssetFileInput" accept="image/*" multiple hidden />
+                </div>
+              </div>
+
+              <div class="ws-attached-grid" id="attachedAssetsGrid"></div>
+              <div class="ws-video-links" id="studioVideoLinks" hidden></div>
+
+              <div class="ws-asset-urls">
+                <label class="ws-url-field">
+                  <span>Brief URL</span>
+                  <input type="url" id="stBriefUrl" placeholder="https://..." />
+                </label>
+                <label class="ws-url-field">
+                  <span>Final Cut URL</span>
+                  <input type="url" id="stFinalUrl" placeholder="https://..." />
+                </label>
+                <label class="ws-url-field">
+                  <span>Posted URL</span>
+                  <input type="url" id="stPostedUrl" placeholder="https://..." />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Rail -->
+        <aside class="ws-studio-rail">
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h3>Readiness</h3>
+              <span class="ws-muted-meta" id="readinessLabel">0/5</span>
+            </div>
+            <div class="ws-progress-track"><div class="ws-progress-fill" id="readinessBar"></div></div>
+            <div class="ws-readiness-pills" id="readinessPills"></div>
+          </div>
+
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h3>Checklist</h3>
+            </div>
+            <div class="ws-checklist" id="studioChecklist"></div>
+            <form class="ws-check-add" id="addCheckForm">
+              <input type="text" id="newCheckInput" placeholder="Add step..." aria-label="Add checklist item" />
+              <button type="submit" class="ws-btn ws-btn-ghost ws-btn-sm">Add</button>
+            </form>
+          </div>
+
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h3>Notes</h3>
+            </div>
+            <textarea id="stNotes" class="ws-rail-notes" rows="3" placeholder="Shot ideas, music cue, edits..."></textarea>
+          </div>
+
+          <div class="ws-panel">
+            <div class="ws-panel-head">
+              <h3>Activity</h3>
+            </div>
+            <div class="ws-activity" id="studioActivity"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATE CARD MODAL -->
+  <div class="ws-overlay" id="createModal" hidden role="dialog" aria-modal="true" aria-label="Create Card">
+    <div class="ws-modal">
+      <div class="ws-modal-head">
+        <h3>New Card</h3>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="closeCreateModalBtn">✕</button>
+      </div>
+      <form id="createCardForm" class="ws-modal-body">
+        <label class="ws-field-block">
+          <span>Title / Hook</span>
+          <input type="text" id="ncTitle" required placeholder="e.g. 3 retention mistakes killing your reels" />
+        </label>
+        <div class="ws-modal-row">
+          <label class="ws-field-block">
+            <span>Format</span>
+            <select id="ncFormat"></select>
+          </label>
+          <label class="ws-field-block">
+            <span>Stage</span>
+            <select id="ncStage"></select>
+          </label>
+        </div>
+        <div class="ws-modal-row">
+          <label class="ws-field-block">
+            <span>Priority</span>
+            <select id="ncPriority">
+              <option value="High">High</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Low">Low</option>
+            </select>
+          </label>
+          <label class="ws-field-block">
+            <span>Due Date</span>
+            <input type="date" id="ncDueDate" />
+          </label>
+        </div>
+        <div class="ws-modal-foot">
+          <button type="button" class="ws-btn ws-btn-ghost" id="cancelCreateBtn">Cancel</button>
+          <button type="submit" class="ws-btn ws-btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- REPURPOSE MODAL -->
+  <div class="ws-overlay" id="repurposeModal" hidden role="dialog" aria-modal="true" aria-label="Repurpose Card">
+    <div class="ws-modal">
+      <div class="ws-modal-head">
+        <h3>Repurpose</h3>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="closeRepurposeBtn">✕</button>
+      </div>
+      <div class="ws-modal-body">
+        <div class="ws-repurpose-grid" id="repurposeTargets"></div>
+        <div class="ws-repurpose-foot">
+          <label class="ws-toggle-row">
+            <input type="checkbox" id="repurposeAiToggle" checked />
+            <span>Rewrite with AI for target format</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SNAPSHOTS MODAL -->
+  <div class="ws-overlay" id="historyModal" hidden role="dialog" aria-modal="true" aria-label="Version Snapshots">
+    <div class="ws-modal">
+      <div class="ws-modal-head">
+        <h3>Snapshots</h3>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="ws-btn ws-btn-primary ws-btn-sm" id="saveSnapshotBtn">Save Current</button>
+          <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="closeHistoryBtn">✕</button>
+        </div>
+      </div>
+      <div class="ws-modal-body ws-snapshots-list" id="snapshotsList"></div>
+    </div>
+  </div>
+
+  <!-- VAULT ATTACH PICKER MODAL -->
+  <div class="ws-overlay" id="vaultPickerModal" hidden role="dialog" aria-modal="true" aria-label="Attach from Vault">
+    <div class="ws-modal">
+      <div class="ws-modal-head">
+        <h3>Attach from Vault</h3>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="closeVaultPickerBtn">✕</button>
+      </div>
+      <div class="ws-modal-body ws-picker-list" id="vaultPickerList"></div>
+    </div>
+  </div>
+
+  <!-- MOBILE MORE SHEET -->
+  <div class="ws-overlay" id="mobileSheetOverlay" hidden role="dialog" aria-modal="true" aria-label="Workspace menu">
+    <div class="ws-sheet">
+      <div class="ws-modal-head">
+        <h3>Workspace</h3>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="closeMobileSheetBtn">✕</button>
+      </div>
+      <div class="ws-sheet-list">
+        <button type="button" class="ws-pop-item" id="sheetExportMd">Export Script Pack (.MD)</button>
+        <button type="button" class="ws-pop-item" id="sheetBackupJson">Backup Workspace (.JSON)</button>
+        <button type="button" class="ws-pop-item" id="sheetImportJson">Restore Backup (.JSON)</button>
+        <button type="button" class="ws-pop-item" id="sheetLoadSample">Load Sample Board</button>
+        <div class="ws-pop-sep"></div>
+        <button type="button" class="ws-pop-item is-danger" id="sheetClearAll">Reset Workspace</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELEPROMPTER OVERLAY -->
+  <div class="ws-overlay ws-prompter-overlay" id="teleprompterOverlay" hidden role="dialog" aria-modal="true" aria-label="Teleprompter">
+    <div class="ws-prompter-bar">
+      <div class="ws-prompter-controls">
+        <button type="button" class="ws-btn ws-btn-primary ws-btn-sm" id="tpPlayBtn">Play</button>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="tpResetBtn">Top</button>
+        <label class="ws-tp-slider">
+          <span>Speed</span>
+          <input type="range" id="tpSpeed" min="1" max="10" value="4" />
+        </label>
+        <label class="ws-tp-slider">
+          <span>Size</span>
+          <input type="range" id="tpSize" min="22" max="54" value="34" />
+        </label>
+        <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="tpMirrorBtn">Mirror</button>
+      </div>
+      <button type="button" class="ws-btn ws-btn-ghost ws-btn-sm" id="tpCloseBtn">Close</button>
+    </div>
+    <div class="ws-prompter-stage" id="tpStage">
+      <div class="ws-prompter-guide" aria-hidden="true"></div>
+      <div class="ws-prompter-text" id="tpText"></div>
+    </div>
+  </div>
+
+  <!-- COMMAND PALETTE (⌘K) -->
+  <div class="ws-overlay" id="cmdOverlay" hidden role="dialog" aria-modal="true" aria-label="Command Palette">
+    <div class="ws-cmd-box">
+      <div class="ws-cmd-input-row">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="cmdInput" placeholder="Search cards, assets, or commands..." autocomplete="off" />
+        <kbd>ESC</kbd>
+      </div>
+      <div class="ws-cmd-results" id="cmdResults"></div>
+    </div>
+  </div>
+
+  <script src="/static/workspace-handoff.js?v=5" defer></script>
+  <script src="/static/workspace.js?v=5" defer></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       if (window.DroplabsWorkspace) window.DroplabsWorkspace.loadAd();
